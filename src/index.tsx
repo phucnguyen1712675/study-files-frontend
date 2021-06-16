@@ -11,23 +11,29 @@ import 'react-app-polyfill/stable';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
+
+import { rootReducer } from './reducers';
 
 // Use consistent styling
 import 'sanitize.css/sanitize.css';
 
 // Import root app
 import { App } from 'app';
+import './index.css';
 
 import { HelmetProvider } from 'react-helmet-async';
 
-import { configureAppStore } from 'store/configureStore';
+// import { configureAppStore } from 'store/configureStore';
 
 import reportWebVitals from 'reportWebVitals';
 
 // Initialize languages
 import './locales/i18n';
 
-const store = configureAppStore();
+// const store = configureAppStore();
+const store = createStore(rootReducer, compose(applyMiddleware(thunk)));
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
 
 ReactDOM.render(
