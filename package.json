@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "4.11.4",
+    "@material-ui/icons": "4.11.2",
     "@reduxjs/toolkit": "1.4.0",
     "@testing-library/jest-dom": "5.11.4",
     "@testing-library/react": "11.0.2",
@@ -41,6 +43,7 @@
     "react-app-polyfill": "1.0.6",
     "react-dom": "16.13.1",
     "react-helmet-async": "1.0.6",
+    "react-hook-form": "7.8.7",
     "react-i18next": "11.7.2",
     "react-redux": "7.2.1",
     "react-router-dom": "5.2.0",

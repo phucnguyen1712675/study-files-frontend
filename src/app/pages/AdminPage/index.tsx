@@ -1,16 +1,16 @@
-import TopbarGuestPage from 'app/components/Topbar/TopbarGuestPage';
+import TopbarAdminPage from 'app/components/Topbar/TopbarAdminPage';
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-export function HomePage() {
+export function AdminPage() {
   return (
     <>
       <Helmet>
-        <title>Home Page</title>
+        <title>Admin Page</title>
         <meta name="description" content="A Boilerplate application homepage" />
       </Helmet>
-      <TopbarGuestPage />
-      <span>HomePage container</span>
+      <TopbarAdminPage />
+      <span>AdminPage container</span>
     </>
   );
 }
