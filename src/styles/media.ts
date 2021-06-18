@@ -41,7 +41,7 @@ export const media = (Object.keys(sizes) as Array<keyof typeof sizes>).reduce(
 /*
  * @types/styled-component is not working properly as explained in the github issue referenced above.
  * We must overcome this with custom typings, however, this might not work in time as the styled-components update.
- * Be carefull and keep an eye on the issue and the possible improvements
+ * Be careful and keep an eye on the issue and the possible improvements
  */
 type MediaFunction = <P extends object>(
   first:
