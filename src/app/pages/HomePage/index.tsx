@@ -9,6 +9,8 @@ import { useEffect, useReducer } from 'react';
 import reducer from './courseReducer';
 import AppContext from './courseContext';
 
+import { axiosInstance } from '../../../api/index';
+
 export function HomePage() {
   const initialAppState = {
     query: '',
@@ -18,7 +20,7 @@ export function HomePage() {
   const [store, dispatch] = useReducer(reducer, initialAppState);
 
   useEffect(function () {
-    setTimeout(function () {
+    /*setTimeout(function () {
       const itemsFromBackend = [
         {
           name: 'Basic Web Coding',
@@ -49,7 +51,26 @@ export function HomePage() {
           query: '',
         },
       });
-    }, 300);
+    }, 300);*/
+
+    async function loadCourses() {
+      //const userId=1;
+      const res = await axiosInstance.get(`/courses`, {
+        params: {
+          limit: 100,
+        },
+      });
+      console.log(res.data);
+      dispatch({
+        type: 'init',
+        payload: {
+          items: res.data.results,
+          query: '',
+        },
+      });
+    }
+
+    loadCourses();
   }, []);
   return (
     <>

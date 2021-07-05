@@ -8,7 +8,7 @@ export function CourseCard({ course }) {
         <Card.Img variant="top" src="holder.js/100px180" />
         <Card.Body style={{ padding: '5px' }}>
           <Card.Title>{course.name}</Card.Title>
-          <Card.Text>{course.description}</Card.Text>
+          <Card.Text>{course.shortDescription}</Card.Text>
           <Button variant="primary">Subcribe</Button>
         </Card.Body>
       </Card>
