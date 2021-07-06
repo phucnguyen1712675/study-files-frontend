@@ -8,13 +8,18 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 
 import { GlobalStyle } from 'styles/global-styles';
 
 import { LoginPage } from './pages/AuthenticationPage/Login/Loadable';
 import { RegisterPage } from './pages/AuthenticationPage/Register/Loadable';
-import { AdminPage } from './pages/AdminPage/Loadable';
+import {
+  AdminUsersPage,
+  AdminMainCategoriesPage,
+  AdminSubCategoriesPage,
+  AdminCoursesPage,
+} from './pages/AdminPage/Loadable';
 import { HomePage } from './pages/HomePage/Loadable';
 
 import { TeacherPage } from './pages/TeacherPage/Loadable';
@@ -33,18 +38,52 @@ export function App() {
       >
         <meta name="description" content="Study-files application" />
       </Helmet>
-
       <Switch>
+        <Route exact path="/" component={HomePage} />
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
-        <Route exact path="/" component={HomePage} />
+
+        {/* admin routes */}
+        <PrivateRoute exact path="/admin/users">
+          <AdminUsersPage />
+        </PrivateRoute>
+        <PrivateRoute exact path="/admin/courses">
+          <AdminCoursesPage />
+        </PrivateRoute>
+        <PrivateRoute exact path="/admin/mainCategories">
+          <AdminMainCategoriesPage />
+        </PrivateRoute>
+        <PrivateRoute exact path="/admin/subCategories">
+          <AdminSubCategoriesPage />
+        </PrivateRoute>
+        {/* end admin routes */}
+
+        <Route exact path="/teacher" component={TeacherPage} />
         <Route exact path="/student" component={StudentPage} />
-        <Route exact path="/admin" component={AdminPage} />
-        {/* <Route exact path="/" component={HomePage} /> */}
-        <Route exact path="/" component={TeacherPage} />
+        {/* <Route exact path="/student"  component={StudentPage}/> */}
+
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
     </BrowserRouter>
+  );
+}
+
+function PrivateRoute({ children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={() =>
+        localStorage.studyFiles_user_role === 'admin' ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/login',
+            }}
+          />
+        )
+      }
+    />
   );
 }

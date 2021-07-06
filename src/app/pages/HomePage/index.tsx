@@ -1,4 +1,6 @@
+import Topbar from 'app/components/Topbar/Topbar';
 //import TopbarGuestPage from 'app/components/Topbar/TopbarGuestPage';
+
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Header } from '../../components/Header/Header';
@@ -78,6 +80,9 @@ export function HomePage() {
         <title>Home Page</title>
         <meta name="description" content="A Boilerplate application homepage" />
       </Helmet>
+
+      <Topbar />
+
       <Header />
       <div
         className="background"

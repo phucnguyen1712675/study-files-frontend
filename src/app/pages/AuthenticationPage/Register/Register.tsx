@@ -11,6 +11,9 @@ import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { axiosAuthInstance } from '../../../../api/auth';
 import Container from '@material-ui/core/Container';
 
 function Copyright() {
@@ -48,6 +51,45 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const history = useHistory();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const ToLogin = function () {
+    history.push('/login');
+  };
+
+  const onSubmit = async function (data) {
+    try {
+      const res = await axiosAuthInstance.post('/register', data);
+      if (res.status === 201) {
+        localStorage.studyFiles_user_accessToken = res.data.tokens.access.token;
+        localStorage.studyFiles_user_id = res.data.user.id;
+        localStorage.studyFiles_user_role = res.data.user.role;
+        console.log(localStorage.studyFiles_user_accessToken);
+        console.log(localStorage.studyFiles_user_role);
+
+        if (localStorage.studyFiles_user_role === 'admin') {
+          history.push('/admin');
+        } else {
+          history.push('/');
+        }
+      } else {
+        alert('Invalid login.');
+      }
+    } catch (err) {
+      if (err.response) {
+        alert(err.response.data.message);
+      } else if (err.request) {
+        alert(err.request);
+      } else {
+        alert(err.message);
+      }
+    }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,29 +101,18 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 autoComplete="fname"
-                name="firstName"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
-                label="First Name"
+                id="Name"
+                label="Your Name"
                 autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
+                {...register('name', { required: true })}
               />
             </Grid>
             <Grid item xs={12}>
@@ -91,8 +122,8 @@ export default function SignUp() {
                 fullWidth
                 id="email"
                 label="Email Address"
-                name="email"
                 autoComplete="email"
+                {...register('email', { required: true })}
               />
             </Grid>
             <Grid item xs={12}>
@@ -100,11 +131,11 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                name="password"
                 label="Password"
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                {...register('password', { required: true })}
               />
             </Grid>
             <Grid item xs={12}>
@@ -125,7 +156,7 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link onClick={ToLogin} variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>

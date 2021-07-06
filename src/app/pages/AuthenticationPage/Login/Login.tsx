@@ -1,4 +1,3 @@
-import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,8 +11,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
 import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
+import { axiosAuthInstance } from '../../../../api/auth';
 
 function Copyright() {
   return (
@@ -49,6 +49,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function LoginPage() {
+  const history = useHistory();
   const classes = useStyles();
   const {
     register,
@@ -56,8 +57,35 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = function (data) {
-    console.log(data);
+  const ToRegister = function () {
+    history.push('/register');
+  };
+
+  const onSubmit = async function (data) {
+    try {
+      const res = await axiosAuthInstance.post('/login', data);
+      if (res.status === 200) {
+        localStorage.studyFiles_user_accessToken = res.data.tokens.access.token;
+        localStorage.studyFiles_user_id = res.data.user.id;
+        localStorage.studyFiles_user_role = res.data.user.role;
+
+        if (localStorage.studyFiles_user_role === 'admin') {
+          history.push('/admin/users');
+        } else {
+          history.push('/');
+        }
+      } else {
+        alert('Invalid login.');
+      }
+    } catch (err) {
+      if (err.response) {
+        alert(err.response.data.message);
+      } else if (err.request) {
+        alert(err.request);
+      } else {
+        alert(err.message);
+      }
+    }
   };
 
   return (
@@ -78,7 +106,6 @@ export default function LoginPage() {
             fullWidth
             id="email"
             label="Email Address"
-            name="email"
             autoComplete="email"
             autoFocus
             {...register('email', { required: true })}
@@ -89,7 +116,6 @@ export default function LoginPage() {
             margin="normal"
             required
             fullWidth
-            name="password"
             label="Password"
             type="password"
             id="password"
@@ -117,7 +143,7 @@ export default function LoginPage() {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link variant="body2" onClick={ToRegister}>
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
