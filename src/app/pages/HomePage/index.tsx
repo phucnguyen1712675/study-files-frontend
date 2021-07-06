@@ -1,4 +1,4 @@
-import TopbarGuestPage from 'app/components/Topbar/TopbarGuestPage';
+import Topbar from 'app/components/Topbar/Topbar';
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 
@@ -9,7 +9,7 @@ export function HomePage() {
         <title>Home Page</title>
         <meta name="description" content="A Boilerplate application homepage" />
       </Helmet>
-      <TopbarGuestPage />
+      <Topbar />
       <span>HomePage container</span>
     </>
   );
