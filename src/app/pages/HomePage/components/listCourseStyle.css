@@ -1,0 +1,8 @@
+.listCourse {
+  margin: 10px;
+}
+
+.listCourse li {
+  display: inline-block;
+  margin: 10px;
+}

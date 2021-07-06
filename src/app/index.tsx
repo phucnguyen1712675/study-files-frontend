@@ -25,6 +25,7 @@ import { HomePage } from './pages/HomePage/Loadable';
 import { TeacherPage } from './pages/TeacherPage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
+import { StudentPage } from './pages/StudentPage';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -58,7 +59,9 @@ export function App() {
         {/* end admin routes */}
 
         <Route exact path="/teacher" component={TeacherPage} />
+        <Route exact path="/student" component={StudentPage} />
         {/* <Route exact path="/student"  component={StudentPage}/> */}
+
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
