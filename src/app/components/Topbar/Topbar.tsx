@@ -30,7 +30,7 @@ export default function Topbar(this: any) {
           </div>
           <div className="topRight">
             <Link
-              to="/admin"
+              to="/admin/users"
               className="text"
               style={{ textDecoration: 'none' }}
             >

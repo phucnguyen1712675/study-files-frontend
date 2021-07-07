@@ -32,25 +32,25 @@ export default function TableCourses() {
   const handleCloseDeleteDialog = async function (bool) {
     if (bool) {
       try {
-        // const config = {
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
-        //   },
-        // };
-        // const res = await axiosAdminInstance.delete(
-        //   `/subCategories/${selectedId}`,
-        //   config,
-        // );
-        // if (res.status === 204) {
-        //   dispatch({
-        //     type: 'delete_task',
-        //     payload: {
-        //       subCategoryId: selectedId,
-        //     },
-        //   });
-        // } else {
-        //   alert(res.data.message);
-        // }
+        const config = {
+          headers: {
+            Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+          },
+        };
+        const res = await axiosAdminInstance.delete(
+          `/courses/${selectedId}`,
+          config,
+        );
+        if (res.status === 204) {
+          dispatch({
+            type: 'delete_task',
+            payload: {
+              courseId: selectedId,
+            },
+          });
+        } else {
+          alert(res.data.message);
+        }
       } catch (err) {
         if (err.response) {
           alert(err.response.data.message);
