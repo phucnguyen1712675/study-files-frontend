@@ -19,6 +19,7 @@ import {
   AdminMainCategoriesPage,
   AdminSubCategoriesPage,
   AdminCoursesPage,
+  AdminUpdatePasswordPage,
 } from './pages/AdminPage/Loadable';
 import { HomePage } from './pages/HomePage/Loadable';
 
@@ -55,6 +56,9 @@ export function App() {
         </PrivateRoute>
         <PrivateRoute exact path="/admin/subCategories">
           <AdminSubCategoriesPage />
+        </PrivateRoute>
+        <PrivateRoute exact path="/admin/updatePassword">
+          <AdminUpdatePasswordPage />
         </PrivateRoute>
         {/* end admin routes */}
 

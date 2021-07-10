@@ -37,7 +37,7 @@ export function AdminUsersPage() {
 
   return (
     <>
-      <Topbar />
+      <Topbar initQuery={''} />
       <Sidebar />
       <AppContext.Provider value={{ store, dispatch }}>
         <div className={styles.wrapper}>
