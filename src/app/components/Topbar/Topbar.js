@@ -39,6 +39,13 @@ export default function Topbar({ initQuery }) {
   };
 
   // TODO navigate to student/teacher/page
+  const NavigateToUserPage = function () {
+    if (localStorage.studyFiles_user_role === 'student') {
+      // TODO Vu navigate to student Page
+    } else if (localStorage.studyFiles_user_role === 'teacher') {
+      // TODO Phuc navigate to teacher page
+    }
+  };
 
   const OnKeyClick = function (e) {
     if (e.keyCode === 13) {
@@ -141,17 +148,16 @@ export default function Topbar({ initQuery }) {
       return (
         <Grid container direction="row" alignItems="center">
           <Grid>
-            <Link
-              to="/"
+            <div
+              onClick={() => NavigateToUserPage()}
               className="userText"
               style={{ textDecoration: 'none' }}
             >
               <div className="userTopbarIconContainer">
                 <PersonOutlineSharp />
               </div>
-              {/* TODO user name local */}
               <div>{localStorage.studyFiles_user_name}</div>
-            </Link>
+            </div>
           </Grid>
           <Grid>
             <span className="userText" style={{ color: '#CBCBCB' }}>
