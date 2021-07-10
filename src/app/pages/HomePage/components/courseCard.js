@@ -77,8 +77,10 @@ export function CourseCard({ course }) {
 
   const FeeWidget = function () {
     const promotionEndDate = new Date(course.promotionEnd);
+    // TODO update thêm promotionStartDate
+    const promotionStartDate = new Date(course.promotionStart);
     const dateNow = new Date();
-    if (promotionEndDate < dateNow) {
+    if (dateNow > promotionEndDate && dateNow > promotionStartDate) {
       return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div className={classes.cardTittle} style={{ marginRight: '18px' }}>
