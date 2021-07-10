@@ -5,6 +5,7 @@ import {
   PersonOutlineOutlined,
   DvrOutlined,
   ViewQuilt,
+  VisibilityOff,
 } from '@material-ui/icons';
 
 export const SidebarData = [
@@ -27,5 +28,10 @@ export const SidebarData = [
       { title: 'Main categories', path: '/admin/mainCategories' },
       { title: 'Sub categories', path: '/admin/subCategories' },
     ],
+  },
+  {
+    title: 'Change password',
+    path: '/admin/updatePassword',
+    icon: <VisibilityOff />,
   },
 ];

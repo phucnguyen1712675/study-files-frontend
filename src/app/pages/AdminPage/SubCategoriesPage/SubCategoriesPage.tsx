@@ -38,7 +38,7 @@ export function AdminSubCategoriesPage() {
 
   return (
     <>
-      <Topbar />
+      <Topbar initQuery={''} />
       <Sidebar />
       <AppContext.Provider value={{ store, dispatch }}>
         <div className={styles.wrapper}>

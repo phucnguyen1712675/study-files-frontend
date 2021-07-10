@@ -20,3 +20,7 @@ export const AdminCoursesPage = lazyLoad(
   () => import('./CoursesPage/CoursesPage'),
   module => module.AdminCoursesPage,
 );
+export const AdminUpdatePasswordPage = lazyLoad(
+  () => import('./UpdatePasswrod/UpdatePasswordPage'),
+  module => module.AdminUpdatePasswordPage,
+);

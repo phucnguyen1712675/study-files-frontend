@@ -1,112 +1,64 @@
+import React, { useEffect, useReducer } from 'react';
 import Topbar from 'app/components/Topbar/Topbar';
-//import TopbarGuestPage from 'app/components/Topbar/TopbarGuestPage';
+import HomePage from './HomePage/HomePage';
+import SearchPage from './SearchPage/SearchPage';
 
-import * as React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Header } from '../../components/Header/Header';
-//import { CourseCard } from './components/courseCard';
-import { CourseList } from './components/courseList';
-import background from '../../../assets/background.jpg';
-import { useEffect, useReducer } from 'react';
-import reducer from './courseReducer';
-import AppContext from './courseContext';
+import reducer from './components/homePageReducer';
+import AppContext from '../../AppContext';
+import { axiosGuestInstance } from '../../../api/guest';
 
-import { axiosInstance } from '../../../api/index';
-
-export function HomePage() {
+export function IndexHomePage() {
   const initialAppState = {
     query: '',
-    items: [],
+    selectedSubCategory: '',
+    bestSellerCourses: [],
+    categories: [],
+    subCategories: [],
+    latestCourses: [],
   };
 
   const [store, dispatch] = useReducer(reducer, initialAppState);
 
   useEffect(function () {
-    /*setTimeout(function () {
-      const itemsFromBackend = [
-        {
-          name: 'Basic Web Coding',
-          description:
-            'In this course, I will teach you to make a simple website',
-        },
-        {
-          name: 'Basic Web Coding1',
-          description:
-            'In this course, I will teach you to make a simple website',
-        },
-        {
-          name: 'Basic Web Coding2',
-          description:
-            'In this course, I will teach you to make a simple website',
-        },
-        {
-          name: 'Basic Web Coding3',
-          description:
-            'In this course, I will teach you to make a simple website',
-        },
-      ];
-
+    async function loadApp() {
+      const bestSellerCoursesRes = await axiosGuestInstance.get(
+        `/courses?sortBy=subscriberNumber:desc&limit=4`,
+      );
+      const categoriesRes = await axiosGuestInstance.get(`/categories`);
+      const subCategoriesRes = await axiosGuestInstance.get(`/subCategories`);
+      var latestCourses: any[] = [];
+      await subCategoriesRes.data.map(async subCate => {
+        const coursesRes = await axiosGuestInstance.get(
+          `/courses?sortBy=createdAt:desc&limit=10&subCategoryId=${subCate.id}`,
+        );
+        latestCourses = [...latestCourses, ...coursesRes.data.results];
+      });
+      console.log(latestCourses);
+      console.log(1 + ' : ' + latestCourses.length);
       dispatch({
         type: 'init',
         payload: {
-          items: itemsFromBackend,
           query: '',
+          selectedSubCategory: '',
+          bestSellerCourses: bestSellerCoursesRes.data.results,
+          categories: categoriesRes.data,
+          subCategories: subCategoriesRes.data,
+          latestCourses: latestCourses,
         },
       });
-    }, 300);*/
-
-    async function loadCourses() {
-      //const userId=1;
-      const res = await axiosInstance.get(`/courses`, {
-        params: {
-          limit: 100,
-        },
-      });
-      console.log(res.data);
-      dispatch({
-        type: 'init',
-        payload: {
-          items: res.data.results,
-          query: '',
-        },
-      });
+      console.log(2 + ' : ' + latestCourses.length);
     }
-
-    loadCourses();
+    loadApp();
   }, []);
+
   return (
     <>
-      <Helmet>
-        <title>Home Page</title>
-        <meta name="description" content="A Boilerplate application homepage" />
-      </Helmet>
-
-      <Topbar />
-
-      <Header />
-      <div
-        className="background"
-        style={{
-          backgroundImage: `url(${background})`,
-          backgroundRepeat: 'no-repeat',
-          width: '100%',
-          height: '350px',
-          marginLeft: '12%',
-        }}
-      ></div>
-      <div style={{ margin: '10px' }}>
-        <h3>New Courses</h3>
-      </div>
-      <div
-        style={{
-          marginLeft: '2rem',
-          marginTop: '2rem',
-        }}
-      >
-        <AppContext.Provider value={{ store, dispatch }}>
-          <CourseList />
-        </AppContext.Provider>
-      </div>
+      <AppContext.Provider value={{ store, dispatch }}>
+        <Topbar initQuery={''} />
+        <HomePage />
+        <div>hello</div>
+        <SearchPage />
+      </AppContext.Provider>
     </>
   );
 }
