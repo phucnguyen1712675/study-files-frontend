@@ -19,11 +19,15 @@ export default function reducer(state, action) {
       return {
         ...state,
         query: action.payload.query,
+        selectedSubCategory: '',
       };
-    case 'update_selectedSubCategory':
+    case 'clear_query':
+      return { ...state, query: '' };
+    case 'update_selectedCategory':
       return {
         ...state,
-        selectedSubCategory: action.payload.bestSellerCourses,
+        selectedSubCategory: action.payload.selectedSubCategory,
+        query: '',
       };
     default:
       return state;
