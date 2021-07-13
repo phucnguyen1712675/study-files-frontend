@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { useHistory, useLocation, Link } from 'react-router-dom';
-
 import {
   PersonOutlineSharp,
   ExitToAppSharp,
@@ -8,19 +7,23 @@ import {
   ClearSharp,
   SearchSharp,
 } from '@material-ui/icons';
-import { Grid, InputBase } from '@material-ui/core';
+import { Grid, InputBase, MenuItem, Menu } from '@material-ui/core';
+import NestedMenuItem from 'material-ui-nested-menu-item';
 import './Topbar.css';
 import AppContext from '../../AppContext';
 
 export default function Topbar({ initQuery }) {
   const history = useHistory();
-  const { dispatch } = useContext(AppContext);
+  const { store, dispatch } = useContext(AppContext);
   const [query, setQuery] = useState(initQuery);
+
+  const [menuPosition, setMenuPosition] = useState(null);
 
   const btnSignOut_Clicked = function () {
     delete localStorage.studyFiles_user_accessToken;
     delete localStorage.studyFiles_user_id;
     delete localStorage.studyFiles_user_role;
+    delete localStorage.studyFiles_user_name;
     history.push('/login');
   };
 
@@ -29,6 +32,12 @@ export default function Topbar({ initQuery }) {
     return location.pathname === path;
   };
 
+  const PathNameContain = path => {
+    const location = useLocation();
+    return location.pathname.includes(path);
+  };
+
+  // TODO xét trường hợp chọn category nữa
   const NavigateToSearchScreen = function () {
     dispatch({
       type: 'update_query',
@@ -36,6 +45,7 @@ export default function Topbar({ initQuery }) {
         query: query,
       },
     });
+    history.push(`/search?query=${query}`);
   };
 
   // TODO navigate to student/teacher/page
@@ -44,10 +54,12 @@ export default function Topbar({ initQuery }) {
       // TODO Vu navigate to student Page
     } else if (localStorage.studyFiles_user_role === 'teacher') {
       // TODO Phuc navigate to teacher page
+    } else if (localStorage.studyFiles_user_role === 'admin') {
+      history.push('/admin/users');
     }
   };
 
-  const OnKeyClick = function (e) {
+  const OnKeyClickSearchBar = function (e) {
     if (e.keyCode === 13) {
       NavigateToSearchScreen();
     }
@@ -58,12 +70,14 @@ export default function Topbar({ initQuery }) {
       return (
         <ClearSharp
           onClick={() => {
+            // setQuery('');
             dispatch({
               type: 'update_query',
               payload: {
-                query: initQuery,
+                query: '',
               },
             });
+            history.push('/');
           }}
           className="userText"
           style={{ marginRight: '20px' }}
@@ -73,23 +87,54 @@ export default function Topbar({ initQuery }) {
     return <></>;
   };
 
-  const SearchAndCategories = function () {
+  const handleListCategoriesClick = event => {
+    if (menuPosition) {
+      return;
+    }
+    event.preventDefault();
+    setMenuPosition({
+      top: 50,
+      left: event.pageX,
+    });
+  };
+
+  const handleCategoryClick = function (event, categoryName, subCategory) {
+    if (subCategory) {
+      dispatch({
+        type: 'update_selectedCategory',
+        payload: {
+          selectedSubCategory: subCategory,
+        },
+      });
+      const temp = categoryName.replaceAll(' ', '-');
+      const temp2 = subCategory.name.replaceAll(' ', '-');
+      history.push(`/${temp}/${temp2}`);
+    }
+    setMenuPosition(null);
+  };
+
+  const CategoryMenuItemWidget = function (category) {
     return (
       <div
+        class="request-top"
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          backgroundColor: '#EBEBEB',
-          paddingLeft: '20px',
-          paddingTop: '5px',
-          paddingBottom: '5px',
-          borderRadius: '5px',
-          marginLeft: '15px',
-          marginRight: '50px',
+          whiteSpace: 'pre-wrap',
+          overflowWrap: 'break-word',
+          width: '250px',
+          padding: '5px 0px',
         }}
       >
+        <span style={{ color: '#525252' }}>{category.name}</span>
+      </div>
+    );
+  };
+
+  const CategoriesMenuWidget = function () {
+    return (
+      <div>
         <div
           className="userText"
+          onClick={handleListCategoriesClick}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -101,28 +146,53 @@ export default function Topbar({ initQuery }) {
             <KeyboardArrowDownSharp />
           </span>
         </div>
-        <div
-          className="userText"
-          style={{ marginRight: '20px', fontSize: '20', color: '#CBCBCB' }}
+        <Menu
+          open={!!menuPosition}
+          onClose={() => setMenuPosition(null)}
+          anchorReference="anchorPosition"
+          anchorPosition={menuPosition}
         >
-          {' '}
-          |{' '}
-        </div>
-        <InputBase
-          style={{ flexGrow: 1, marginRight: '30px' }}
-          placeholder="Search here ..."
-          value={query}
-          onKeyUp={e => OnKeyClick(e)}
-          onChange={e => setQuery(e.target.value)}
-        />
+          {store.categories.map(category => (
+            <NestedMenuItem
+              label={CategoryMenuItemWidget(category)}
+              parentMenuOpen={!!menuPosition}
+            >
+              {store.subCategories
+                .filter(subCategory => subCategory.categoryId === category.id)
+                .map(subCategory => (
+                  <MenuItem
+                    onClick={e =>
+                      handleCategoryClick(e, category.name, subCategory)
+                    }
+                    value={subCategory.id}
+                  >
+                    {CategoryMenuItemWidget(subCategory)}
+                  </MenuItem>
+                ))}
+            </NestedMenuItem>
+          ))}
+        </Menu>
+      </div>
+    );
+  };
+
+  const SearchAndCategories = function () {
+    if (!PathNameContain('admin'))
+      return (
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            marginRight: '30px',
+            backgroundColor: '#EBEBEB',
+            paddingLeft: '20px',
+            paddingTop: '5px',
+            paddingBottom: '5px',
+            borderRadius: '5px',
+            marginLeft: '15px',
+            marginRight: '50px',
           }}
         >
-          {ClearQuery()}
+          {CategoriesMenuWidget()}
           <div
             className="userText"
             style={{ marginRight: '20px', fontSize: '20', color: '#CBCBCB' }}
@@ -130,20 +200,44 @@ export default function Topbar({ initQuery }) {
             {' '}
             |{' '}
           </div>
-          <SearchSharp
-            onClick={() => NavigateToSearchScreen()}
-            className="userText"
-            style={{ marginRight: '0px' }}
+          <InputBase
+            style={{ flexGrow: 1, marginRight: '30px' }}
+            placeholder="Search here ..."
+            value={query}
+            onKeyUp={e => OnKeyClickSearchBar(e)}
+            onChange={e => setQuery(e.target.value)}
           />
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginRight: '30px',
+            }}
+          >
+            {ClearQuery()}
+            <div
+              className="userText"
+              style={{ marginRight: '20px', fontSize: '20', color: '#CBCBCB' }}
+            >
+              {' '}
+              |{' '}
+            </div>
+            <SearchSharp
+              onClick={() => NavigateToSearchScreen()}
+              className="userText"
+              style={{ marginRight: '0px' }}
+            />
+          </div>
         </div>
-      </div>
-    );
+      );
+    else return <></>;
   };
 
   const TopBarRight = function () {
     if (
       localStorage.studyFiles_user_role === 'student' ||
-      localStorage.studyFiles_user_role === 'teacher'
+      localStorage.studyFiles_user_role === 'teacher' ||
+      localStorage.studyFiles_user_role === 'admin'
     ) {
       return (
         <Grid container direction="row" alignItems="center">
@@ -223,7 +317,7 @@ export default function Topbar({ initQuery }) {
     }
   };
 
-  const TopBar = function () {
+  if (!PathName('/login') && !PathName('/register')) {
     return (
       <div className="userTopBar">
         <div style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
@@ -237,45 +331,6 @@ export default function Topbar({ initQuery }) {
         </div>
       </div>
     );
-  };
-
-  if (localStorage.studyFiles_user_role === 'admin') {
-    return (
-      <div className="topbar">
-        <div className="topbarWrapper">
-          <div className="topLeft">
-            <Link to="/" className="text" style={{ textDecoration: 'none' }}>
-              <span className="logo">STUDY-FILES</span>
-            </Link>
-          </div>
-          <div className="topRight">
-            <Link
-              to="/admin/users"
-              className="text"
-              style={{ textDecoration: 'none' }}
-            >
-              <div className="topbarIconContainer">
-                <PersonOutlineSharp />
-              </div>
-              <span className="text">Admin</span>
-            </Link>
-
-            <div
-              className="text"
-              onClick={btnSignOut_Clicked}
-              style={{ textDecoration: 'none' }}
-            >
-              <div className="topbarIconContainer">
-                <ExitToAppSharp />
-              </div>
-              <span className="text">Logout</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  } else if (!PathName('/login') && !PathName('/register')) {
-    return TopBar();
   } else {
     return (
       <div className="userTopBar">

@@ -6,7 +6,7 @@
  * contain code that should be seen on all pages. (e.g. navigation bar)
  */
 
-import * as React from 'react';
+import React, { useReducer, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 
@@ -21,15 +21,63 @@ import {
   AdminCoursesPage,
   AdminUpdatePasswordPage,
 } from './pages/AdminPage/Loadable';
-import { HomePage } from './pages/HomePage/Loadable';
+import {
+  HomePage,
+  SearchPage,
+  CategoryCoursesListPage,
+} from './pages/HomePage/Loadable';
 
 import { TeacherPage } from './pages/TeacherPage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
 import { StudentPage } from './pages/StudentPage';
 
+import reducer from './pages/HomePage/components/homePageReducer';
+import AppContext from './AppContext';
+import { axiosGuestInstance } from '../api/guest';
+
 export function App() {
   const { i18n } = useTranslation();
+  const initialAppState = {
+    query: '',
+    selectedSubCategory: '',
+    bestSellerCourses: [],
+    categories: [],
+    subCategories: [],
+    latestCourses: [],
+  };
+
+  const [store, dispatch] = useReducer(reducer, initialAppState);
+  useEffect(function () {
+    async function loadApp() {
+      const bestSellerCoursesRes = await axiosGuestInstance.get(
+        `/courses?sortBy=subscriberNumber:desc&limit=4`,
+      );
+      const categoriesRes = await axiosGuestInstance.get(`/categories`);
+      const subCategoriesRes = await axiosGuestInstance.get(`/subCategories`);
+      var latestCourses: any[] = [];
+      for (var subCategory of subCategoriesRes.data) {
+        const coursesRes = await axiosGuestInstance.get(
+          `/courses?sortBy=createdAt:desc&limit=10&subCategoryId=${subCategory.id}`,
+        );
+        latestCourses = [...latestCourses, ...coursesRes.data.results];
+      }
+
+      dispatch({
+        type: 'init',
+        payload: {
+          query: '',
+          selectedSubCategory: '',
+          bestSellerCourses: bestSellerCoursesRes.data.results,
+          categories: categoriesRes.data,
+          subCategories: subCategoriesRes.data,
+          latestCourses: latestCourses,
+        },
+      });
+    }
+    loadApp();
+  }, []);
+
   return (
     <BrowserRouter>
       <Helmet
@@ -40,7 +88,16 @@ export function App() {
         <meta name="description" content="Study-files application" />
       </Helmet>
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <AppContext.Provider value={{ store, dispatch }}>
+          <Route exact path="/" component={HomePage} />
+          <Route exact path="/search" component={SearchPage} />
+          <Route
+            exact
+            path="/:category/:subCategory"
+            component={CategoryCoursesListPage}
+          />
+        </AppContext.Provider>
+
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
 
