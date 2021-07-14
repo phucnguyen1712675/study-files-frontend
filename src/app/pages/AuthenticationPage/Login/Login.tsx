@@ -74,6 +74,7 @@ export default function LoginPage() {
         localStorage.studyFiles_user_id = res.data.user.id;
         localStorage.studyFiles_user_role = res.data.user.role;
         localStorage.studyFiles_user_name = res.data.user.name;
+        localStorage.studyFiles_user_email = res.data.user.email;
 
         if (localStorage.studyFiles_user_role === 'admin') {
           history.push('/admin/users');

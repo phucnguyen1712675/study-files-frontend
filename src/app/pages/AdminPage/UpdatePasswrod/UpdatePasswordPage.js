@@ -2,6 +2,7 @@ import React from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css';
 import styles from '../Components/style.module/style.module.css';
+// eslint-disable-next-line
 import { Col } from 'reactstrap';
 import { useForm } from 'react-hook-form';
 import { TextField, Typography, Container, Button } from '@material-ui/core/';

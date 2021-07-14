@@ -18,6 +18,11 @@ export default function reducer(state, action) {
         ...state,
         query: action.payload.query,
       };
+    case 'delete_item':
+      return {
+        ...state,
+        items: state.items.filter(i => i.id !== action.payload.id),
+      };
 
     case 'complete_task':
       return {
