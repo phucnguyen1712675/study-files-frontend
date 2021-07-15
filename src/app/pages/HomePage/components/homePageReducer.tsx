@@ -14,6 +14,32 @@ export default function reducer(state, action) {
         categories: action.payload.categories,
         subCategories: action.payload.subCategories,
         latestCourses: action.payload.latestCourses,
+        watchList: action.payload.watchList,
+        myCourses: action.payload.myCourses,
+      };
+    case 'add_watch_list':
+      return {
+        ...state,
+        watchList: [...state.watchList, action.payload.course],
+      };
+    case 'delete_watch_list':
+      return {
+        ...state,
+        watchList: state.watchList.filter(
+          course => course.id !== action.payload.courseId,
+        ),
+      };
+    case 'add_my_courses':
+      return {
+        ...state,
+        myCourses: [...state.myCourses, action.payload.course],
+      };
+    case 'delete_my_courses':
+      return {
+        ...state,
+        myCourses: state.myCourses.filter(
+          course => course.id !== action.playload.courseId,
+        ),
       };
     case 'update_query':
       return {

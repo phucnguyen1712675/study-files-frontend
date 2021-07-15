@@ -62,6 +62,36 @@ export function App() {
         );
         latestCourses = [...latestCourses, ...coursesRes.data.results];
       }
+      var watchList: any[] = [];
+      var myCourses: any[] = [];
+      if (`${localStorage.studyFiles_user_role}` === 'student') {
+        // TODO vu get watchlist and myCourses, watchList
+        const config = {
+          headers: {
+            Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+          },
+        };
+        const watchListRes = await axiosGuestInstance.get(
+          `/student/watchList/${localStorage.studyFiles_user_id}`,
+          config,
+        );
+        for (var item of watchListRes.data) {
+          const coursesRes = await axiosGuestInstance.get(
+            `/courses/${item.courseId}`,
+          );
+          watchList = [...watchList, coursesRes.data];
+        }
+        const myCoursesRes = await axiosGuestInstance.get(
+          `/student/myCourses/${localStorage.studyFiles_user_id}`,
+          config,
+        );
+        for (var item of myCoursesRes.data) {
+          const coursesRes = await axiosGuestInstance.get(
+            `/courses/${item.courseId}`,
+          );
+          myCourses = [...myCourses, coursesRes.data];
+        }
+      }
 
       dispatch({
         type: 'init',
@@ -72,6 +102,8 @@ export function App() {
           categories: categoriesRes.data,
           subCategories: subCategoriesRes.data,
           latestCourses: latestCourses,
+          watchList: watchList,
+          myCourses: myCourses,
         },
       });
     }

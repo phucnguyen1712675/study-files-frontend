@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { CardContent, CardMedia, makeStyles } from '@material-ui/core';
 import ReactStars from 'react-rating-stars-component';
 import AppContext from 'app/AppContext';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   heroButtons: {
@@ -247,14 +248,24 @@ export function CourseCardNotFound() {
 
 export function CategoryCard({ category }) {
   const classes = useStyles();
-  const NavigateToSearchScreen = function () {
-    console.log(category);
+  const { dispatch } = useContext(AppContext);
+  const history = useHistory();
+  const NavigateToCategoryCousesListPage = function () {
+    dispatch({
+      type: 'update_selectedCategory',
+      payload: {
+        selectedSubCategory: category,
+      },
+    });
+    const temp = category.category.name.replaceAll(' ', '-');
+    const temp2 = category.name.replaceAll(' ', '-');
+    history.push(`/category/${temp}/${temp2}`);
   };
 
   return (
     <div
       className={classes.categoryCard}
-      onClick={() => NavigateToSearchScreen()}
+      onClick={() => NavigateToCategoryCousesListPage()}
     >
       <span>{category.name}</span>
     </div>

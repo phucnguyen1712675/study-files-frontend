@@ -5,6 +5,7 @@ import styles from '../Components/style.module/style.module.css';
 import { Col } from 'reactstrap';
 
 import Topbar from 'app/components/Topbar/Topbar';
+import Footer from 'app/components/Footer/Footer';
 import Sidebar from '../Components/SideBar/Sidebar';
 import AddUser from './Components/AddUser.js';
 import TableUsers from './Components/TableUsers.js';
@@ -63,6 +64,7 @@ export function AdminUsersPage() {
           <TableUsers />
         </div>
       </AppContext.Provider>
+      <Footer />
     </>
   );
 }

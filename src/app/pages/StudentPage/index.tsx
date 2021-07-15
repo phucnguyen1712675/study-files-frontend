@@ -1,101 +1,62 @@
 import { Container, TextField } from '@material-ui/core';
-import * as React from 'react';
+import React, { useContext } from 'react';
+import { Grid } from '@material-ui/core';
 import { Button, Col, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { WatchList } from './components/watchList';
-import AppContext from './context';
+import AppContext from 'app/AppContext';
 import reducer from './reducer';
 import { axiosInstance } from '../../../api/index';
 import { useEffect, useReducer } from 'react';
 import './studentPage.css';
 import { MyCourses } from './components/myCoursesList';
 import TopBar from '../../components/Topbar/Topbar';
+import { CourseCard } from 'app/components/Cards/Cards';
 
 export function StudentPage() {
-  const initialAppState = {
-    query: '',
-    items: [],
+  const { store, dispatch } = useContext(AppContext) as any;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+    },
   };
 
-  const [watchListStore, watchListDispatch] = useReducer(
-    reducer,
-    initialAppState,
-  );
-  const [myCoursesStore, myCoursesDispatch] = useReducer(
-    reducer,
-    initialAppState,
-  );
-
-  useEffect(function () {
-    async function loadWatchList() {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
-        },
-      };
-      const res = await axiosInstance.get(
-        `/student/watchList/${localStorage.studyFiles_user_id}`,
-        config,
-      );
-      watchListDispatch({
-        type: 'init',
+  const deleteCourseOfWatchList = async function (watchListId) {
+    // TODO vu gọi api ở đây, status ok thì mới update dispatch
+    const res = await axiosInstance.delete(
+      `/student/watchList/${watchListId}`,
+      config,
+    );
+    console.log(watchListId);
+    if (res.status === 204) {
+      dispatch({
+        type: 'delete_watch_list',
         payload: {
-          items: res.data,
-          query: '',
+          watchListId: watchListId,
         },
       });
+    } else {
+      alert('Đã xảy ra lỗi');
     }
+  };
 
-    async function loadMyCourses() {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
-        },
-      };
-      const res = await axiosInstance.get(
-        `/student/myCourses/${localStorage.studyFiles_user_id}`,
-        config,
-      );
-      myCoursesDispatch({
-        type: 'init',
+  // TODO vu delete myCourses
+  const deleteCourseOfMyCourse = async function (myCourseId) {
+    // TODO vu gọi api ở đây, status ok thì mới update dispatch
+    const res = await axiosInstance.delete(
+      `/student/myCourses/${myCourseId}`,
+      config,
+    );
+    console.log(myCourseId);
+    if (res.status === 204) {
+      dispatch({
+        type: 'delete_my_courses',
         payload: {
-          items: res.data,
-          query: '',
+          myCourseId: myCourseId,
         },
       });
-    }
-
-    loadWatchList();
-    loadMyCourses();
-  }, []);
-
-  const btnMyCoursesDelete_Clicked = async function (id) {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
-      },
-    };
-    try {
-      const res = await axiosInstance.delete(
-        `/student/myCourses/${id}`,
-        config,
-      );
-
-      if (res.status === 204) {
-        myCoursesDispatch({
-          type: 'delete',
-          payload: {
-            items: res.data,
-            query: '',
-          },
-        });
-      } else {
-        alert(res.data.message);
-      }
-    } catch (err) {
-      if (err.response) {
-        alert(err.response.data.message);
-      }
+    } else {
+      alert('Đã xảy ra lỗi');
     }
   };
 
@@ -143,7 +104,40 @@ export function StudentPage() {
               Sửa thông tin
             </Button>
             <Button style={{ marginTop: '10px' }}>Đổi mật khẩu</Button>
-            <div style={{ marginTop: '10px' }}>
+            {/* // TODO Vu lm thêm cho mycourse */}
+            <div>Khóa học đã thích</div>
+            <Grid item xs={9}>
+              <Grid container spacing={1}>
+                {store.watchList.map(course => (
+                  <div>
+                    <Grid item justifyContent="center" xs={4}>
+                      <CourseCard course={course} />
+                    </Grid>
+                    <Button onClick={() => deleteCourseOfWatchList(course.id)}>
+                      delete Watch list
+                    </Button>
+                  </div>
+                ))}
+              </Grid>
+            </Grid>
+
+            <div>Khóa học đã đăng kí</div>
+            <Grid item xs={9}>
+              <Grid container spacing={1}>
+                {store.myCourses.map(course => (
+                  <div>
+                    <Grid item justifyContent="center" xs={4}>
+                      <CourseCard course={course} />
+                    </Grid>
+                    <Button onClick={() => deleteCourseOfMyCourse(course.id)}>
+                      delete Watch list
+                    </Button>
+                  </div>
+                ))}
+              </Grid>
+            </Grid>
+
+            {/* <div style={{ marginTop: '10px' }}>
               <b>Khóa học yêu thích</b>
             </div>
             <AppContext.Provider value={{ watchListStore, watchListDispatch }}>
@@ -153,8 +147,8 @@ export function StudentPage() {
               <b>Khóa học đã đăng kí</b>
             </div>
             <AppContext.Provider value={{ myCoursesStore, myCoursesDispatch }}>
-              <MyCourses deleteFunction={btnMyCoursesDelete_Clicked} />
-            </AppContext.Provider>
+              <MyCourses />
+            </AppContext.Provider> */}
           </Col>
         </Row>
       </Container>
