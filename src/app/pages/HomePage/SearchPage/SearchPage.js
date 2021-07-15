@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import AppContext from '../../../AppContext';
 import { axiosGuestInstance } from '../../../../api/guest';
 import { withStyles } from '@material-ui/core/styles';

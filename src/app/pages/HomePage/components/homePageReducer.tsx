@@ -26,7 +26,7 @@ export default function reducer(state, action) {
       return {
         ...state,
         watchList: state.watchList.filter(
-          course => course.id !== action.payload.courseId,
+          watchList => watchList.watchListId !== action.payload.watchListId,
         ),
       };
     case 'add_my_courses':
@@ -38,7 +38,7 @@ export default function reducer(state, action) {
       return {
         ...state,
         myCourses: state.myCourses.filter(
-          course => course.id !== action.playload.courseId,
+          myCourse => myCourse.myCourseId !== action.payload.myCourseId,
         ),
       };
     case 'update_query':

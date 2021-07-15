@@ -65,12 +65,12 @@ export function App() {
       var watchList: any[] = [];
       var myCourses: any[] = [];
       if (`${localStorage.studyFiles_user_role}` === 'student') {
-        // TODO vu get watchlist and myCourses, watchList
         const config = {
           headers: {
             Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
           },
         };
+        //WatchList
         const watchListRes = await axiosGuestInstance.get(
           `/student/watchList/${localStorage.studyFiles_user_id}`,
           config,
@@ -79,17 +79,23 @@ export function App() {
           const coursesRes = await axiosGuestInstance.get(
             `/courses/${item.courseId}`,
           );
-          watchList = [...watchList, coursesRes.data];
+          const course = { ...coursesRes.data, watchListId: item.id };
+          watchList = [...watchList, course];
         }
+
+        //MyCourse
         const myCoursesRes = await axiosGuestInstance.get(
           `/student/myCourses/${localStorage.studyFiles_user_id}`,
           config,
         );
+        // eslint-disable-next-line
         for (var item of myCoursesRes.data) {
           const coursesRes = await axiosGuestInstance.get(
             `/courses/${item.courseId}`,
           );
-          myCourses = [...myCourses, coursesRes.data];
+          const course = { ...coursesRes.data, myCourseId: item.id };
+          myCourses = [...myCourses, course];
+          console.log(myCourses);
         }
       }
 

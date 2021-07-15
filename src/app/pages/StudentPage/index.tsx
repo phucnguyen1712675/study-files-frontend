@@ -3,15 +3,12 @@ import React, { useContext } from 'react';
 import { Grid } from '@material-ui/core';
 import { Button, Col, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
-import { WatchList } from './components/watchList';
 import AppContext from 'app/AppContext';
-import reducer from './reducer';
 import { axiosInstance } from '../../../api/index';
-import { useEffect, useReducer } from 'react';
 import './studentPage.css';
-import { MyCourses } from './components/myCoursesList';
 import TopBar from '../../components/Topbar/Topbar';
 import { CourseCard } from 'app/components/Cards/Cards';
+import { useState } from 'react';
 
 export function StudentPage() {
   const { store, dispatch } = useContext(AppContext) as any;
@@ -22,7 +19,6 @@ export function StudentPage() {
   };
 
   const deleteCourseOfWatchList = async function (watchListId) {
-    // TODO vu gọi api ở đây, status ok thì mới update dispatch
     const res = await axiosInstance.delete(
       `/student/watchList/${watchListId}`,
       config,
@@ -40,9 +36,7 @@ export function StudentPage() {
     }
   };
 
-  // TODO vu delete myCourses
   const deleteCourseOfMyCourse = async function (myCourseId) {
-    // TODO vu gọi api ở đây, status ok thì mới update dispatch
     const res = await axiosInstance.delete(
       `/student/myCourses/${myCourseId}`,
       config,
@@ -57,6 +51,39 @@ export function StudentPage() {
       });
     } else {
       alert('Đã xảy ra lỗi');
+    }
+  };
+
+  const [nameValue, setNameValue] = useState(localStorage.studyFiles_user_name);
+  const [emailValue, setEmailValue] = useState(
+    localStorage.studyFiles_user_email,
+  );
+
+  const nameHandleChange = e => {
+    setNameValue(e.target.value);
+    console.log(`${nameValue}`);
+  };
+
+  const emailHandleChange = e => {
+    setEmailValue(e.target.value);
+    console.log(`${emailValue}`);
+  };
+
+  const updateDetailStudent = async function () {
+    console.log(nameValue);
+    console.log(emailValue);
+    const data = {
+      name: nameValue,
+      email: emailValue,
+    };
+    const res = await axiosInstance.patch(
+      `/admin/users/${localStorage.studyFiles_user_id}`,
+      data,
+      config,
+    );
+    if (res.status === 200) {
+      localStorage.studyFiles_user_name = data.name;
+      localStorage.studyFiles_user_email = data.email;
     }
   };
 
@@ -83,6 +110,9 @@ export function StudentPage() {
                 }}
                 fullWidth={true}
                 defaultValue={localStorage.studyFiles_user_name}
+                variant="outlined"
+                value={nameValue}
+                onChange={nameHandleChange}
               ></TextField>
             </div>
             <div>
@@ -98,14 +128,20 @@ export function StudentPage() {
                 }}
                 fullWidth={true}
                 defaultValue={localStorage.studyFiles_user_email}
+                variant="outlined"
+                value={emailValue}
+                onChange={emailHandleChange}
               ></TextField>
             </div>
-            <Button style={{ marginTop: '10px', marginRight: '10px' }}>
+            <Button
+              style={{ marginTop: '10px', marginRight: '10px' }}
+              onClick={updateDetailStudent}
+            >
               Sửa thông tin
             </Button>
             <Button style={{ marginTop: '10px' }}>Đổi mật khẩu</Button>
             {/* // TODO Vu lm thêm cho mycourse */}
-            <div>Khóa học đã thích</div>
+            <div style={{ fontSize: '22px' }}>Khóa học đã thích</div>
             <Grid item xs={9}>
               <Grid container spacing={1}>
                 {store.watchList.map(course => (
@@ -113,7 +149,12 @@ export function StudentPage() {
                     <Grid item justifyContent="center" xs={4}>
                       <CourseCard course={course} />
                     </Grid>
-                    <Button onClick={() => deleteCourseOfWatchList(course.id)}>
+                    <Button
+                      onClick={() => {
+                        console.log(course.watchListId);
+                        deleteCourseOfWatchList(course.watchListId);
+                      }}
+                    >
                       delete Watch list
                     </Button>
                   </div>
@@ -129,26 +170,18 @@ export function StudentPage() {
                     <Grid item justifyContent="center" xs={4}>
                       <CourseCard course={course} />
                     </Grid>
-                    <Button onClick={() => deleteCourseOfMyCourse(course.id)}>
-                      delete Watch list
+                    <Button
+                      onClick={() => {
+                        console.log(course.myCourseId);
+                        deleteCourseOfMyCourse(course.myCourseId);
+                      }}
+                    >
+                      delete My Course
                     </Button>
                   </div>
                 ))}
               </Grid>
             </Grid>
-
-            {/* <div style={{ marginTop: '10px' }}>
-              <b>Khóa học yêu thích</b>
-            </div>
-            <AppContext.Provider value={{ watchListStore, watchListDispatch }}>
-              <WatchList />
-            </AppContext.Provider>
-            <div style={{ marginTop: '10px' }}>
-              <b>Khóa học đã đăng kí</b>
-            </div>
-            <AppContext.Provider value={{ myCoursesStore, myCoursesDispatch }}>
-              <MyCourses />
-            </AppContext.Provider> */}
           </Col>
         </Row>
       </Container>
