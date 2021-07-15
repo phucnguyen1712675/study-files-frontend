@@ -51,7 +51,7 @@ export default function Topbar({ initQuery }) {
   // TODO navigate to student/teacher/page
   const NavigateToUserPage = function () {
     if (localStorage.studyFiles_user_role === 'student') {
-      // TODO Vu navigate to student Page
+      history.push('/student');
     } else if (localStorage.studyFiles_user_role === 'teacher') {
       // TODO Phuc navigate to teacher page
     } else if (localStorage.studyFiles_user_role === 'admin') {
@@ -108,7 +108,7 @@ export default function Topbar({ initQuery }) {
       });
       const temp = categoryName.replaceAll(' ', '-');
       const temp2 = subCategory.name.replaceAll(' ', '-');
-      history.push(`/${temp}/${temp2}`);
+      history.push(`/category/${temp}/${temp2}`);
     }
     setMenuPosition(null);
   };

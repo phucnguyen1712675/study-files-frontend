@@ -62,6 +62,26 @@ export function App() {
         );
         latestCourses = [...latestCourses, ...coursesRes.data.results];
       }
+      var watchList: any[] = [];
+      var myCourses: any[] = [];
+      if (`${localStorage.studyFiles_user_role}` === 'student') {
+        // TODO vu get watchlist and myCourses, watchList
+        const config = {
+          headers: {
+            Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+          },
+        };
+        const res = await axiosGuestInstance.get(
+          `/student/watchList/${localStorage.studyFiles_user_id}`,
+          config,
+        );
+        for (var item of res.data) {
+          const coursesRes = await axiosGuestInstance.get(
+            `/courses/${item.courseId}`,
+          );
+          watchList = [...watchList, coursesRes.data];
+        }
+      }
 
       dispatch({
         type: 'init',
@@ -72,6 +92,8 @@ export function App() {
           categories: categoriesRes.data,
           subCategories: subCategoriesRes.data,
           latestCourses: latestCourses,
+          watchList: watchList,
+          myCourses: myCourses,
         },
       });
     }
@@ -87,44 +109,44 @@ export function App() {
       >
         <meta name="description" content="Study-files application" />
       </Helmet>
-      <Switch>
-        <AppContext.Provider value={{ store, dispatch }}>
+      <AppContext.Provider value={{ store, dispatch }}>
+        <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/search" component={SearchPage} />
           <Route
             exact
-            path="/:category/:subCategory"
+            path="/category/:category/:subCategory"
             component={CategoryCoursesListPage}
           />
-        </AppContext.Provider>
 
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/register" component={RegisterPage} />
+          <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/register" component={RegisterPage} />
 
-        {/* admin routes */}
-        <PrivateRoute exact path="/admin/users">
-          <AdminUsersPage />
-        </PrivateRoute>
-        <PrivateRoute exact path="/admin/courses">
-          <AdminCoursesPage />
-        </PrivateRoute>
-        <PrivateRoute exact path="/admin/mainCategories">
-          <AdminMainCategoriesPage />
-        </PrivateRoute>
-        <PrivateRoute exact path="/admin/subCategories">
-          <AdminSubCategoriesPage />
-        </PrivateRoute>
-        <PrivateRoute exact path="/admin/updatePassword">
-          <AdminUpdatePasswordPage />
-        </PrivateRoute>
-        {/* end admin routes */}
+          {/* admin routes */}
+          <PrivateRoute exact path="/admin/users">
+            <AdminUsersPage />
+          </PrivateRoute>
+          <PrivateRoute exact path="/admin/courses">
+            <AdminCoursesPage />
+          </PrivateRoute>
+          <PrivateRoute exact path="/admin/mainCategories">
+            <AdminMainCategoriesPage />
+          </PrivateRoute>
+          <PrivateRoute exact path="/admin/subCategories">
+            <AdminSubCategoriesPage />
+          </PrivateRoute>
+          <PrivateRoute exact path="/admin/updatePassword">
+            <AdminUpdatePasswordPage />
+          </PrivateRoute>
+          {/* end admin routes */}
 
-        <Route exact path="/teacher" component={TeacherPage} />
-        <Route exact path="/student" component={StudentPage} />
-        {/* <Route exact path="/student"  component={StudentPage}/> */}
+          <Route exact path="/teacher" component={TeacherPage} />
+          <Route exact path="/student" component={StudentPage} />
+          {/* <Route exact path="/student"  component={StudentPage}/> */}
 
-        <Route component={NotFoundPage} />
-      </Switch>
+          <Route component={NotFoundPage} />
+        </Switch>
+      </AppContext.Provider>
       <GlobalStyle />
     </BrowserRouter>
   );

@@ -2,11 +2,11 @@ import React from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css';
 import styles from '../Components/style.module/style.module.css';
-import { Col } from 'reactstrap';
 import { useForm } from 'react-hook-form';
 import { TextField, Typography, Container, Button } from '@material-ui/core/';
 import useStyles from '../Components/style.module/UseStyles.js';
 import Topbar from 'app/components/Topbar/Topbar';
+import Footer from 'app/components/Footer/Footer';
 import Sidebar from '../Components/SideBar/Sidebar';
 import { axiosInstance } from '../../../../api/admin';
 
@@ -95,6 +95,7 @@ export function AdminUpdatePasswordPage() {
           </div>
         </Container>
       </div>
+      <Footer />
     </>
   );
 }

@@ -1,61 +1,78 @@
 import { Container, TextField } from '@material-ui/core';
-import * as React from 'react';
+import React, { useContext } from 'react';
+import { Grid } from '@material-ui/core';
 import { Button, Col, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import background from '../../../assets/background.jpg';
 import { WatchList } from './components/watchList';
-import AppContext from './context';
+import AppContext from 'app/AppContext';
 import reducer from './reducer';
 import { axiosInstance } from '../../../api/index';
 import { useEffect, useReducer } from 'react';
 import './studentPage.css';
 import { MyCourses } from './components/myCoursesList';
+import { CourseCard } from 'app/components/Cards/Cards';
 
 export function StudentPage() {
-  const initialAppState = {
-    query: '',
-    items: [],
+  const { store, dispatch } = useContext(AppContext) as any;
+
+  // const initialAppState = {
+  //   query: '',
+  //   items: [],
+  // };
+  //
+  // const [watchListStore, watchListDispatch] = useReducer(
+  //   reducer,
+  //   initialAppState,
+  // );
+  // const [myCoursesStore, myCoursesDispatch] = useReducer(
+  //   reducer,
+  //   initialAppState,
+  // );
+
+  // useEffect(function () {
+  //   async function loadWatchList() {
+  //     const res = await axiosInstance.get(
+  //       `/student/watchList/60bf7ebd84719069503bd29a`,
+  //     );
+  //     watchListDispatch({
+  //       type: 'init',
+  //       payload: {
+  //         items: res.data,
+  //         query: '',
+  //       },
+  //     });
+  //   }
+
+  //   async function loadMyCourses() {
+  //     const res = await axiosInstance.get(
+  //       `/student/myCourses/60bf7ebd84719069503bd29a`,
+  //     );
+  //     myCoursesDispatch({
+  //       type: 'init',
+  //       payload: {
+  //         items: res.data,
+  //         query: '',
+  //       },
+  //     });
+  //   }
+
+  //   loadWatchList();
+  //   loadMyCourses();
+  // }, []);
+
+  const deleteCourseOfWatchList = function (courseId) {
+    // TODO vu gọi api ở đây, status ok thì mới update dispatch
+    console.log(courseId);
+    dispatch({
+      type: 'delete_watch_list',
+      payload: {
+        courseId: courseId,
+      },
+    });
   };
 
-  const [watchListStore, watchListDispatch] = useReducer(
-    reducer,
-    initialAppState,
-  );
-  const [myCoursesStore, myCoursesDispatch] = useReducer(
-    reducer,
-    initialAppState,
-  );
-
-  useEffect(function () {
-    async function loadWatchList() {
-      const res = await axiosInstance.get(
-        `/student/watchList/60bf7ebd84719069503bd29a`,
-      );
-      watchListDispatch({
-        type: 'init',
-        payload: {
-          items: res.data,
-          query: '',
-        },
-      });
-    }
-
-    async function loadMyCourses() {
-      const res = await axiosInstance.get(
-        `/student/myCourses/60bf7ebd84719069503bd29a`,
-      );
-      myCoursesDispatch({
-        type: 'init',
-        payload: {
-          items: res.data,
-          query: '',
-        },
-      });
-    }
-
-    loadWatchList();
-    loadMyCourses();
-  }, []);
+  // TODO vu delete myCourses
 
   return (
     <>
@@ -123,7 +140,23 @@ export function StudentPage() {
               ></TextField>
             </div>
             <Button style={{ marginTop: '10px' }}>Đổi mật khẩu</Button>
-            <div style={{ marginTop: '10px' }}>
+            {/* // TODO Vu lm thêm cho mycourse */}
+            <Grid item xs={9}>
+              <Grid container spacing={1}>
+                {store.watchList.map(course => (
+                  <div>
+                    <Grid item justifyContent="center" xs={4}>
+                      <CourseCard course={course} />
+                    </Grid>
+                    <Button onClick={() => deleteCourseOfWatchList(course.id)}>
+                      delete Watch list
+                    </Button>
+                  </div>
+                ))}
+              </Grid>
+            </Grid>
+
+            {/* <div style={{ marginTop: '10px' }}>
               <b>Khóa học yêu thích</b>
             </div>
             <AppContext.Provider value={{ watchListStore, watchListDispatch }}>
@@ -134,7 +167,7 @@ export function StudentPage() {
             </div>
             <AppContext.Provider value={{ myCoursesStore, myCoursesDispatch }}>
               <MyCourses />
-            </AppContext.Provider>
+            </AppContext.Provider> */}
           </Col>
         </Row>
       </Container>
