@@ -15,61 +15,49 @@ import { CourseCard } from 'app/components/Cards/Cards';
 
 export function StudentPage() {
   const { store, dispatch } = useContext(AppContext) as any;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+    },
+  };
 
-  // const initialAppState = {
-  //   query: '',
-  //   items: [],
-  // };
-  //
-  // const [watchListStore, watchListDispatch] = useReducer(
-  //   reducer,
-  //   initialAppState,
-  // );
-  // const [myCoursesStore, myCoursesDispatch] = useReducer(
-  //   reducer,
-  //   initialAppState,
-  // );
-
-  // useEffect(function () {
-  //   async function loadWatchList() {
-  //     const res = await axiosInstance.get(
-  //       `/student/watchList/60bf7ebd84719069503bd29a`,
-  //     );
-  //     watchListDispatch({
-  //       type: 'init',
-  //       payload: {
-  //         items: res.data,
-  //         query: '',
-  //       },
-  //     });
-  //   }
-
-  //   async function loadMyCourses() {
-  //     const res = await axiosInstance.get(
-  //       `/student/myCourses/60bf7ebd84719069503bd29a`,
-  //     );
-  //     myCoursesDispatch({
-  //       type: 'init',
-  //       payload: {
-  //         items: res.data,
-  //         query: '',
-  //       },
-  //     });
-  //   }
-
-  //   loadWatchList();
-  //   loadMyCourses();
-  // }, []);
-
-  const deleteCourseOfWatchList = function (courseId) {
+  const deleteCourseOfWatchList = async function (watchListId) {
     // TODO vu gọi api ở đây, status ok thì mới update dispatch
-    console.log(courseId);
-    dispatch({
-      type: 'delete_watch_list',
-      payload: {
-        courseId: courseId,
-      },
-    });
+    const res = await axiosInstance.delete(
+      `/student/watchList/${watchListId}`,
+      config,
+    );
+    console.log(watchListId);
+    if (res.status === 204) {
+      dispatch({
+        type: 'delete_watch_list',
+        payload: {
+          watchListId: watchListId,
+        },
+      });
+    } else {
+      alert('Đã xảy ra lỗi');
+    }
+  };
+
+  // TODO vu delete myCourses
+  const deleteCourseOfMyCourse = async function (myCourseId) {
+    // TODO vu gọi api ở đây, status ok thì mới update dispatch
+    const res = await axiosInstance.delete(
+      `/student/myCourses/${myCourseId}`,
+      config,
+    );
+    console.log(myCourseId);
+    if (res.status === 204) {
+      dispatch({
+        type: 'delete_my_courses',
+        payload: {
+          myCourseId: myCourseId,
+        },
+      });
+    } else {
+      alert('Đã xảy ra lỗi');
+    }
   };
 
   // TODO vu delete myCourses
