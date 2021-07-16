@@ -9,6 +9,7 @@ import './studentPage.css';
 import TopBar from '../../components/Topbar/Topbar';
 import { CourseCard } from 'app/components/Cards/Cards';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 export function StudentPage() {
   const { store, dispatch } = useContext(AppContext) as any;
@@ -87,6 +88,12 @@ export function StudentPage() {
     }
   };
 
+  const history = useHistory();
+
+  const NavigateToUpdatePasswordPage = function () {
+    history.push('/student/updatePassword');
+  };
+
   return (
     <>
       <Helmet>
@@ -139,7 +146,12 @@ export function StudentPage() {
             >
               Sửa thông tin
             </Button>
-            <Button style={{ marginTop: '10px' }}>Đổi mật khẩu</Button>
+            <Button
+              style={{ marginTop: '10px' }}
+              onClick={() => NavigateToUpdatePasswordPage()}
+            >
+              Đổi mật khẩu
+            </Button>
             {/* // TODO Vu lm thêm cho mycourse */}
             <div style={{ fontSize: '22px' }}>Khóa học đã thích</div>
             <Grid item xs={9}>
