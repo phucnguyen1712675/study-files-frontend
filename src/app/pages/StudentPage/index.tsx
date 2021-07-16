@@ -16,52 +16,7 @@ import { CourseCard } from 'app/components/Cards/Cards';
 export function StudentPage() {
   const { store, dispatch } = useContext(AppContext) as any;
 
-  // const initialAppState = {
-  //   query: '',
-  //   items: [],
-  // };
-  //
-  // const [watchListStore, watchListDispatch] = useReducer(
-  //   reducer,
-  //   initialAppState,
-  // );
-  // const [myCoursesStore, myCoursesDispatch] = useReducer(
-  //   reducer,
-  //   initialAppState,
-  // );
-
-  // useEffect(function () {
-  //   async function loadWatchList() {
-  //     const res = await axiosInstance.get(
-  //       `/student/watchList/60bf7ebd84719069503bd29a`,
-  //     );
-  //     watchListDispatch({
-  //       type: 'init',
-  //       payload: {
-  //         items: res.data,
-  //         query: '',
-  //       },
-  //     });
-  //   }
-
-  //   async function loadMyCourses() {
-  //     const res = await axiosInstance.get(
-  //       `/student/myCourses/60bf7ebd84719069503bd29a`,
-  //     );
-  //     myCoursesDispatch({
-  //       type: 'init',
-  //       payload: {
-  //         items: res.data,
-  //         query: '',
-  //       },
-  //     });
-  //   }
-
-  //   loadWatchList();
-  //   loadMyCourses();
-  // }, []);
-
-  const deleteCourseOfWatchList = function (courseId) {
+  const deleteCourseOfWatchList = function (courseId, watchListId) {
     // TODO vu gọi api ở đây, status ok thì mới update dispatch
     console.log(courseId);
     dispatch({
@@ -148,26 +103,17 @@ export function StudentPage() {
                     <Grid item justifyContent="center" xs={4}>
                       <CourseCard course={course} />
                     </Grid>
-                    <Button onClick={() => deleteCourseOfWatchList(course.id)}>
+                    <Button
+                      onClick={() =>
+                        deleteCourseOfWatchList(course.id, course.watchListId)
+                      }
+                    >
                       delete Watch list
                     </Button>
                   </div>
                 ))}
               </Grid>
             </Grid>
-
-            {/* <div style={{ marginTop: '10px' }}>
-              <b>Khóa học yêu thích</b>
-            </div>
-            <AppContext.Provider value={{ watchListStore, watchListDispatch }}>
-              <WatchList />
-            </AppContext.Provider>
-            <div style={{ marginTop: '10px' }}>
-              <b>Khóa học đã đăng kí</b>
-            </div>
-            <AppContext.Provider value={{ myCoursesStore, myCoursesDispatch }}>
-              <MyCourses />
-            </AppContext.Provider> */}
           </Col>
         </Row>
       </Container>

@@ -27,6 +27,7 @@ import {
   CategoryCoursesListPage,
 } from './pages/HomePage/Loadable';
 
+import { CourseDetailPage } from './pages/CourseDetailPage/Loadable';
 import { TeacherPage } from './pages/TeacherPage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
@@ -79,7 +80,8 @@ export function App() {
           const coursesRes = await axiosGuestInstance.get(
             `/courses/${item.courseId}`,
           );
-          watchList = [...watchList, coursesRes.data];
+          const course = { ...coursesRes.data, watchListId: item.id };
+          watchList = [...watchList, course];
         }
       }
 
@@ -118,6 +120,8 @@ export function App() {
             path="/category/:category/:subCategory"
             component={CategoryCoursesListPage}
           />
+
+          <Route exact path="/course/:name" component={CourseDetailPage} />
 
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />

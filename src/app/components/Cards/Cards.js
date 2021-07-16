@@ -77,6 +77,7 @@ const useStyles = makeStyles(theme => ({
 
 export function CourseCard({ course }) {
   const classes = useStyles();
+  const history = useHistory();
   const { store } = useContext(AppContext);
 
   const FeeWidget = function () {
@@ -190,7 +191,7 @@ export function CourseCard({ course }) {
 
   const NavigateToDetailCourses = function () {
     // TODO navigate to detail course
-    console.log(course.id);
+    history.push(`/course/${course.name}`, { course: course });
   };
 
   return (

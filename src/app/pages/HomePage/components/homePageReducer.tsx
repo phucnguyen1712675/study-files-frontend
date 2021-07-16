@@ -17,30 +17,30 @@ export default function reducer(state, action) {
         watchList: action.payload.watchList,
         myCourses: action.payload.myCourses,
       };
-    case 'add_watch_list':
-      return {
-        ...state,
-        watchList: [...state.watchList, action.payload.course],
-      };
-    case 'delete_watch_list':
-      return {
-        ...state,
-        watchList: state.watchList.filter(
-          course => course.id !== action.payload.courseId,
-        ),
-      };
-    case 'add_my_courses':
-      return {
-        ...state,
-        myCourses: [...state.myCourses, action.payload.course],
-      };
-    case 'delete_my_courses':
-      return {
-        ...state,
-        myCourses: state.myCourses.filter(
-          course => course.id !== action.playload.courseId,
-        ),
-      };
+    // case 'add_watch_list':
+    //   return {
+    //     ...state,
+    //     watchList: [...state.watchList, action.payload.course],
+    //   };
+    // case 'delete_watch_list':
+    //   return {
+    //     ...state,
+    //     watchList: state.watchList.filter(
+    //       course => course.id !== action.payload.courseId,
+    //     ),
+    //   };
+    // case 'add_my_courses':
+    //   return {
+    //     ...state,
+    //     myCourses: [...state.myCourses, action.payload.course],
+    //   };
+    // case 'delete_my_courses':
+    //   return {
+    //     ...state,
+    //     myCourses: state.myCourses.filter(
+    //       course => course.id !== action.playload.courseId,
+    //     ),
+    //   };
     case 'update_query':
       return {
         ...state,

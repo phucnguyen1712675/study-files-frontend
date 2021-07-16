@@ -37,7 +37,6 @@ export default function Topbar({ initQuery }) {
     return location.pathname.includes(path);
   };
 
-  // TODO xét trường hợp chọn category nữa
   const NavigateToSearchScreen = function () {
     dispatch({
       type: 'update_query',
