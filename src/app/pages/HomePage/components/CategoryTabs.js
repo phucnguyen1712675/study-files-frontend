@@ -13,7 +13,11 @@ export default function CategoryTabs({ category }) {
         {store.subCategories
           .filter(subCategory => subCategory.categoryId === category.id)
           .map(subCategory => (
-            <SubCategoryTabs subCategory={subCategory} isNavigate={true} />
+            <SubCategoryTabs
+              subCategory={subCategory}
+              isNavigate={true}
+              key={subCategory.id}
+            />
           ))}
       </div>
     </>

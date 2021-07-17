@@ -24,6 +24,15 @@ export default function Topbar({ initQuery }) {
     delete localStorage.studyFiles_user_id;
     delete localStorage.studyFiles_user_role;
     delete localStorage.studyFiles_user_name;
+    dispatch({
+      type: 'update_user_id',
+      payload: {
+        userId: '',
+      },
+    });
+    dispatch({
+      type: 'clear_store',
+    });
     history.push('/login');
   };
 
@@ -38,13 +47,7 @@ export default function Topbar({ initQuery }) {
   };
 
   const NavigateToSearchScreen = function () {
-    dispatch({
-      type: 'update_query',
-      payload: {
-        query: query,
-      },
-    });
-    history.push(`/search?query=${query}`);
+    history.push(`/search?query=${query}`, { query: query });
   };
 
   // TODO navigate to student/teacher/page
@@ -99,15 +102,11 @@ export default function Topbar({ initQuery }) {
 
   const handleCategoryClick = function (event, categoryName, subCategory) {
     if (subCategory) {
-      dispatch({
-        type: 'update_selectedCategory',
-        payload: {
-          selectedSubCategory: subCategory,
-        },
-      });
       const temp = categoryName.replaceAll(' ', '-');
       const temp2 = subCategory.name.replaceAll(' ', '-');
-      history.push(`/category/${temp}/${temp2}`);
+      history.push(`/category/${temp}/${temp2}`, {
+        selectedSubCategory: subCategory,
+      });
     }
     setMenuPosition(null);
   };
@@ -153,6 +152,7 @@ export default function Topbar({ initQuery }) {
         >
           {store.categories.map(category => (
             <NestedMenuItem
+              key={category.id}
               label={CategoryMenuItemWidget(category)}
               parentMenuOpen={!!menuPosition}
             >
@@ -160,6 +160,7 @@ export default function Topbar({ initQuery }) {
                 .filter(subCategory => subCategory.categoryId === category.id)
                 .map(subCategory => (
                   <MenuItem
+                    key={subCategory.id}
                     onClick={e =>
                       handleCategoryClick(e, category.name, subCategory)
                     }

@@ -18,6 +18,8 @@ import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { axiosAuthInstance } from '../../../../api/auth';
 import TopBar from '../../../components/Topbar/Topbar';
+import AppContext from 'app/AppContext';
+import { useContext } from 'react';
 
 function Copyright() {
   return (
@@ -53,6 +55,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function SignUp() {
+  const { dispatch } = useContext(AppContext) as any;
   const classes = useStyles();
   const history = useHistory();
   const {
@@ -73,9 +76,12 @@ export default function SignUp() {
         localStorage.studyFiles_user_id = res.data.user.id;
         localStorage.studyFiles_user_role = res.data.user.role;
         localStorage.studyFiles_user_name = res.data.user.name;
-        console.log(localStorage.studyFiles_user_accessToken);
-        console.log(localStorage.studyFiles_user_role);
-
+        dispatch({
+          type: 'update_user_id',
+          payload: {
+            userId: res.data.user.id,
+          },
+        });
         if (localStorage.studyFiles_user_role === 'admin') {
           history.push('/admin');
         } else {

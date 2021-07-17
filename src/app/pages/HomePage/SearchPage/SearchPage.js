@@ -59,6 +59,8 @@ const AccordionDetails = withStyles(theme => ({
 
 export default function SearchPage() {
   const { store } = useContext(AppContext);
+  const location = useLocation();
+  const query = location.state.query;
   const [expanded, setExpanded] = useState(false);
   const [smallExpanded, setSmallExpanded] = useState(false);
   const [sort, setSort] = useState('');
@@ -69,23 +71,8 @@ export default function SearchPage() {
   const [totalCourses, setTotalCourses] = useState(0);
   const [courses, setCourses] = useState([]);
 
-  useEffect(
-    function () {
-      async function LoadApp() {
-        const coursesRes = await axiosGuestInstance.get(
-          `/courses?query=${store.query}&limit=${limit}`,
-        );
-        setTotalCourses(coursesRes.data.totalResults);
-        setTotalPages(coursesRes.data.totalPages);
-        setCourses(coursesRes.data.results);
-      }
-      LoadApp();
-    },
-    [limit, store.query, store.selectedSubCategory.id],
-  );
-
   const UrlRequestAPI = function (_limit, _page, _sort, _category) {
-    var strRequest = `/courses?query=${store.query}&limit=${_limit}&page=${_page}`;
+    var strRequest = `/courses?query=${query}&limit=${_limit}&page=${_page}`;
     if (_sort !== '') {
       var sortOption = 'desc';
       if (_sort === 'fee') sortOption = 'asc';
@@ -97,24 +84,27 @@ export default function SearchPage() {
     return strRequest;
   };
 
+  useEffect(
+    function () {
+      async function LoadApp() {
+        const requestStr = UrlRequestAPI(limit, page, sort, category);
+        const coursesRes = await axiosGuestInstance.get(requestStr);
+        setTotalCourses(coursesRes.data.totalResults);
+        setTotalPages(coursesRes.data.totalPages);
+        setCourses(coursesRes.data.results);
+      }
+      LoadApp();
+    },
+    [limit, query, page, limit, sort, category],
+  );
+
   const handlePageChange = async function (event, value) {
     setPage(value);
-    const strRequest = UrlRequestAPI(limit, value, sort, category);
-    console.log(strRequest);
-    const coursesRes = await axiosGuestInstance.get(strRequest);
-    setTotalCourses(coursesRes.data.totalResults);
-    setTotalPages(coursesRes.data.totalPages);
-    setCourses(coursesRes.data.results);
   };
 
   const handleLimitChange = async function (e) {
     setLimit(e.target.value);
     setPage(1);
-    const strRequest = UrlRequestAPI(e.target.value, page, sort, category);
-    const coursesRes = await axiosGuestInstance.get(strRequest);
-    setTotalCourses(coursesRes.data.totalResults);
-    setTotalPages(coursesRes.data.totalPages);
-    setCourses(coursesRes.data.results);
   };
 
   const handleExpandedChange = panel => (event, isExpanded) => {
@@ -128,22 +118,11 @@ export default function SearchPage() {
   const handleSortChange = async function (event) {
     setSort(event.target.value);
     setPage(1);
-    const strRequest = UrlRequestAPI(limit, page, event.target.value, category);
-    console.log(strRequest);
-    const coursesRes = await axiosGuestInstance.get(strRequest);
-    setTotalCourses(coursesRes.data.totalResults);
-    setTotalPages(coursesRes.data.totalPages);
-    setCourses(coursesRes.data.results);
   };
 
   const handleCategoryChange = async function (event) {
     setCategory(event.target.value);
     setPage(1);
-    const strRequest = UrlRequestAPI(limit, page, sort, event.target.value);
-    const coursesRes = await axiosGuestInstance.get(strRequest);
-    setTotalCourses(coursesRes.data.totalResults);
-    setTotalPages(coursesRes.data.totalPages);
-    setCourses(coursesRes.data.results);
   };
 
   const CategoryRadioGroupWidget = function () {
@@ -151,6 +130,7 @@ export default function SearchPage() {
       <div>
         {store.categories.map(category => (
           <Accordion
+            key={category.id}
             expanded={smallExpanded === `panel${category.id}`}
             onChange={handleSmallExpandedChange(`panel${category.id}`)}
           >
@@ -167,6 +147,7 @@ export default function SearchPage() {
                   .filter(subCategory => subCategory.categoryId === category.id)
                   .map(subCategory => (
                     <FormControlLabel
+                      key={subCategory.id}
                       value={subCategory.id}
                       control={<Radio color="primary" />}
                       label={subCategory.name}
@@ -273,6 +254,7 @@ export default function SearchPage() {
                 {courses.map(course => (
                   <Grid item justifyContent="center" xs={4}>
                     <CourseCard
+                      key={course.id}
                       course={course}
                       style={{ margin: '0px 20px' }}
                     />
@@ -359,7 +341,7 @@ export default function SearchPage() {
 
   return (
     <>
-      <TopBar initQuery={store.query} />
+      <TopBar initQuery={query} />
       <h1 style={{ margin: '20px 40px 5px', color: '#525252' }}>
         {totalCourses} courses for "{store.query}"
       </h1>

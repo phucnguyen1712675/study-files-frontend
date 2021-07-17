@@ -1,13 +1,36 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { CardContent, CardMedia, makeStyles } from '@material-ui/core';
-import { EventNoteSharp } from '@material-ui/icons';
+import { useHistory } from 'react-router-dom';
+import ShowMore from 'react-show-more-list';
+import ShowMoreText from 'react-show-more-text';
+import DOMPurify from 'dompurify';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import {
+  Button,
+  CardContent,
+  CardMedia,
+  makeStyles,
+  Avatar,
+} from '@material-ui/core';
+import {
+  EventNoteSharp,
+  NewReleases,
+  FavoriteBorder,
+  Favorite,
+  AddShoppingCart,
+  ShoppingCart,
+  AllInboxSharp,
+  LastPageSharp,
+} from '@material-ui/icons';
+import Carousel, { slidesToShowPlugin } from '@brainhubeu/react-carousel';
+import '@brainhubeu/react-carousel/lib/style.css';
 import ReactStars from 'react-rating-stars-component';
 import AppContext from 'app/AppContext';
+import { axiosGuestInstance } from '../../../api/guest';
 import TopBar from '../../components/Topbar/Topbar';
 import Footer from '../../components/Footer/Footer';
 
-import { CourseCard, CategoryCard } from '../../components/Cards/Cards';
+import { CourseCard, RatingCard } from '../../components/Cards/Cards';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -54,39 +77,274 @@ const useStyles = makeStyles(theme => ({
     color: '#F9BA00',
     marginRight: '8px',
   },
+  shadowCard: {
+    width: '70%',
+    borderRadius: '3px',
+    border: '0.3px solid #cecece',
+    padding: '40px',
+    marginTop: '50px',
+    WebkitBoxShadow: ' 5px -3px 7px -7px black',
+    MozBoxShadow: ' 5px -3px 7px -7px black',
+    boxShadow: ' 5px -3px 7px -7px black',
+  },
 }));
 
 export default function CourseDetailPage() {
-  const { store } = useContext(AppContext);
+  const { store, dispatch } = useContext(AppContext);
   const classes = useStyles();
   const location = useLocation();
+  const history = useHistory();
   const course = location.state.course;
+  const [thisTeacher, setThisTeacher] = useState(false);
   const [videos, setVideos] = useState([]);
   const [ratings, setRatings] = useState([]);
   const [feedbacks, setFeedBacks] = useState([]);
-  const [study, setStudy] = useState(false);
-  const [like, isLike] = useState(false);
+  const [study, setStudy] = useState({ is: false, myCourseId: '' });
+  const [like, setLike] = useState({ is: false, watchListId: '' });
+  const [bestSaleCoursesOfTeacher, setBestSaleCoursesOfTeacher] = useState([]);
+  const [
+    bestSaleCoursesSameCategory,
+    setBestSaleCoursesSameCategory,
+  ] = useState([]);
 
+  const [detailExpanded, setDetailExpanded] = useState(false);
+
+  useEffect(
+    function () {
+      async function loadApp() {
+        // check if student then get is study or like this course
+        if (localStorage.studyFiles_user_role === 'student') {
+          for (var myCourse of store.myCourses) {
+            if (myCourse.id === course.id) {
+              setStudy({ ...study, is: true, myCourseId: myCourse.myCourseId });
+              break;
+            }
+          }
+          for (var watchList of store.watchList) {
+            if (watchList.id === course.id) {
+              setLike({
+                ...like,
+                is: true,
+                watchListId: watchList.watchListId,
+              });
+              break;
+            }
+          }
+        } else if (
+          localStorage.studyFiles_user_role === 'teacher' &&
+          course.teacherId === localStorage.studyFiles_user_id
+        ) {
+          setThisTeacher(true);
+        }
+        // TODO get ratings and feedback collections here
+        const ratingsRes = await axiosGuestInstance.get(
+          `/ratings/${course.id}`,
+        );
+        setRatings(ratingsRes.data);
+        const feedBackRes = await axiosGuestInstance.get(
+          `/feedbacks/${course.id}`,
+        );
+        setFeedBacks(feedBackRes.data);
+        // TODO vu get videos here
+
+        // get best 5 coures of teacherId
+        const bestSaleCoursesOfTeacherRes = await axiosGuestInstance.get(
+          `/courses?teacherId=${course.teacher.id}&sortBy=subscriberNumber:desc&limit=5`,
+        );
+        setBestSaleCoursesOfTeacher(bestSaleCoursesOfTeacherRes.data.results);
+        // get best 5 coures of subCategory
+        const bestSaleCoursesSameCategoryRes = await axiosGuestInstance.get(
+          `/courses?subCategoryId=${course.subCategory.id}&sortBy=subscriberNumber:desc&limit=5`,
+        );
+        setBestSaleCoursesSameCategory(
+          bestSaleCoursesSameCategoryRes.data.results,
+        );
+        const unlisten = history.listen(() => {
+          window.scrollTo(0, 0);
+        });
+
+        return () => {
+          unlisten();
+        };
+      }
+      loadApp();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [store.watchList, store.myCourses, localStorage.studyFiles_user_id],
+  );
+
+  // function logic handle =======================================
   const NavigateToTeacherPage = function () {
     // TODO navigatet to teacher page
+    console.log(course.teacher);
   };
 
   const NavigateToCategoryCousesListPage = function () {
     // TODO navigate to category list course
-    // dispatch({
-    //   type: 'update_selectedCategory',
-    //   payload: {
-    //     selectedSubCategory: subCategory,
-    //   },
-    // });
-    // const temp = categoryName.replaceAll(' ', '-');
-    // const temp2 = subCategory.name.replaceAll(' ', '-');
-    // history.push(`/category/${temp}/${temp2}`);
+    let categoryStr = '';
+    for (var category of store.categories) {
+      if (category.id === course.subCategory.categoryId) {
+        categoryStr = category.name.replaceAll(' ', '-');
+        break;
+      }
+    }
+    const subCategoryStr = course.subCategory.name.replaceAll(' ', '-');
+    history.push(`/category/${categoryStr}/${subCategoryStr}`, {
+      selectedSubCategory: course.subCategory,
+    });
   };
 
-  const RatingStarsWidget = function () {
+  const WatchListButtonClickHandle = async function () {
+    // TODO watchlist handle
+    if (!localStorage.studyFiles_user_role) {
+      history.push('/login');
+    } else if (localStorage.studyFiles_user_role !== 'student') {
+      alert('Only student can do this task');
+    } else {
+      if (like.is) {
+        // TODO delete out of watch list
+        try {
+          const config = {
+            headers: {
+              Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+            },
+          };
+          const res = await axiosGuestInstance.delete(
+            `/student/watchList/${like.watchListId}`,
+            config,
+          );
+          if (res.status === 204) {
+            dispatch({
+              type: 'delete_watch_list',
+              payload: {
+                watchListId: `${like.watchListId}`,
+              },
+            });
+            setLike({ ...like, is: false, watchListId: '' });
+          } else {
+            alert(res.data.message);
+          }
+        } catch (err) {
+          if (err.response) {
+            alert(err.response.data.message);
+          }
+        }
+      } else {
+        try {
+          const config = {
+            headers: {
+              Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+            },
+          };
+          const res = await axiosGuestInstance.post(
+            '/student/watchList/',
+            { courseId: course.id, studentId: localStorage.studyFiles_user_id },
+            config,
+          );
+          if (res.status === 201) {
+            const watchList = { ...course, watchListId: res.data.id };
+            dispatch({
+              type: 'add_watch_list',
+              payload: {
+                course: watchList,
+              },
+            });
+            setLike({ ...like, is: true, watchListId: res.data.id });
+          } else {
+            alert(res.data.message);
+          }
+        } catch (err) {
+          if (err.response) {
+            alert(err.response.data.message);
+          }
+        }
+      }
+    }
+  };
+
+  const MyCourseButtonClickHandle = async function () {
+    // TODO my course handle
+    if (!localStorage.studyFiles_user_role) {
+      history.push('/login');
+    } else if (localStorage.studyFiles_user_role !== 'student') {
+      alert('Only student can do this task');
+    } else {
+      if (study.is) {
+        // TODO delete out of my courses
+        try {
+          const config = {
+            headers: {
+              Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+            },
+          };
+          const res = await axiosGuestInstance.delete(
+            `/student/myCourses/${study.myCourseId}`,
+            config,
+          );
+          if (res.status === 204) {
+            dispatch({
+              type: 'delete_my_courses',
+              payload: {
+                myCourseId: `${study.myCourseId}`,
+              },
+            });
+            setStudy({ ...study, is: false, myCourseId: '' });
+          } else {
+            alert(res.data.message);
+          }
+        } catch (err) {
+          if (err.response) {
+            alert(err.response.data.message);
+          }
+        }
+      } else {
+        // TODO add to my courses
+        try {
+          const config = {
+            headers: {
+              Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+            },
+          };
+          const res = await axiosGuestInstance.post(
+            '/student/myCourses/',
+            { courseId: course.id, studentId: localStorage.studyFiles_user_id },
+            config,
+          );
+          if (res.status === 201) {
+            const myCourse = { ...course, myCourseId: res.data.id };
+            dispatch({
+              type: 'add_my_courses',
+              payload: {
+                course: myCourse,
+              },
+            });
+            setStudy({ ...study, is: true, myCourseId: res.data.id });
+          } else {
+            alert(res.data.message);
+          }
+        } catch (err) {
+          if (err.response) {
+            alert(err.response.data.message);
+          }
+        }
+      }
+    }
+  };
+
+  const createMarkup = html => {
+    return {
+      __html: DOMPurify.sanitize(html),
+    };
+  };
+
+  const ReplyOpen = function () {
+    // TODO reply feedback
+  };
+
+  // widget builder handle =======================================
+  const RatingStarsWidget = function (size) {
     const thirdExample = {
-      size: 20,
+      size: size,
       count: 5,
       edit: false,
       value: course.rating,
@@ -115,24 +373,69 @@ export default function CourseDetailPage() {
     const dateNow = new Date();
     if (dateNow > promotionEndDate && dateNow > promotionStartDate) {
       return (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div
-            className={classes.cardTittle}
-            style={{ marginRight: '18px', marginTop: '0px' }}
-          >
-            {course.fee} $US
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div
+              className={classes.bigText}
+              style={{ marginRight: '18px', marginTop: '0px' }}
+            >
+              {course.fee} $US
+            </div>
+            <div
+              className={classes.smallText}
+              style={{ textDecoration: 'line-through', marginTop: '0px' }}
+            >
+              {course.originalFee} $US
+            </div>
           </div>
           <div
-            className={classes.cardSmallText}
-            style={{ textDecoration: 'line-through', marginTop: '0px' }}
+            className={classes.smallText}
+            style={{
+              display: 'flex',
+              directionFlow: 'row',
+              color: '#a80c14',
+            }}
           >
-            {course.originalFee} $US
+            <NewReleases style={{ marginRight: '8px', fontSize: 18 }} />
+            Promotion will end at {FormatDateText(course.promotionEnd)}
+          </div>
+        </div>
+      );
+    } else if (
+      promotionStartDate < promotionEndDate &&
+      dateNow < promotionStartDate
+    ) {
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <div className={classes.bigText}>{course.originalFee} $US</div>
+          <div
+            className={classes.smallText}
+            style={{
+              display: 'flex',
+              directionFlow: 'row',
+              color: '#a80c14',
+            }}
+          >
+            <NewReleases style={{ marginRight: '8px', fontSize: 18 }} />
+            Promotion will start at {FormatDateText(course.promotionStart)} with
+            new fee
+            <div style={{ fontWeight: 'bolder' }}> {course.fee} $US</div>
           </div>
         </div>
       );
     } else {
       return (
-        <div className={classes.cardTittle} style={{ marginTop: '0px' }}>
+        <div className={classes.bigText} style={{ marginTop: '0px' }}>
           {course.originalFee} $US
         </div>
       );
@@ -177,21 +480,118 @@ export default function CourseDetailPage() {
     } else return <></>;
   };
 
-  const ButtonWatchListWidget = function () {};
+  const ButtonWatchListWidget = function () {
+    if (like.is) {
+      return (
+        <Button
+          onClick={WatchListButtonClickHandle}
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+          style={{
+            marginRight: '20px',
+            display: 'inline-block',
+            paddingLeft: '8px',
+            paddingRight: '8px',
+          }}
+          startIcon={<Favorite />}
+        >
+          LIKED
+        </Button>
+      );
+    } else {
+      return (
+        <Button
+          onClick={WatchListButtonClickHandle}
+          variant="outlined"
+          color="secondary"
+          className={classes.button}
+          style={{
+            border: '1px solid red',
+            marginRight: '20px',
+            display: 'inline-block',
+          }}
+          startIcon={<FavoriteBorder />}
+        >
+          LIKE
+        </Button>
+      );
+    }
+  };
 
-  const ButtonAddMycourseWidget = function () {};
+  const ButtonAddMyCourseWidget = function () {
+    if (study.is) {
+      return (
+        <Button
+          onClick={MyCourseButtonClickHandle}
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          style={{
+            backgroundColor: '#ffc130',
+            color: 'white',
+            marginRight: '20px',
+            display: 'inline-block',
+            paddingLeft: '8px',
+            paddingRight: '8px',
+          }}
+          startIcon={<ShoppingCart />}
+        >
+          STUDIED
+        </Button>
+      );
+    } else {
+      return (
+        <Button
+          onClick={MyCourseButtonClickHandle}
+          variant="outlined"
+          color="primary"
+          className={classes.button}
+          style={{
+            border: '1px solid #ffc130',
+            color: '#ffc130',
+            marginRight: '20px',
+            display: 'inline-block',
+          }}
+          startIcon={<AddShoppingCart />}
+        >
+          STUDY
+        </Button>
+      );
+    }
+  };
+
+  const BottomMainInfoWidget = function () {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginTop: '15px',
+        }}
+      >
+        <div style={{ flexGrow: 1 }}>
+          {ButtonWatchListWidget()}
+          {ButtonAddMyCourseWidget()}
+        </div>
+
+        {FeeWidget()}
+      </div>
+    );
+  };
 
   const MainInfoWidget = function () {
     return (
       <div className={classes.card}>
         <CardContent className={classes.cardContent}>
-          <div style={{ padding: '40px 40px 40px' }}>
+          <div style={{ padding: '0px 40px' }}>
             <h1>{course.name}</h1>
             <div className={classes.normalText}>{course.shortDescription}</div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div className={classes.cardRatingText}>{course.rating}</div>
               <div style={{ marginRight: '10px', marginTop: '0px' }}>
-                {RatingStarsWidget()}
+                {RatingStarsWidget(20)}
               </div>
               <div
                 className={classes.smallText}
@@ -238,6 +638,7 @@ export default function CourseDetailPage() {
               <EventNoteSharp style={{ marginRight: '8px', fontSize: 18 }} />
               Last updated {FormatDateText(course.updated_at)}
             </div>
+            {BottomMainInfoWidget()}
           </div>
         </CardContent>
         <CardMedia className={classes.cardMedia} image={course.image} />
@@ -246,33 +647,326 @@ export default function CourseDetailPage() {
   };
 
   const DetailDescriptionWidget = function () {
-    return <></>;
+    return (
+      <div className={classes.shadowCard}>
+        <div className={classes.bigText}>DESCRIPTION</div>
+        <ShowMoreText
+          /* Default options */
+          lines={3}
+          more="Show more"
+          less="Show less"
+          className="content-css"
+          anchorClass="my-anchor-css-class"
+          onClick={e => {
+            setDetailExpanded(!detailExpanded);
+          }}
+          expanded={detailExpanded}
+          style={{ color: '#525252' }}
+        >
+          <div
+            className="preview"
+            style={{ color: '#525252' }}
+            dangerouslySetInnerHTML={createMarkup(
+              `${course.detailDescription}`,
+            )}
+          />
+        </ShowMoreText>
+      </div>
+    );
   };
 
   const VideosWidget = function () {
-    return <></>;
+    // TODO vu
+    return <div style={{ marginTop: '50px' }}>Video to study</div>;
   };
 
-  const TeacherInfoWidget = function () {
-    return <></>;
+  const myRateWidget = function () {
+    // const temp = ratings.filter(
+    //   rating => `${rating.studentId}` !== `${store.userId}`,
+    // );
+    // console.log(store.userId);
+    // console.log(temp);
+    // TODO rating widget for student
+    if (localStorage.studyFiles_user_role === 'student' && study.is) {
+      let myRate = null;
+      let myFeed = null;
+      for (var rating of ratings) {
+        if (rating.studentId === localStorage.studyFiles_user_id) {
+          myRate = rating;
+          for (var feedback of feedbacks) {
+            if (feedback.ratingId === rating.id) {
+              myFeed = feedback;
+              break;
+            }
+          }
+          break;
+        }
+      }
+      if (myRate === null) {
+        return <Button>rate widget here</Button>;
+      } else {
+        return (
+          <div>
+            my Rated here
+            <RatingCard rating={myRate} feedBack={myFeed} />
+          </div>
+        );
+      }
+    } else {
+      return <></>;
+    }
   };
 
   const RatingListWidget = function () {
-    return <></>;
+    return (
+      <div
+        style={{
+          marginTop: '50px',
+          display: 'flex',
+          flexDirection: 'column',
+          width: '70%',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div className={classes.bigText}>Comments from participants</div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 'auto',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                marginRight: '10px',
+              }}
+              className={classes.cardRatingText}
+            >
+              <div style={{ fontSize: 30 }}>{course.rating}</div>
+              <div>
+                ( {FormatNumberText(course.ratingCount)} /
+                {FormatNumberText(course.subscriberNumber)} rated )
+              </div>
+            </div>
+
+            {RatingStarsWidget(60)}
+          </div>
+        </div>
+        {myRateWidget()}
+        <ShowMore
+          by={5}
+          items={ratings.filter(
+            rating =>
+              `${rating.studentId}` !== `${localStorage.studyFiles_user_id}`,
+          )}
+        >
+          {({ current, onMore }) => (
+            <div>
+              {current.map(rating => {
+                let feedback = null;
+                for (var item of feedbacks) {
+                  if (item.ratingId === rating.id) {
+                    feedback = item;
+                    break;
+                  }
+                }
+                if (thisTeacher || feedback == null) {
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <RatingCard rating={rating} feedBack={feedback} />
+                      <Button
+                        onClick={ReplyOpen()}
+                        style={{ marginTop: '10px', marginLeft: 'auto' }}
+                      >
+                        {/* TODO reply widget */}
+                        Reply
+                      </Button>
+                    </div>
+                  );
+                } else {
+                  return <RatingCard rating={rating} feedBack={feedback} />;
+                }
+              })}
+              <Button
+                style={{
+                  marginTop: '30px',
+                  width: '100%',
+                  border: '2px solid #246d96',
+                }}
+                variant="outlined"
+                color="primary"
+                disabled={!onMore}
+                onClick={() => {
+                  if (!!onMore) onMore();
+                }}
+              >
+                Show more reviews
+              </Button>
+            </div>
+          )}
+        </ShowMore>
+      </div>
+    );
+  };
+
+  const TeacherInfoWidget = function () {
+    return (
+      <div className={classes.shadowCard} style={{ padding: '40px 0px' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            padding: '40px 40px',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar
+            onClick={NavigateToTeacherPage}
+            alt="Remy Sharp"
+            src={course.teacher.avatar}
+            style={{ width: '180px', height: '180px', cursor: 'pointer' }}
+          />
+          <div style={{ marginLeft: '55px' }}>
+            <div
+              onClick={NavigateToTeacherPage}
+              style={{ cursor: 'pointer' }}
+              className={classes.bigText}
+            >
+              {course.teacher.name}
+            </div>
+            <div
+              className={classes.normalText}
+              stlye={{ display: 'flex', justifyContent: 'center' }}
+            >
+              <AllInboxSharp style={{ fontSize: 16, marginRight: '10px' }} />
+              Email:
+              {course.teacher.email}
+            </div>
+            <div style={{ marginTop: '15px', fontWeight: 'bolder' }}>
+              About me
+            </div>
+            <div>{course.teacher.shortDescription}</div>
+          </div>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: '0px 60px 20px',
+          }}
+        >
+          <div
+            style={{
+              fontWeight: 'bolder',
+              fontSize: 16,
+            }}
+          >
+            Best sale courses
+          </div>
+          <div
+            onClick={NavigateToTeacherPage}
+            style={{ cursor: 'pointer', marginLeft: 'auto', color: '#368dd9' }}
+          >
+            See all <LastPageSharp />
+          </div>
+        </div>
+
+        {Top5CourseOfSameTeacher()}
+      </div>
+    );
   };
 
   const Top5CourseOfSameTeacher = function () {
-    return <></>;
+    return (
+      <div>
+        <Carousel
+          plugins={[
+            'infinite',
+            'arrows',
+            {
+              resolve: slidesToShowPlugin,
+              options: {
+                numberOfSlides: 3,
+              },
+            },
+          ]}
+          animationSpeed={1000}
+        >
+          {bestSaleCoursesOfTeacher.map(item => (
+            <CourseCard course={item} key={item.id} />
+          ))}
+        </Carousel>
+      </div>
+    );
   };
 
-  const TopFiveBestSaleCourses = function () {
-    return <></>;
+  const TopFiveBestSaleCoursesOfSameSubCategory = function () {
+    return (
+      <div style={{ marginTop: '50px', width: '95%' }}>
+        <div
+          style={{
+            margin: '0px 50px 20px',
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+          className={classes.bigText}
+        >
+          <div>top 5 courses of</div>
+          <div
+            onClick={NavigateToCategoryCousesListPage}
+            style={{ marginLeft: '8px', color: '#368dd9', cursor: 'pointer' }}
+          >
+            {course.subCategory.name}
+          </div>
+        </div>
+        <Carousel
+          plugins={[
+            'infinite',
+            'arrows',
+            {
+              resolve: slidesToShowPlugin,
+              options: {
+                numberOfSlides: 4,
+              },
+            },
+          ]}
+          animationSpeed={1000}
+        >
+          {bestSaleCoursesSameCategory.map(item => (
+            <CourseCard course={item} key={item.id} />
+          ))}
+        </Carousel>
+      </div>
+    );
   };
 
   return (
     <>
       <TopBar initQuery={''} />
       {MainInfoWidget()}
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          color: '#525252',
+        }}
+      >
+        {DetailDescriptionWidget()}
+        {VideosWidget()}
+        {RatingListWidget()}
+        {TeacherInfoWidget()}
+
+        {TopFiveBestSaleCoursesOfSameSubCategory()}
+      </div>
       <Footer />
     </>
   );
