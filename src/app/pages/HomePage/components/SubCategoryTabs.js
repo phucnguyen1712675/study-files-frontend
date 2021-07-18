@@ -190,7 +190,9 @@ export default function SubCategoryTabs({ subCategory, isNavigate }) {
       });
       const temp = subCategory.category.name.replaceAll(' ', '-');
       const temp2 = subCategory.name.replaceAll(' ', '-');
-      history.push(`/category/${temp}/${temp2}`);
+      history.push(`/category/${temp}/${temp2}`, {
+        selectedSubCategory: subCategory,
+      });
     }
   };
 

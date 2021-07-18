@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
+import { withStyles } from '@material-ui/core/styles';
 import ShowMore from 'react-show-more-list';
 import ShowMoreText from 'react-show-more-text';
 import DOMPurify from 'dompurify';
@@ -11,7 +12,12 @@ import {
   CardMedia,
   makeStyles,
   Avatar,
+  TextField,
 } from '@material-ui/core';
+import MuiAccordion from '@material-ui/core/Accordion';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
+import { ExpandMore } from '@material-ui/icons';
 import {
   EventNoteSharp,
   NewReleases,
@@ -29,8 +35,50 @@ import AppContext from 'app/AppContext';
 import { axiosGuestInstance } from '../../../api/guest';
 import TopBar from '../../components/Topbar/Topbar';
 import Footer from '../../components/Footer/Footer';
+import userAvatar from 'images/user.jpg';
 
 import { CourseCard, RatingCard } from '../../components/Cards/Cards';
+import { isConstructorDeclaration } from 'typescript';
+
+const Accordion = withStyles({
+  root: {
+    width: '100%',
+    border: '0px 0px 1px 0px solid rgba(0, 0, 0, .125)',
+    boxShadow: 'none',
+    '&:before': {
+      display: 'none',
+    },
+    '&$expanded': {
+      margin: 'auto',
+    },
+  },
+  expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+  root: {
+    borderBottom: '1px solid rgba(0, 0, 0, .125)',
+    fontWeight: 'bolder',
+    color: '#387cff',
+    minHeight: 40,
+    '&$expanded': {
+      minHeight: 40,
+    },
+  },
+  content: {
+    '&$expanded': {
+      margin: '0px 0px',
+    },
+  },
+  expanded: {},
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles(theme => ({
+  root: {
+    padding: theme.spacing(2),
+    width: '100%',
+  },
+}))(MuiAccordionDetails);
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -97,6 +145,10 @@ export default function CourseDetailPage() {
   const course = location.state.course;
   const [thisTeacher, setThisTeacher] = useState(false);
   const [videos, setVideos] = useState([]);
+  const [rateInfo, setRateInfo] = useState({
+    rating: course.rating,
+    ratingCount: course.ratingCount,
+  });
   const [ratings, setRatings] = useState([]);
   const [feedbacks, setFeedBacks] = useState([]);
   const [study, setStudy] = useState({ is: false, myCourseId: '' });
@@ -108,10 +160,33 @@ export default function CourseDetailPage() {
   ] = useState([]);
 
   const [detailExpanded, setDetailExpanded] = useState(false);
+  // rating for student
+  const [myScoreRate, setMyScoreRate] = useState(1);
+  const [myComment, setMyComment] = useState('');
+  // reply for teacher
+  const [replyWidgetExpanded, setReplyWidgetExpanded] = useState(false);
 
   useEffect(
     function () {
+      // chạy lại mỗi khi userId, store.mycourses và store.watchList thay đổi
       async function loadApp() {
+        console.log(course.name);
+        setStudy({ ...study, is: false, myCourseId: '' });
+        setLike({
+          ...like,
+          is: false,
+          watchListId: '',
+        });
+
+        const ratingsRes = await axiosGuestInstance.get(
+          `/ratings/${course.id}`,
+        );
+        setRatings(ratingsRes.data);
+        const feedBackRes = await axiosGuestInstance.get(
+          `/feedbacks/${course.id}`,
+        );
+        setFeedBacks(feedBackRes.data);
+
         // check if student then get is study or like this course
         if (localStorage.studyFiles_user_role === 'student') {
           for (var myCourse of store.myCourses) {
@@ -136,16 +211,6 @@ export default function CourseDetailPage() {
         ) {
           setThisTeacher(true);
         }
-        // TODO get ratings and feedback collections here
-        const ratingsRes = await axiosGuestInstance.get(
-          `/ratings/${course.id}`,
-        );
-        setRatings(ratingsRes.data);
-        const feedBackRes = await axiosGuestInstance.get(
-          `/feedbacks/${course.id}`,
-        );
-        setFeedBacks(feedBackRes.data);
-        // TODO vu get videos here
 
         // get best 5 coures of teacherId
         const bestSaleCoursesOfTeacherRes = await axiosGuestInstance.get(
@@ -159,6 +224,7 @@ export default function CourseDetailPage() {
         setBestSaleCoursesSameCategory(
           bestSaleCoursesSameCategoryRes.data.results,
         );
+
         const unlisten = history.listen(() => {
           window.scrollTo(0, 0);
         });
@@ -166,11 +232,18 @@ export default function CourseDetailPage() {
         return () => {
           unlisten();
         };
+
+        // TODO vu get videos here
       }
       loadApp();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store.watchList, store.myCourses, localStorage.studyFiles_user_id],
+    [
+      store.watchList,
+      store.myCourses,
+      localStorage.studyFiles_user_id,
+      course.id,
+    ],
   );
 
   // function logic handle =======================================
@@ -337,21 +410,102 @@ export default function CourseDetailPage() {
     };
   };
 
-  const ReplyOpen = function () {
-    // TODO reply feedback
+  const HandleRatingSubmit = async function () {
+    const data = {
+      studentId: localStorage.studyFiles_user_id,
+      courseId: course.id,
+      content: myComment,
+      score: myScoreRate,
+    };
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+      },
+    };
+    try {
+      const ratingsRes = await axiosGuestInstance.post(
+        `/ratings/${course.id}`,
+        data,
+        config,
+      );
+      if (ratingsRes.status === 201) {
+        setRatings([...ratings, ratingsRes.data]);
+        let newRating =
+          (rateInfo.rating * rateInfo.ratingCount + myScoreRate) /
+          (rateInfo.ratingCount + 1);
+        newRating = Math.round((newRating + Number.EPSILON) * 10) / 10;
+        const newRatingCount = rateInfo.ratingCount + 1;
+        dispatch({
+          type: 'update_course_rating',
+          payload: {
+            courseId: course.id,
+            rating: newRating,
+            ratingCount: newRatingCount,
+          },
+        });
+
+        setRateInfo({
+          ...rateInfo,
+          ratingCount: newRatingCount,
+          rating: newRating,
+        });
+      } else {
+        alert(ratingsRes.data.message);
+      }
+    } catch (err) {
+      if (err.response) {
+        alert(err.response.data.message);
+      }
+    }
+  };
+
+  const handleExpandedReplyWidgetChange = panel => (event, isExpanded) => {
+    setReplyWidgetExpanded(isExpanded ? panel : false);
+  };
+
+  const HandleFeedBackSubmit = async function (ratingId) {
+    // TODO feedback sending
+    if (myComment !== '') {
+      const data = {
+        teacherId: localStorage.studyFiles_user_id,
+        courseId: course.id,
+        content: myComment,
+        ratingId: ratingId,
+      };
+      const config = {
+        headers: {
+          Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+        },
+      };
+      try {
+        const feedBacksRes = await axiosGuestInstance.post(
+          `/feedbacks/${course.id}`,
+          data,
+          config,
+        );
+        if (feedBacksRes.status === 201) {
+          setFeedBacks([...feedbacks, feedBacksRes.data]);
+        }
+      } catch (err) {
+        if (err.response) {
+          alert(err.response.data.message);
+        }
+      }
+    }
   };
 
   // widget builder handle =======================================
-  const RatingStarsWidget = function (size) {
-    const thirdExample = {
-      size: size,
-      count: 5,
-      edit: false,
-      value: course.rating,
-      isHalf: true,
-      activeColor: '#F9BA00',
-    };
-    return <ReactStars {...thirdExample} />;
+  const RatingStarsWidget = function (size, edit, isHalf, value) {
+    return (
+      <ReactStars
+        size={size}
+        count={5}
+        edit={edit}
+        value={value}
+        isHalf={isHalf}
+        activeColor="#F9BA00"
+      />
+    );
   };
 
   const FormatNumberText = function (num) {
@@ -589,15 +743,15 @@ export default function CourseDetailPage() {
             <h1>{course.name}</h1>
             <div className={classes.normalText}>{course.shortDescription}</div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div className={classes.cardRatingText}>{course.rating}</div>
+              <div className={classes.cardRatingText}>{rateInfo.rating}</div>
               <div style={{ marginRight: '10px', marginTop: '0px' }}>
-                {RatingStarsWidget(20)}
+                {RatingStarsWidget(20, false, true, rateInfo.rating)}
               </div>
               <div
                 className={classes.smallText}
                 style={{ marginRight: '30px' }}
               >
-                ( {FormatNumberText(course.ratingCount)} ratings),
+                ( {FormatNumberText(rateInfo.ratingCount)} ratings),
               </div>
               <div
                 className={classes.smallText}
@@ -681,16 +835,12 @@ export default function CourseDetailPage() {
   };
 
   const myRateWidget = function () {
-    // const temp = ratings.filter(
-    //   rating => `${rating.studentId}` !== `${store.userId}`,
-    // );
-    // console.log(store.userId);
-    // console.log(temp);
     // TODO rating widget for student
+    const allRatings = ratings;
     if (localStorage.studyFiles_user_role === 'student' && study.is) {
       let myRate = null;
       let myFeed = null;
-      for (var rating of ratings) {
+      for (var rating of allRatings) {
         if (rating.studentId === localStorage.studyFiles_user_id) {
           myRate = rating;
           for (var feedback of feedbacks) {
@@ -703,18 +853,181 @@ export default function CourseDetailPage() {
         }
       }
       if (myRate === null) {
-        return <Button>rate widget here</Button>;
+        return (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <Avatar
+                alt="Remy Sharp"
+                src={userAvatar}
+                style={{ width: '60px', height: '60px', marginRight: '20px' }}
+              />
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ marginRight: '30px', fontWeight: 'bolder' }}>
+                  {localStorage.studyFiles_user_name} - You can rate this course
+                </div>
+                <ReactStars
+                  size={35}
+                  count={5}
+                  edit={true}
+                  value={myScoreRate}
+                  isHalf={false}
+                  onChange={newValue => setMyScoreRate(newValue)}
+                  activeColor="#F9BA00"
+                  style={{ paddingTop: '0px', marginTop: '0px' }}
+                />
+              </div>
+            </div>
+            <div style={{ paddingLeft: '90px', paddingTop: '10px' }}>
+              <TextField
+                placeholder="Comment ..."
+                label="Enter comment here"
+                style={{ textAlign: 'left' }}
+                multiline
+                variant="outlined"
+                inputProps={{ maxLength: 500 }}
+                rows={6}
+                fullWidth
+                value={myComment}
+                onChange={e => setMyComment(e.target.value)}
+              />
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                }}
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={HandleRatingSubmit}
+                  style={{
+                    width: '100px',
+                    marginLeft: 'auto',
+                    marginTop: '20px',
+                  }}
+                >
+                  Send
+                </Button>
+              </div>
+            </div>
+          </div>
+        );
       } else {
         return (
           <div>
-            my Rated here
-            <RatingCard rating={myRate} feedBack={myFeed} />
+            <div style={{ fontWeight: 'bolder', color: '#525252' }}>
+              You have rated this course
+            </div>
+            <RatingCard
+              style={{ marginTop: '0px', paddingTop: '0px' }}
+              rating={myRate}
+              feedBack={myFeed}
+            />
           </div>
         );
       }
     } else {
       return <></>;
     }
+  };
+
+  const myReplyWidget = function (rating) {
+    return (
+      <Accordion
+        key={rating.id}
+        expanded={replyWidgetExpanded === `panel${rating.id}`}
+        onChange={handleExpandedReplyWidgetChange(`panel${rating.id}`)}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMore />}
+          aria-controls="panel1bh-content"
+          id="panel1bh-header"
+        >
+          Reply
+        </AccordionSummary>
+        <AccordionDetails>
+          <div
+            style={{
+              // marginLeft: '100px',
+              width: '100%',
+              marginTop: '10px',
+              paddingLeft: '20px',
+              color: '#525252',
+              borderLeft: '2px solid #cecece',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: '10px',
+              }}
+            >
+              <Avatar
+                alt="Remy Sharp"
+                src={userAvatar}
+                style={{ width: '60px', height: '60px', marginRight: '20px' }}
+              />
+              <div>
+                <div style={{ fontWeight: 'bolder' }}>
+                  {localStorage.studyFiles_user_name}
+                </div>
+              </div>
+            </div>
+            <TextField
+              placeholder="Comment ..."
+              label="Enter comment here"
+              style={{ textAlign: 'left', marginTop: '10px' }}
+              multiline
+              variant="outlined"
+              inputProps={{ maxLength: 500 }}
+              rows={6}
+              fullWidth
+              value={myComment}
+              onChange={e => setMyComment(e.target.value)}
+              error={myComment === ''}
+              helperText={myComment === '' ? 'Empty!' : ' '}
+            />
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => HandleFeedBackSubmit(rating.id)}
+                style={{
+                  width: '100px',
+                  marginLeft: 'auto',
+                  marginTop: '20px',
+                }}
+              >
+                Send
+              </Button>
+            </div>
+          </div>
+        </AccordionDetails>
+      </Accordion>
+    );
   };
 
   const RatingListWidget = function () {
@@ -746,14 +1059,14 @@ export default function CourseDetailPage() {
               }}
               className={classes.cardRatingText}
             >
-              <div style={{ fontSize: 30 }}>{course.rating}</div>
+              <div style={{ fontSize: 30 }}>{rateInfo.rating}</div>
               <div>
-                ( {FormatNumberText(course.ratingCount)} /
+                ( {FormatNumberText(rateInfo.ratingCount)} /
                 {FormatNumberText(course.subscriberNumber)} rated )
               </div>
             </div>
 
-            {RatingStarsWidget(60)}
+            {RatingStarsWidget(60, false, true, rateInfo.rating)}
           </div>
         </div>
         {myRateWidget()}
@@ -774,21 +1087,26 @@ export default function CourseDetailPage() {
                     break;
                   }
                 }
-                if (thisTeacher || feedback == null) {
+                if (thisTeacher && feedback === null) {
                   return (
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div
+                      key={rating.id}
+                      style={{ display: 'flex', flexDirection: 'column' }}
+                    >
                       <RatingCard rating={rating} feedBack={feedback} />
-                      <Button
-                        onClick={ReplyOpen()}
-                        style={{ marginTop: '10px', marginLeft: 'auto' }}
-                      >
-                        {/* TODO reply widget */}
-                        Reply
-                      </Button>
+                      {/* <div style={{ marginTop: '10px' }}> */}
+                      {myReplyWidget(rating)}
+                      {/* </div> */}
                     </div>
                   );
                 } else {
-                  return <RatingCard rating={rating} feedBack={feedback} />;
+                  return (
+                    <RatingCard
+                      key={rating.id}
+                      rating={rating}
+                      feedBack={feedback}
+                    />
+                  );
                 }
               })}
               <Button

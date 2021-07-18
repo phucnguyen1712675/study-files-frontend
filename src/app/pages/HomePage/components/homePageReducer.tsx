@@ -16,6 +16,46 @@ export default function reducer(state, action) {
         ...state,
         userId: action.payload.userId,
       };
+    case 'update_course_rating':
+      return {
+        ...state,
+        latestCourses: state.latestCourses.map(course =>
+          course.id === action.payload.courseId
+            ? {
+                ...course,
+                rating: action.payload.rating,
+                ratingCount: action.payload.ratingCount,
+              }
+            : course,
+        ),
+        bestSellerCourses: state.bestSellerCourses.map(course =>
+          course.id === action.payload.courseId
+            ? {
+                ...course,
+                rating: action.payload.rating,
+                ratingCount: action.payload.ratingCount,
+              }
+            : course,
+        ),
+        watchList: state.watchList.map(course =>
+          course.id === action.payload.courseId
+            ? {
+                ...course,
+                rating: action.payload.rating,
+                ratingCount: action.payload.ratingCount,
+              }
+            : course,
+        ),
+        myCourses: state.myCourses.map(course =>
+          course.id === action.payload.courseId
+            ? {
+                ...course,
+                rating: action.payload.rating,
+                ratingCount: action.payload.ratingCount,
+              }
+            : course,
+        ),
+      };
     case 'add_watch_list':
       return {
         ...state,

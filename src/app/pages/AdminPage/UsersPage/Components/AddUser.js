@@ -34,7 +34,7 @@ export default function AddUser() {
         data = {
           ...data,
           avatar:
-            'https://i.pinimg.com/564x/ae/5c/47/ae5c47d4a6ac53b79dc88d763b4c8095.jpg',
+            'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_640.png',
         };
       }
       const res = await axiosAdminInstance.post(`/users/`, data, config);

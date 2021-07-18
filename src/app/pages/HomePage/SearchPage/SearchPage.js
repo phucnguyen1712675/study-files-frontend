@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import AppContext from '../../../AppContext';
 import { axiosGuestInstance } from '../../../../api/guest';
 import { withStyles } from '@material-ui/core/styles';
@@ -60,6 +61,7 @@ const AccordionDetails = withStyles(theme => ({
 export default function SearchPage() {
   const { store } = useContext(AppContext);
   const location = useLocation();
+  const history = useHistory();
   const query = location.state.query;
   const [expanded, setExpanded] = useState(false);
   const [smallExpanded, setSmallExpanded] = useState(false);
@@ -92,6 +94,14 @@ export default function SearchPage() {
         setTotalCourses(coursesRes.data.totalResults);
         setTotalPages(coursesRes.data.totalPages);
         setCourses(coursesRes.data.results);
+
+        const unlisten = history.listen(() => {
+          window.scrollTo(0, 0);
+        });
+
+        return () => {
+          unlisten();
+        };
       }
       LoadApp();
     },
@@ -343,7 +353,7 @@ export default function SearchPage() {
     <>
       <TopBar initQuery={query} />
       <h1 style={{ margin: '20px 40px 5px', color: '#525252' }}>
-        {totalCourses} courses for "{store.query}"
+        {totalCourses} courses for "{query}"
       </h1>
       {ResultAndSortAndFilterWidget()}
       <Footer />

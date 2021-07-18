@@ -260,7 +260,9 @@ export function CategoryCard({ category }) {
     });
     const temp = category.category.name.replaceAll(' ', '-');
     const temp2 = category.name.replaceAll(' ', '-');
-    history.push(`/category/${temp}/${temp2}`);
+    history.push(`/category/${temp}/${temp2}`, {
+      selectedSubCategory: category,
+    });
   };
 
   return (
@@ -377,7 +379,11 @@ export function RatingCard({ rating, feedBack }) {
               Rated at {FormatDateText(rating.created_at)}
             </div>
           </div>
-          <div>{rating.content}</div>
+          {rating.content === '' ? (
+            <div style={{ color: '#b3b3b3' }}>No comment ...</div>
+          ) : (
+            <div>{rating.content}</div>
+          )}
           {ReplyWidget()}
         </div>
       </div>
