@@ -24,7 +24,6 @@ export function StudentPage() {
       `/student/watchList/${watchListId}`,
       config,
     );
-    console.log(watchListId);
     if (res.status === 204) {
       dispatch({
         type: 'delete_watch_list',

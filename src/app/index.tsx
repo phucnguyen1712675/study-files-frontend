@@ -27,7 +27,7 @@ import {
   CategoryCoursesListPage,
 } from './pages/HomePage/Loadable';
 
-import { TeacherPage } from './pages/TeacherPage/Loadable';
+import { CourseDetailPage } from './pages/CourseDetailPage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
 import { StudentPage } from './pages/StudentPage';
@@ -39,83 +39,87 @@ import { UpdatePasswordPage } from './pages/StudentPage/UpdatePassword/updatePas
 
 export function App() {
   const { i18n } = useTranslation();
+  // const userId = localStorage.studyFiles_user_id;
   const initialAppState = {
-    query: '',
-    selectedSubCategory: '',
+    userId: '',
     bestSellerCourses: [],
     categories: [],
     subCategories: [],
     latestCourses: [],
+    watchList: [],
+    myCourses: [],
   };
 
   const [store, dispatch] = useReducer(reducer, initialAppState);
-  useEffect(function () {
-    async function loadApp() {
-      const bestSellerCoursesRes = await axiosGuestInstance.get(
-        `/courses?sortBy=subscriberNumber:desc&limit=4`,
-      );
-      const categoriesRes = await axiosGuestInstance.get(`/categories`);
-      const subCategoriesRes = await axiosGuestInstance.get(`/subCategories`);
-      var latestCourses: any[] = [];
-      for (var subCategory of subCategoriesRes.data) {
-        const coursesRes = await axiosGuestInstance.get(
-          `/courses?sortBy=createdAt:desc&limit=10&subCategoryId=${subCategory.id}`,
+  useEffect(
+    function () {
+      async function loadApp() {
+        const bestSellerCoursesRes = await axiosGuestInstance.get(
+          `/courses?sortBy=subscriberNumber:desc&limit=4`,
         );
-        latestCourses = [...latestCourses, ...coursesRes.data.results];
-      }
-      var watchList: any[] = [];
-      var myCourses: any[] = [];
-      if (`${localStorage.studyFiles_user_role}` === 'student') {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+        const categoriesRes = await axiosGuestInstance.get(`/categories`);
+        const subCategoriesRes = await axiosGuestInstance.get(`/subCategories`);
+        var latestCourses: any[] = [];
+        for (var subCategory of subCategoriesRes.data) {
+          const coursesRes = await axiosGuestInstance.get(
+            `/courses?sortBy=createdAt:desc&limit=10&subCategoryId=${subCategory.id}`,
+          );
+          latestCourses = [...latestCourses, ...coursesRes.data.results];
+        }
+        var watchList: any[] = [];
+        var myCourses: any[] = [];
+        if (store.userId) {
+        }
+        if (`${localStorage.studyFiles_user_role}` === 'student') {
+          const config = {
+            headers: {
+              Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+            },
+          };
+          //WatchList
+          const watchListRes = await axiosGuestInstance.get(
+            `/student/watchList/${localStorage.studyFiles_user_id}`,
+            config,
+          );
+          for (var item of watchListRes.data) {
+            const coursesRes = await axiosGuestInstance.get(
+              `/courses/${item.courseId}`,
+            );
+            const course = { ...coursesRes.data, watchListId: item.id };
+            watchList = [...watchList, course];
+          }
+
+          //MyCourse
+          const myCoursesRes = await axiosGuestInstance.get(
+            `/student/myCourses/${localStorage.studyFiles_user_id}`,
+            config,
+          );
+          // eslint-disable-next-line
+          for (var item of myCoursesRes.data) {
+            const coursesRes = await axiosGuestInstance.get(
+              `/courses/${item.courseId}`,
+            );
+            const course = { ...coursesRes.data, myCourseId: item.id };
+            myCourses = [...myCourses, course];
+          }
+        }
+
+        dispatch({
+          type: 'init',
+          payload: {
+            bestSellerCourses: bestSellerCoursesRes.data.results,
+            categories: categoriesRes.data,
+            subCategories: subCategoriesRes.data,
+            latestCourses: latestCourses,
+            watchList: watchList,
+            myCourses: myCourses,
           },
-        };
-        //WatchList
-        const watchListRes = await axiosGuestInstance.get(
-          `/student/watchList/${localStorage.studyFiles_user_id}`,
-          config,
-        );
-        for (var item of watchListRes.data) {
-          const coursesRes = await axiosGuestInstance.get(
-            `/courses/${item.courseId}`,
-          );
-          const course = { ...coursesRes.data, watchListId: item.id };
-          watchList = [...watchList, course];
-        }
-
-        //MyCourse
-        const myCoursesRes = await axiosGuestInstance.get(
-          `/student/myCourses/${localStorage.studyFiles_user_id}`,
-          config,
-        );
-        // eslint-disable-next-line
-        for (var item of myCoursesRes.data) {
-          const coursesRes = await axiosGuestInstance.get(
-            `/courses/${item.courseId}`,
-          );
-          const course = { ...coursesRes.data, myCourseId: item.id };
-          myCourses = [...myCourses, course];
-          console.log(myCourses);
-        }
+        });
       }
-
-      dispatch({
-        type: 'init',
-        payload: {
-          query: '',
-          selectedSubCategory: '',
-          bestSellerCourses: bestSellerCoursesRes.data.results,
-          categories: categoriesRes.data,
-          subCategories: subCategoriesRes.data,
-          latestCourses: latestCourses,
-          watchList: watchList,
-          myCourses: myCourses,
-        },
-      });
-    }
-    loadApp();
-  }, []);
+      loadApp();
+    },
+    [store.userId],
+  );
 
   return (
     <BrowserRouter>
@@ -135,6 +139,8 @@ export function App() {
             path="/category/:category/:subCategory"
             component={CategoryCoursesListPage}
           />
+
+          <Route exact path="/course/:name" component={CourseDetailPage} />
 
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
@@ -157,7 +163,7 @@ export function App() {
           </PrivateRoute>
           {/* end admin routes */}
 
-          <Route exact path="/teacher" component={TeacherPage} />
+          {/* <Route exact path="/teacher" component={TeacherPage} /> */}
           <Route exact path="/student" component={StudentPage} />
           <Route
             exact

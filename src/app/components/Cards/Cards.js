@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-import { CardContent, CardMedia, makeStyles } from '@material-ui/core';
+import { CardContent, CardMedia, makeStyles, Avatar } from '@material-ui/core';
 import ReactStars from 'react-rating-stars-component';
 import AppContext from 'app/AppContext';
 import { useHistory } from 'react-router-dom';
+import userAvatar from 'images/user.jpg';
 
 const useStyles = makeStyles(theme => ({
   heroButtons: {
@@ -12,11 +13,10 @@ const useStyles = makeStyles(theme => ({
     width: '330px',
     height: '100%',
     display: 'flex',
-    paddingLeft: '0px',
     borderRadius: '3px',
+    padding: '0px 20px',
     flexDirection: 'column',
     cursor: 'pointer',
-    margin: '10px',
   },
   cardMedia: {
     borderRadius: '3px',
@@ -77,6 +77,7 @@ const useStyles = makeStyles(theme => ({
 
 export function CourseCard({ course }) {
   const classes = useStyles();
+  const history = useHistory();
   const { store } = useContext(AppContext);
 
   const FeeWidget = function () {
@@ -190,7 +191,7 @@ export function CourseCard({ course }) {
 
   const NavigateToDetailCourses = function () {
     // TODO navigate to detail course
-    console.log(course.id);
+    history.push(`/course/${course.name}`, { course: course });
   };
 
   return (
@@ -259,7 +260,9 @@ export function CategoryCard({ category }) {
     });
     const temp = category.category.name.replaceAll(' ', '-');
     const temp2 = category.name.replaceAll(' ', '-');
-    history.push(`/category/${temp}/${temp2}`);
+    history.push(`/category/${temp}/${temp2}`, {
+      selectedSubCategory: category,
+    });
   };
 
   return (
@@ -268,6 +271,122 @@ export function CategoryCard({ category }) {
       onClick={() => NavigateToCategoryCousesListPage()}
     >
       <span>{category.name}</span>
+    </div>
+  );
+}
+
+export function RatingCard({ rating, feedBack }) {
+  const FormatDateText = function (date) {
+    let d = new Date(date);
+    let ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
+    let mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(d);
+    let da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
+    return `${da}-${mo}-${ye}`;
+  };
+
+  const RatingStarsWidget = function (score) {
+    const thirdExample = {
+      size: 23,
+      count: 5,
+      edit: false,
+      value: score,
+      isHalf: true,
+    };
+    return <ReactStars {...thirdExample} />;
+  };
+
+  const ReplyWidget = function () {
+    if (feedBack !== null) {
+      return (
+        <div
+          style={{
+            // marginLeft: '100px',
+            marginTop: '10px',
+            paddingLeft: '20px',
+            color: '#525252',
+            borderLeft: '2px solid #cecece',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: '10px',
+            }}
+          >
+            <Avatar
+              alt="Remy Sharp"
+              src={feedBack.teacher.avatar}
+              style={{ width: '60px', height: '60px', marginRight: '20px' }}
+            />
+            <div>
+              <div style={{ fontWeight: 'bolder' }}>
+                {feedBack.teacher.name}
+              </div>
+              <div
+                style={{
+                  fontWeight: 'lighter',
+                  marginTop: '5px',
+                  color: '#b3b3b3',
+                  fontSize: 13,
+                }}
+              >
+                Replied at {FormatDateText(feedBack.created_at)}
+              </div>
+            </div>
+          </div>
+          <div style={{ marginTop: '10px' }}>{feedBack.content}</div>
+        </div>
+      );
+    } else return <></>;
+  };
+
+  return (
+    <div
+      style={{
+        padding: '30px 0px',
+        color: '#525252',
+        borderBottom: '1px solid #cecece',
+      }}
+    >
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <Avatar
+          alt="Remy Sharp"
+          src={userAvatar}
+          style={{ width: '60px', height: '60px', marginRight: '20px' }}
+        />
+        <div>
+          <div style={{ marginRight: '30px', fontWeight: 'bolder' }}>
+            {rating.student.name}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <div>{RatingStarsWidget(rating.score)}</div>
+            <div
+              style={{
+                fontWeight: 'lighter',
+                marginLeft: '5px',
+                color: '#b3b3b3',
+                fontSize: 13,
+              }}
+            >
+              Rated at {FormatDateText(rating.created_at)}
+            </div>
+          </div>
+          {rating.content === '' ? (
+            <div style={{ color: '#b3b3b3' }}>No comment ...</div>
+          ) : (
+            <div>{rating.content}</div>
+          )}
+          {ReplyWidget()}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,21 +1,60 @@
 export default function reducer(state, action) {
-  // action = { type, payload }
-  // watch list List<String>:id
-  // add_watch_list_task remove_watch_list_task : payload:courseId
-
-  // MyCourse List<String>:id
-  // add_my_course_task: payload.courseId
   switch (action.type) {
     case 'init':
       return {
-        query: action.payload.query,
-        selectedSubCategory: action.payload.selectedSubCategory,
+        ...state,
         bestSellerCourses: action.payload.bestSellerCourses,
         categories: action.payload.categories,
         subCategories: action.payload.subCategories,
         latestCourses: action.payload.latestCourses,
         watchList: action.payload.watchList,
         myCourses: action.payload.myCourses,
+        userId: action.payload.userId,
+      };
+    case 'update_user_id':
+      return {
+        ...state,
+        userId: action.payload.userId,
+      };
+    case 'update_course_rating':
+      return {
+        ...state,
+        latestCourses: state.latestCourses.map(course =>
+          course.id === action.payload.courseId
+            ? {
+                ...course,
+                rating: action.payload.rating,
+                ratingCount: action.payload.ratingCount,
+              }
+            : course,
+        ),
+        bestSellerCourses: state.bestSellerCourses.map(course =>
+          course.id === action.payload.courseId
+            ? {
+                ...course,
+                rating: action.payload.rating,
+                ratingCount: action.payload.ratingCount,
+              }
+            : course,
+        ),
+        watchList: state.watchList.map(course =>
+          course.id === action.payload.courseId
+            ? {
+                ...course,
+                rating: action.payload.rating,
+                ratingCount: action.payload.ratingCount,
+              }
+            : course,
+        ),
+        myCourses: state.myCourses.map(course =>
+          course.id === action.payload.courseId
+            ? {
+                ...course,
+                rating: action.payload.rating,
+                ratingCount: action.payload.ratingCount,
+              }
+            : course,
+        ),
       };
     case 'add_watch_list':
       return {
@@ -41,19 +80,11 @@ export default function reducer(state, action) {
           myCourse => myCourse.myCourseId !== action.payload.myCourseId,
         ),
       };
-    case 'update_query':
+    case 'clear_store':
       return {
         ...state,
-        query: action.payload.query,
-        selectedSubCategory: '',
-      };
-    case 'clear_query':
-      return { ...state, query: '' };
-    case 'update_selectedCategory':
-      return {
-        ...state,
-        selectedSubCategory: action.payload.selectedSubCategory,
-        query: '',
+        watchList: [],
+        myCourses: [],
       };
     default:
       return state;

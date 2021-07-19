@@ -100,6 +100,7 @@ export default function AddSubCategory() {
             {categories.map(item => {
               return (
                 <option
+                  key={item.id}
                   value={item.id}
                   style={{ marginBottom: '20px', marginLeft: '20px' }}
                 >

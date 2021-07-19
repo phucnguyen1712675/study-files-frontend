@@ -8,8 +8,8 @@ export default function Footer() {
         marginTop: '70px',
         padding: '10px 0px',
         backgroundColor: '#fffff',
-        webkitBoxShadow: ' 0 -3px 7px -7px black',
-        mozBoxShadow: ' 0 -3px 7px -7px black',
+        WebkitBoxShadow: ' 0 -3px 7px -7px black',
+        MozBoxShadow: ' 0 -3px 7px -7px black',
         boxShadow: ' 0 -3px 7px -7px black',
       }}
     >
