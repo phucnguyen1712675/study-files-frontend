@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import '@brainhubeu/react-carousel/lib/style.css';
 
 import { Grid, Select } from '@material-ui/core';
@@ -12,7 +13,8 @@ import AppContext from '../../../AppContext';
 import { axiosGuestInstance } from '../../../../api/guest';
 
 export default function CategoryCoursesListPage() {
-  const { store } = useContext(AppContext);
+  const location = useLocation();
+  const selectedSubCategory = location.state.selectedSubCategory;
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(12);
@@ -23,7 +25,7 @@ export default function CategoryCoursesListPage() {
     function () {
       async function loadApp() {
         const coursesRes = await axiosGuestInstance.get(
-          `/courses?sortBy=view:desc&limit=${limit}&subCategoryId=${store.selectedSubCategory.id}`,
+          `/courses?sortBy=view:desc&limit=${limit}&subCategoryId=${selectedSubCategory.id}`,
         );
         setTotalCourses(coursesRes.data.totalResults);
         setTotalPages(coursesRes.data.totalPages);
@@ -31,13 +33,13 @@ export default function CategoryCoursesListPage() {
       }
       loadApp();
     },
-    [limit, store.selectedSubCategory.id],
+    [limit, selectedSubCategory.id],
   );
 
   const handlePageChange = async function (event, value) {
     setPage(value);
     const coursesRes = await axiosGuestInstance.get(
-      `/courses?sortBy=view:desc&limit=${limit}&page=${value}&subCategoryId=${store.selectedSubCategory.id}`,
+      `/courses?sortBy=view:desc&limit=${limit}&page=${value}&subCategoryId=${selectedSubCategory.id}`,
     );
     setCourses(coursesRes.data.results);
   };
@@ -48,7 +50,7 @@ export default function CategoryCoursesListPage() {
     const coursesRes = await axiosGuestInstance.get(
       `/courses?sortBy=view:desc&limit=${
         e.target.value
-      }&page=${1}&subCategoryId=${store.selectedSubCategory.id}`,
+      }&page=${1}&subCategoryId=${selectedSubCategory.id}`,
     );
     setTotalCourses(coursesRes.data.totalResults);
     setTotalPages(coursesRes.data.totalPages);
@@ -61,19 +63,19 @@ export default function CategoryCoursesListPage() {
       <div style={{ margin: '20px' }}>
         {
           <SubCategoryTabs
-            subCategory={store.selectedSubCategory}
+            subCategory={selectedSubCategory}
             isNavigate={false}
           />
         }
       </div>
       <h2 style={{ margin: '20px 20px 5px', color: '#525252' }}>
-        {totalCourses} courses in {store.selectedSubCategory.name}
+        {totalCourses} courses in {selectedSubCategory.name}
       </h2>
       <div style={{ padding: '20px 40px 40px 60px' }}>
-        <Grid container xs={12} spacing={1}>
+        <Grid container xs={12} spacing={3} justifyContent="center">
           {courses.map(course => (
-            <Grid item justifyContent="center" xs={3}>
-              <CourseCard course={course} style={{ margin: '0px 20px' }} />
+            <Grid item xs={3}>
+              <CourseCard course={course} key={course.id} />
             </Grid>
           ))}
         </Grid>

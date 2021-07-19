@@ -6,6 +6,7 @@ import styles from '../Components/style.module/style.module.css';
 import { Col } from 'reactstrap';
 
 import Topbar from 'app/components/Topbar/Topbar';
+import Footer from 'app/components/Footer/Footer';
 import Sidebar from '../Components/SideBar/Sidebar';
 import TableCourses from './Components/TableCourses';
 
@@ -62,6 +63,7 @@ export function AdminCoursesPage() {
           <TableCourses />
         </div>
       </AppContext.Provider>
+      <Footer />
     </>
   );
 }

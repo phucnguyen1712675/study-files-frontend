@@ -5,6 +5,7 @@ import styles from '../Components/style.module/style.module.css';
 import { Col } from 'reactstrap';
 
 import Topbar from 'app/components/Topbar/Topbar';
+import Footer from 'app/components/Footer/Footer';
 import Sidebar from '../Components/SideBar/Sidebar';
 import TableMainCategories from './Components/TableMainCategories';
 import AddMainCategories from './Components/AddMainCategories';
@@ -64,6 +65,7 @@ export function AdminMainCategoriesPage() {
           <TableMainCategories />
         </div>
       </AppContext.Provider>
+      <Footer />
     </>
   );
 }

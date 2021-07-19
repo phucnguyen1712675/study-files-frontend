@@ -1,61 +1,90 @@
 import { Container, TextField } from '@material-ui/core';
-import * as React from 'react';
+import React, { useContext } from 'react';
+import { Grid } from '@material-ui/core';
 import { Button, Col, Row } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
-import background from '../../../assets/background.jpg';
-import { WatchList } from './components/watchList';
-import AppContext from './context';
-import reducer from './reducer';
+import AppContext from 'app/AppContext';
 import { axiosInstance } from '../../../api/index';
-import { useEffect, useReducer } from 'react';
 import './studentPage.css';
-import { MyCourses } from './components/myCoursesList';
+import TopBar from '../../components/Topbar/Topbar';
+import { CourseCard } from 'app/components/Cards/Cards';
+import { useState } from 'react';
 
 export function StudentPage() {
-  const initialAppState = {
-    query: '',
-    items: [],
+  const { store, dispatch } = useContext(AppContext) as any;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+    },
   };
 
-  const [watchListStore, watchListDispatch] = useReducer(
-    reducer,
-    initialAppState,
-  );
-  const [myCoursesStore, myCoursesDispatch] = useReducer(
-    reducer,
-    initialAppState,
-  );
-
-  useEffect(function () {
-    async function loadWatchList() {
-      const res = await axiosInstance.get(
-        `/student/watchList/60bf7ebd84719069503bd29a`,
-      );
-      watchListDispatch({
-        type: 'init',
+  const deleteCourseOfWatchList = async function (watchListId) {
+    const res = await axiosInstance.delete(
+      `/student/watchList/${watchListId}`,
+      config,
+    );
+    if (res.status === 204) {
+      dispatch({
+        type: 'delete_watch_list',
         payload: {
-          items: res.data,
-          query: '',
+          watchListId: watchListId,
         },
       });
+    } else {
+      alert('Đã xảy ra lỗi');
     }
+  };
 
-    async function loadMyCourses() {
-      const res = await axiosInstance.get(
-        `/student/myCourses/60bf7ebd84719069503bd29a`,
-      );
-      myCoursesDispatch({
-        type: 'init',
+  const deleteCourseOfMyCourse = async function (myCourseId) {
+    const res = await axiosInstance.delete(
+      `/student/myCourses/${myCourseId}`,
+      config,
+    );
+    console.log(myCourseId);
+    if (res.status === 204) {
+      dispatch({
+        type: 'delete_my_courses',
         payload: {
-          items: res.data,
-          query: '',
+          myCourseId: myCourseId,
         },
       });
+    } else {
+      alert('Đã xảy ra lỗi');
     }
+  };
 
-    loadWatchList();
-    loadMyCourses();
-  }, []);
+  const [nameValue, setNameValue] = useState(localStorage.studyFiles_user_name);
+  const [emailValue, setEmailValue] = useState(
+    localStorage.studyFiles_user_email,
+  );
+
+  const nameHandleChange = e => {
+    setNameValue(e.target.value);
+    console.log(`${nameValue}`);
+  };
+
+  const emailHandleChange = e => {
+    setEmailValue(e.target.value);
+    console.log(`${emailValue}`);
+  };
+
+  const updateDetailStudent = async function () {
+    console.log(nameValue);
+    console.log(emailValue);
+    const data = {
+      name: nameValue,
+      email: emailValue,
+    };
+    const res = await axiosInstance.patch(
+      `/admin/users/${localStorage.studyFiles_user_id}`,
+      data,
+      config,
+    );
+    if (res.status === 200) {
+      localStorage.studyFiles_user_name = data.name;
+      localStorage.studyFiles_user_email = data.email;
+    }
+  };
 
   return (
     <>
@@ -63,19 +92,9 @@ export function StudentPage() {
         <title>Student Page</title>
         <meta name="description" content="A Boilerplate application homepage" />
       </Helmet>
+      <TopBar initQuery={''} />
       <Container>
         <Row>
-          <Col sm={4} className="studentPage">
-            <div
-              style={{
-                backgroundImage: `url(${background})`,
-                backgroundRepeat: 'no-repeat',
-                width: '100px',
-                height: '100px',
-                marginLeft: '1%',
-              }}
-            ></div>
-          </Col>
           <Col sm={8} className="studentPage">
             <div>
               <div style={{ display: 'inline-block' }}> Họ tên:</div>
@@ -89,11 +108,14 @@ export function StudentPage() {
                   marginLeft: '10px',
                 }}
                 fullWidth={true}
-                defaultValue="Student A"
+                defaultValue={localStorage.studyFiles_user_name}
+                variant="outlined"
+                value={nameValue}
+                onChange={nameHandleChange}
               ></TextField>
             </div>
             <div>
-              <div style={{ display: 'inline-block' }}> Ngày sinh:</div>
+              <div style={{ display: 'inline-block' }}> Email:</div>
               <TextField
                 id="studentBirthday"
                 size="medium"
@@ -104,37 +126,61 @@ export function StudentPage() {
                   marginLeft: '10px',
                 }}
                 fullWidth={true}
-                defaultValue="1/1/2020"
+                defaultValue={localStorage.studyFiles_user_email}
+                variant="outlined"
+                value={emailValue}
+                onChange={emailHandleChange}
               ></TextField>
             </div>
-            <div>
-              <div style={{ display: 'inline-block' }}> Email:</div>
-              <TextField
-                id="studentEmail"
-                size="medium"
-                style={{
-                  borderRadius: 12,
-                  border: '2px solid black',
-                  display: 'inline-block',
-                  marginLeft: '10px',
-                }}
-                fullWidth={true}
-                defaultValue="student@gmail.com"
-              ></TextField>
-            </div>
+            <Button
+              style={{ marginTop: '10px', marginRight: '10px' }}
+              onClick={updateDetailStudent}
+            >
+              Sửa thông tin
+            </Button>
             <Button style={{ marginTop: '10px' }}>Đổi mật khẩu</Button>
-            <div style={{ marginTop: '10px' }}>
-              <b>Khóa học yêu thích</b>
-            </div>
-            <AppContext.Provider value={{ watchListStore, watchListDispatch }}>
-              <WatchList />
-            </AppContext.Provider>
-            <div style={{ marginTop: '10px' }}>
-              <b>Khóa học đã đăng kí</b>
-            </div>
-            <AppContext.Provider value={{ myCoursesStore, myCoursesDispatch }}>
-              <MyCourses />
-            </AppContext.Provider>
+            {/* // TODO Vu lm thêm cho mycourse */}
+            <div style={{ fontSize: '22px' }}>Khóa học đã thích</div>
+            <Grid item xs={9}>
+              <Grid container spacing={1}>
+                {store.watchList.map(course => (
+                  <div>
+                    <Grid item justifyContent="center" xs={4}>
+                      <CourseCard course={course} />
+                    </Grid>
+                    <Button
+                      onClick={() => {
+                        console.log(course.watchListId);
+                        deleteCourseOfWatchList(course.watchListId);
+                      }}
+                    >
+                      delete Watch list
+                    </Button>
+                  </div>
+                ))}
+              </Grid>
+            </Grid>
+
+            <div>Khóa học đã đăng kí</div>
+            <Grid item xs={9}>
+              <Grid container spacing={1}>
+                {store.myCourses.map(course => (
+                  <div>
+                    <Grid item justifyContent="center" xs={4}>
+                      <CourseCard course={course} />
+                    </Grid>
+                    <Button
+                      onClick={() => {
+                        console.log(course.myCourseId);
+                        deleteCourseOfMyCourse(course.myCourseId);
+                      }}
+                    >
+                      delete My Course
+                    </Button>
+                  </div>
+                ))}
+              </Grid>
+            </Grid>
           </Col>
         </Row>
       </Container>

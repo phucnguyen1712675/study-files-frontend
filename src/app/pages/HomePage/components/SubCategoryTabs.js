@@ -134,7 +134,7 @@ export default function SubCategoryTabs({ subCategory, isNavigate }) {
         {store.latestCourses
           .filter(course => course.subCategoryId === subCategory.id)
           .map(course => (
-            <CourseCard course={course} />
+            <CourseCard key={course.id} course={course} />
           ))}
       </Carousel>
     );
@@ -154,7 +154,7 @@ export default function SubCategoryTabs({ subCategory, isNavigate }) {
         ]}
       >
         {mostViewCourses.map(course => (
-          <CourseCard course={course} />
+          <CourseCard course={course} key={course.id} />
         ))}
       </Carousel>
     );
@@ -174,7 +174,7 @@ export default function SubCategoryTabs({ subCategory, isNavigate }) {
         ]}
       >
         {bestSellerCourses.map(course => (
-          <CourseCard course={course} />
+          <CourseCard course={course} key={course.id} />
         ))}
       </Carousel>
     );
@@ -190,7 +190,9 @@ export default function SubCategoryTabs({ subCategory, isNavigate }) {
       });
       const temp = subCategory.category.name.replaceAll(' ', '-');
       const temp2 = subCategory.name.replaceAll(' ', '-');
-      history.push(`/${temp}/${temp2}`);
+      history.push(`/category/${temp}/${temp2}`, {
+        selectedSubCategory: subCategory,
+      });
     }
   };
 

@@ -27,7 +27,7 @@ import {
   CategoryCoursesListPage,
 } from './pages/HomePage/Loadable';
 
-import { TeacherPage } from './pages/TeacherPage/Loadable';
+import { CourseDetailPage } from './pages/CourseDetailPage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
 import { StudentPage } from './pages/StudentPage';
@@ -38,45 +38,87 @@ import { axiosGuestInstance } from '../api/guest';
 
 export function App() {
   const { i18n } = useTranslation();
+  // const userId = localStorage.studyFiles_user_id;
   const initialAppState = {
-    query: '',
-    selectedSubCategory: '',
+    userId: '',
     bestSellerCourses: [],
     categories: [],
     subCategories: [],
     latestCourses: [],
+    watchList: [],
+    myCourses: [],
   };
 
   const [store, dispatch] = useReducer(reducer, initialAppState);
-  useEffect(function () {
-    async function loadApp() {
-      const bestSellerCoursesRes = await axiosGuestInstance.get(
-        `/courses?sortBy=subscriberNumber:desc&limit=4`,
-      );
-      const categoriesRes = await axiosGuestInstance.get(`/categories`);
-      const subCategoriesRes = await axiosGuestInstance.get(`/subCategories`);
-      var latestCourses: any[] = [];
-      for (var subCategory of subCategoriesRes.data) {
-        const coursesRes = await axiosGuestInstance.get(
-          `/courses?sortBy=createdAt:desc&limit=10&subCategoryId=${subCategory.id}`,
+  useEffect(
+    function () {
+      async function loadApp() {
+        const bestSellerCoursesRes = await axiosGuestInstance.get(
+          `/courses?sortBy=subscriberNumber:desc&limit=4`,
         );
-        latestCourses = [...latestCourses, ...coursesRes.data.results];
-      }
+        const categoriesRes = await axiosGuestInstance.get(`/categories`);
+        const subCategoriesRes = await axiosGuestInstance.get(`/subCategories`);
+        var latestCourses: any[] = [];
+        for (var subCategory of subCategoriesRes.data) {
+          const coursesRes = await axiosGuestInstance.get(
+            `/courses?sortBy=createdAt:desc&limit=10&subCategoryId=${subCategory.id}`,
+          );
+          latestCourses = [...latestCourses, ...coursesRes.data.results];
+        }
+        var watchList: any[] = [];
+        var myCourses: any[] = [];
+        if (store.userId) {
+        }
+        if (`${localStorage.studyFiles_user_role}` === 'student') {
+          const config = {
+            headers: {
+              Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+            },
+          };
+          //WatchList
+          const watchListRes = await axiosGuestInstance.get(
+            `/student/watchList/${localStorage.studyFiles_user_id}`,
+            config,
+          );
+          for (var item of watchListRes.data) {
+            const coursesRes = await axiosGuestInstance.get(
+              `/courses/${item.courseId}`,
+            );
+            const course = { ...coursesRes.data, watchListId: item.id };
+            watchList = [...watchList, course];
+          }
 
-      dispatch({
-        type: 'init',
-        payload: {
-          query: '',
-          selectedSubCategory: '',
-          bestSellerCourses: bestSellerCoursesRes.data.results,
-          categories: categoriesRes.data,
-          subCategories: subCategoriesRes.data,
-          latestCourses: latestCourses,
-        },
-      });
-    }
-    loadApp();
-  }, []);
+          //MyCourse
+          const myCoursesRes = await axiosGuestInstance.get(
+            `/student/myCourses/${localStorage.studyFiles_user_id}`,
+            config,
+          );
+          // eslint-disable-next-line
+          for (var item of myCoursesRes.data) {
+            const coursesRes = await axiosGuestInstance.get(
+              `/courses/${item.courseId}`,
+            );
+            const course = { ...coursesRes.data, myCourseId: item.id };
+            myCourses = [...myCourses, course];
+          }
+        }
+
+        dispatch({
+          type: 'init',
+          payload: {
+            bestSellerCourses: bestSellerCoursesRes.data.results,
+            categories: categoriesRes.data,
+            subCategories: subCategoriesRes.data,
+            latestCourses: latestCourses,
+            watchList: watchList,
+            myCourses: myCourses,
+          },
+        });
+      }
+      loadApp();
+    },
+    [store.userId],
+  );
 
   return (
     <BrowserRouter>
@@ -87,44 +129,46 @@ export function App() {
       >
         <meta name="description" content="Study-files application" />
       </Helmet>
-      <Switch>
-        <AppContext.Provider value={{ store, dispatch }}>
+      <AppContext.Provider value={{ store, dispatch }}>
+        <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/search" component={SearchPage} />
           <Route
             exact
-            path="/:category/:subCategory"
+            path="/category/:category/:subCategory"
             component={CategoryCoursesListPage}
           />
-        </AppContext.Provider>
 
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/register" component={RegisterPage} />
+          <Route exact path="/course/:name" component={CourseDetailPage} />
 
-        {/* admin routes */}
-        <PrivateRoute exact path="/admin/users">
-          <AdminUsersPage />
-        </PrivateRoute>
-        <PrivateRoute exact path="/admin/courses">
-          <AdminCoursesPage />
-        </PrivateRoute>
-        <PrivateRoute exact path="/admin/mainCategories">
-          <AdminMainCategoriesPage />
-        </PrivateRoute>
-        <PrivateRoute exact path="/admin/subCategories">
-          <AdminSubCategoriesPage />
-        </PrivateRoute>
-        <PrivateRoute exact path="/admin/updatePassword">
-          <AdminUpdatePasswordPage />
-        </PrivateRoute>
-        {/* end admin routes */}
+          <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/register" component={RegisterPage} />
 
-        <Route exact path="/teacher" component={TeacherPage} />
-        <Route exact path="/student" component={StudentPage} />
-        {/* <Route exact path="/student"  component={StudentPage}/> */}
+          {/* admin routes */}
+          <PrivateRoute exact path="/admin/users">
+            <AdminUsersPage />
+          </PrivateRoute>
+          <PrivateRoute exact path="/admin/courses">
+            <AdminCoursesPage />
+          </PrivateRoute>
+          <PrivateRoute exact path="/admin/mainCategories">
+            <AdminMainCategoriesPage />
+          </PrivateRoute>
+          <PrivateRoute exact path="/admin/subCategories">
+            <AdminSubCategoriesPage />
+          </PrivateRoute>
+          <PrivateRoute exact path="/admin/updatePassword">
+            <AdminUpdatePasswordPage />
+          </PrivateRoute>
+          {/* end admin routes */}
 
-        <Route component={NotFoundPage} />
-      </Switch>
+          {/* <Route exact path="/teacher" component={TeacherPage} /> */}
+          <Route exact path="/student" component={StudentPage} />
+          {/* <Route exact path="/student"  component={StudentPage}/> */}
+
+          <Route component={NotFoundPage} />
+        </Switch>
+      </AppContext.Provider>
       <GlobalStyle />
     </BrowserRouter>
   );

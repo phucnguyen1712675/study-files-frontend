@@ -30,6 +30,13 @@ export default function AddUser() {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
         },
       };
+      if (data.role === 'teacher') {
+        data = {
+          ...data,
+          avatar:
+            'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_640.png',
+        };
+      }
       const res = await axiosAdminInstance.post(`/users/`, data, config);
       if (res.status === 201) {
         dispatch({
