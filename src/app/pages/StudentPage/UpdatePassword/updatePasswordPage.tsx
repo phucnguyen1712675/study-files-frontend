@@ -32,6 +32,7 @@ export function UpdatePasswordPage() {
       console.log(res);
       if (res.status === 200) {
         reset({});
+        alert('Updated !');
       }
     } catch (err) {
       if (err.response) {
