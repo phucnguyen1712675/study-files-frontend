@@ -28,6 +28,7 @@ export default function Topbar({ initQuery }) {
       type: 'update_user_id',
       payload: {
         userId: '',
+        user: {},
       },
     });
     dispatch({

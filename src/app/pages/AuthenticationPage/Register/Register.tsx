@@ -73,13 +73,17 @@ export default function SignUp() {
       const res = await axiosAuthInstance.post('/register', data);
       if (res.status === 201) {
         localStorage.studyFiles_user_accessToken = res.data.tokens.access.token;
+        localStorage.studyFiles_user_refreshToken =
+          res.data.tokens.refresh.token;
         localStorage.studyFiles_user_id = res.data.user.id;
         localStorage.studyFiles_user_role = res.data.user.role;
         localStorage.studyFiles_user_name = res.data.user.name;
+        localStorage.studyFiles_user_email = res.data.user.email;
         dispatch({
           type: 'update_user_id',
           payload: {
             userId: res.data.user.id,
+            user: res.data,
           },
         });
         if (localStorage.studyFiles_user_role === 'admin') {

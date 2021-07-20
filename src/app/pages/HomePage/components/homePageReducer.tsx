@@ -10,11 +10,13 @@ export default function reducer(state, action) {
         watchList: action.payload.watchList,
         myCourses: action.payload.myCourses,
         userId: action.payload.userId,
+        user: action.payload.userId,
       };
     case 'update_user_id':
       return {
         ...state,
         userId: action.payload.userId,
+        user: { ...action.payload.user },
       };
     case 'update_course_rating':
       return {

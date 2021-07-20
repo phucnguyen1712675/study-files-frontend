@@ -40,6 +40,7 @@ export function App() {
   const { i18n } = useTranslation();
   // const userId = localStorage.studyFiles_user_id;
   const initialAppState = {
+    user: {},
     userId: '',
     bestSellerCourses: [],
     categories: [],
