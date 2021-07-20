@@ -74,9 +74,14 @@ export default function SignUp() {
       const res = await axiosAuthInstance.post('/register', data);
       if (res.status === 201) {
         localStorage.studyFiles_user_accessToken = res.data.tokens.access.token;
+        localStorage.studyFiles_user_refreshToken =
+          res.data.tokens.refresh.token;
         localStorage.studyFiles_user_id = res.data.user.id;
         localStorage.studyFiles_user_role = res.data.user.role;
         localStorage.studyFiles_user_name = res.data.user.name;
+        localStorage.studyFiles_user_email = res.data.user.email;
+        localStorage.studyFiles_user_isVerified = res.data.user.isEmailVerified;
+
         dispatch({
           type: 'update_user_id',
           payload: {
@@ -86,7 +91,20 @@ export default function SignUp() {
         if (localStorage.studyFiles_user_role === 'admin') {
           history.push('/admin');
         } else {
-          history.push('/');
+          // TODO trang send mail OTP ---> email verified page
+          const resSendEmail = await axiosAuthInstance.post(
+            '/send-verification-email',
+            {
+              email: res.data.user.email,
+              id: res.data.user.id,
+            },
+          );
+          if (resSendEmail.status === 200) {
+            alert('an Otp have sent to your register mail');
+            history.push('/verifyEmail');
+          } else {
+            alert('something wrong ?');
+          }
         }
       } else {
         alert('Invalid login.');
