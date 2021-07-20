@@ -112,6 +112,7 @@ export default function SubCategoryTabs({ subCategory, isNavigate }) {
       setBestSellerCourses(bestSellerCoursesRes.data.results);
     }
     loadApp();
+    // eslint-disable-next-line
   }, []);
 
   const handleChange = (event, newValue) => {

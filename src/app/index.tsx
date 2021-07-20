@@ -35,6 +35,7 @@ import { StudentPage } from './pages/StudentPage';
 import reducer from './pages/HomePage/components/homePageReducer';
 import AppContext from './AppContext';
 import { axiosGuestInstance } from '../api/guest';
+import { UpdatePasswordPage } from './pages/StudentPage/UpdatePassword/updatePasswordPage';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -165,6 +166,11 @@ export function App() {
 
           {/* <Route exact path="/teacher" component={TeacherPage} /> */}
           <Route exact path="/student" component={StudentPage} />
+          <Route
+            exact
+            path="/student/updatePassword"
+            component={UpdatePasswordPage}
+          />
           {/* <Route exact path="/student"  component={StudentPage}/> */}
 
           <Route component={NotFoundPage} />
