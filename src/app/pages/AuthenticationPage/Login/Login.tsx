@@ -80,12 +80,12 @@ export default function LoginPage() {
         localStorage.studyFiles_user_role = res.data.user.role;
         localStorage.studyFiles_user_name = res.data.user.name;
         localStorage.studyFiles_user_email = res.data.user.email;
+        localStorage.studyFiles_user_isVerified = res.data.user.isEmailVerified;
 
         dispatch({
           type: 'update_user_id',
           payload: {
             userId: res.data.user.id,
-            user: res.data,
           },
         });
 

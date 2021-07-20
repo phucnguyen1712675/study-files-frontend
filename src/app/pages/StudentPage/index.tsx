@@ -1,5 +1,5 @@
 import { Container, TextField } from '@material-ui/core';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Grid, Tabs, Tab, Box, Button } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import AppContext from 'app/AppContext';
@@ -104,6 +104,10 @@ export function StudentPage() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const { store, dispatch } = useContext(AppContext) as any;
+  const [nameValue, setNameValue] = useState(localStorage.studyFiles_user_name);
+  const [emailValue, setEmailValue] = useState(
+    localStorage.studyFiles_user_email,
+  );
   const config = {
     headers: {
       Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -150,11 +154,6 @@ export function StudentPage() {
     }
   };
 
-  const [nameValue, setNameValue] = useState(localStorage.studyFiles_user_name);
-  const [emailValue, setEmailValue] = useState(
-    localStorage.studyFiles_user_email,
-  );
-
   const nameHandleChange = e => {
     setNameValue(e.target.value);
     console.log(`${nameValue}`);
@@ -180,6 +179,12 @@ export function StudentPage() {
     if (res.status === 200) {
       localStorage.studyFiles_user_name = data.name;
       localStorage.studyFiles_user_email = data.email;
+      dispatch({
+        type: 'update_user_id',
+        payload: {
+          userId: localStorage.studyFiles_user_id,
+        },
+      });
       alert('Update successed');
     }
   };
@@ -275,7 +280,7 @@ export function StudentPage() {
             }}
             fullWidth
             label="Your name - userName"
-            defaultValue={localStorage.studyFiles_user_name}
+            defaultValue={nameValue}
             variant="outlined"
             value={nameValue}
             onChange={nameHandleChange}
@@ -291,7 +296,7 @@ export function StudentPage() {
             }}
             fullWidth
             label="Your email - userEmail"
-            defaultValue={localStorage.studyFiles_user_email}
+            defaultValue={emailValue}
             variant="outlined"
             value={emailValue}
             onChange={emailHandleChange}

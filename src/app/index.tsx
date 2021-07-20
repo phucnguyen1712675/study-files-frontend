@@ -12,8 +12,12 @@ import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 
 import { GlobalStyle } from 'styles/global-styles';
 
-import { LoginPage } from './pages/AuthenticationPage/Login/Loadable';
-import { RegisterPage } from './pages/AuthenticationPage/Register/Loadable';
+import {
+  LoginPage,
+  RegisterPage,
+  EmailVerifiedPage,
+} from './pages/AuthenticationPage/Loadable';
+
 import {
   AdminUsersPage,
   AdminMainCategoriesPage,
@@ -39,7 +43,6 @@ import { UpdatePasswordPage } from './pages/StudentPage/UpdatePassword/updatePas
 
 export function App() {
   const { i18n } = useTranslation();
-  // const userId = localStorage.studyFiles_user_id;
   const initialAppState = {
     user: {},
     userId: '',
@@ -71,39 +74,39 @@ export function App() {
         var myCourses: any[] = [];
         if (store.userId) {
         }
-        if (`${localStorage.studyFiles_user_role}` === 'student') {
-          const config = {
-            headers: {
-              Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
-            },
-          };
-          //WatchList
-          const watchListRes = await axiosGuestInstance.get(
-            `/student/watchList/${localStorage.studyFiles_user_id}`,
-            config,
-          );
-          for (var item of watchListRes.data) {
-            const coursesRes = await axiosGuestInstance.get(
-              `/courses/${item.courseId}`,
-            );
-            const course = { ...coursesRes.data, watchListId: item.id };
-            watchList = [...watchList, course];
-          }
+        // if (`${localStorage.studyFiles_user_role}` === 'student') {
+        //   const config = {
+        //     headers: {
+        //       Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+        //     },
+        //   };
+        //   //WatchList
+        //   const watchListRes = await axiosGuestInstance.get(
+        //     `/student/watchList/${localStorage.studyFiles_user_id}`,
+        //     config,
+        //   );
+        //   for (var item of watchListRes.data) {
+        //     const coursesRes = await axiosGuestInstance.get(
+        //       `/courses/${item.courseId}`,
+        //     );
+        //     const course = { ...coursesRes.data, watchListId: item.id };
+        //     watchList = [...watchList, course];
+        //   }
 
-          //MyCourse
-          const myCoursesRes = await axiosGuestInstance.get(
-            `/student/myCourses/${localStorage.studyFiles_user_id}`,
-            config,
-          );
-          // eslint-disable-next-line
-          for (var item of myCoursesRes.data) {
-            const coursesRes = await axiosGuestInstance.get(
-              `/courses/${item.courseId}`,
-            );
-            const course = { ...coursesRes.data, myCourseId: item.id };
-            myCourses = [...myCourses, course];
-          }
-        }
+        //   //MyCourse
+        //   const myCoursesRes = await axiosGuestInstance.get(
+        //     `/student/myCourses/${localStorage.studyFiles_user_id}`,
+        //     config,
+        //   );
+        //   // eslint-disable-next-line
+        //   for (var item of myCoursesRes.data) {
+        //     const coursesRes = await axiosGuestInstance.get(
+        //       `/courses/${item.courseId}`,
+        //     );
+        //     const course = { ...coursesRes.data, myCourseId: item.id };
+        //     myCourses = [...myCourses, course];
+        //   }
+        // }
 
         dispatch({
           type: 'init',
@@ -145,6 +148,7 @@ export function App() {
 
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
+          <Route exact path="/verifyEmail" component={EmailVerifiedPage} />
 
           {/* admin routes */}
           <PrivateRoute exact path="/admin/users">

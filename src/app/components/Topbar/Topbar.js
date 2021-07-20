@@ -11,6 +11,7 @@ import { Grid, InputBase, MenuItem, Menu } from '@material-ui/core';
 import NestedMenuItem from 'material-ui-nested-menu-item';
 import './Topbar.css';
 import AppContext from '../../AppContext';
+import { axiosGuestInstance } from 'api/guest';
 
 export default function Topbar({ initQuery }) {
   const history = useHistory();
@@ -19,16 +20,35 @@ export default function Topbar({ initQuery }) {
 
   const [menuPosition, setMenuPosition] = useState(null);
 
-  const btnSignOut_Clicked = function () {
+  const btnSignOut_Clicked = async function () {
     delete localStorage.studyFiles_user_accessToken;
     delete localStorage.studyFiles_user_id;
     delete localStorage.studyFiles_user_role;
     delete localStorage.studyFiles_user_name;
+    delete localStorage.studyFiles_user_email;
+    const refreshToken = localStorage.studyFiles_user_refreshToken;
+    console.log({
+      refreshToken: refreshToken,
+    });
+    try {
+      await axiosGuestInstance.post('/auth/logout', {
+        refreshToken: refreshToken,
+      });
+    } catch (err) {
+      if (err.response) {
+        alert(err.response.data.message);
+      } else if (err.request) {
+        alert(err.request);
+      } else {
+        alert(err.message);
+      }
+    }
+
+    delete localStorage.studyFiles_user_refreshToken;
     dispatch({
       type: 'update_user_id',
       payload: {
         userId: '',
-        user: {},
       },
     });
     dispatch({
