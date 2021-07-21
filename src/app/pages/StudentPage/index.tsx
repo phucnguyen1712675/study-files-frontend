@@ -8,7 +8,7 @@ import { axiosInstance } from '../../../api/index';
 import './studentPage.css';
 import TopBar from '../../components/Topbar/Topbar';
 import Footer from '../../components/Footer/Footer';
-import { CourseCard } from 'app/components/Cards/Cards';
+import { CourseCard, CourseCardNotFound } from 'app/components/Cards/Cards';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { axiosAuthInstance } from 'api/auth';
@@ -240,24 +240,36 @@ export function StudentPage() {
     return (
       <div style={{ padding: '20px' }}>
         <Grid container xs={12} spacing={1}>
-          {store.watchList.map(course => (
-            <Grid item xs={3} key={course.id}>
-              <div style={{ margin: '0px 0px' }}>
-                <CourseCard course={course} />
-                <Button
-                  style={{ margin: '0px 20px' }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => {
-                    console.log(course.watchListId);
-                    deleteCourseOfWatchList(course.watchListId);
-                  }}
-                >
-                  Remove
-                </Button>
-              </div>
-            </Grid>
-          ))}
+          {store.watchList.map(course => {
+            if (course.watchListId) {
+              return (
+                <Grid item xs={3} key={course.id}>
+                  <div style={{ margin: '0px 0px' }}>
+                    <CourseCard course={course} />
+                    <Button
+                      style={{ margin: '0px 20px' }}
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        console.log(course.watchListId);
+                        deleteCourseOfWatchList(course.watchListId);
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                </Grid>
+              );
+            } else {
+              return (
+                <Grid item xs={3}>
+                  <div style={{ margin: '0px 0px' }}>
+                    <CourseCardNotFound />
+                  </div>
+                </Grid>
+              );
+            }
+          })}
         </Grid>
       </div>
     );
@@ -267,24 +279,36 @@ export function StudentPage() {
     return (
       <div style={{ padding: '20px' }}>
         <Grid container xs={12} spacing={3} justifyContent="center">
-          {store.myCourses.map(course => (
-            <Grid item xs={3} key={course.id}>
-              <div style={{ margin: '0px 0px' }}>
-                <CourseCard course={course} />
-                <Button
-                  style={{ margin: '0px 20px' }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => {
-                    console.log(course.myCourseId);
-                    deleteCourseOfMyCourse(course.myCourseId);
-                  }}
-                >
-                  Remove
-                </Button>
-              </div>
-            </Grid>
-          ))}
+          {store.myCourses.map(course => {
+            if (course.myCourseId) {
+              return (
+                <Grid item xs={3} key={course.id}>
+                  <div style={{ margin: '0px 0px' }}>
+                    <CourseCard course={course} />
+                    <Button
+                      style={{ margin: '0px 20px' }}
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        console.log(course.myCourseId);
+                        deleteCourseOfMyCourse(course.myCourseId);
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                </Grid>
+              );
+            } else {
+              return (
+                <Grid item xs={3}>
+                  <div style={{ margin: '0px 0px' }}>
+                    <CourseCardNotFound />
+                  </div>
+                </Grid>
+              );
+            }
+          })}
         </Grid>
       </div>
     );

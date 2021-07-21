@@ -74,39 +74,45 @@ export function App() {
         var myCourses: any[] = [];
         if (store.userId) {
         }
-        // if (`${localStorage.studyFiles_user_role}` === 'student') {
-        //   const config = {
-        //     headers: {
-        //       Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
-        //     },
-        //   };
-        //   //WatchList
-        //   const watchListRes = await axiosGuestInstance.get(
-        //     `/student/watchList/${localStorage.studyFiles_user_id}`,
-        //     config,
-        //   );
-        //   for (var item of watchListRes.data) {
-        //     const coursesRes = await axiosGuestInstance.get(
-        //       `/courses/${item.courseId}`,
-        //     );
-        //     const course = { ...coursesRes.data, watchListId: item.id };
-        //     watchList = [...watchList, course];
-        //   }
+        if (`${localStorage.studyFiles_user_role}` === 'student') {
+          const config = {
+            headers: {
+              Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+            },
+          };
+          //WatchList
+          const watchListRes = await axiosGuestInstance.get(
+            `/student/watchList/${localStorage.studyFiles_user_id}`,
+            config,
+          );
+          for (var item of watchListRes.data) {
+            let course = {};
+            try {
+              const coursesRes = await axiosGuestInstance.get(
+                `/courses/${item.courseId}`,
+              );
+              course = { ...coursesRes.data, watchListId: item.id };
+            } catch {}
+            watchList = [...watchList, course];
+          }
 
-        //   //MyCourse
-        //   const myCoursesRes = await axiosGuestInstance.get(
-        //     `/student/myCourses/${localStorage.studyFiles_user_id}`,
-        //     config,
-        //   );
-        //   // eslint-disable-next-line
-        //   for (var item of myCoursesRes.data) {
-        //     const coursesRes = await axiosGuestInstance.get(
-        //       `/courses/${item.courseId}`,
-        //     );
-        //     const course = { ...coursesRes.data, myCourseId: item.id };
-        //     myCourses = [...myCourses, course];
-        //   }
-        // }
+          //MyCourse
+          const myCoursesRes = await axiosGuestInstance.get(
+            `/student/myCourses/${localStorage.studyFiles_user_id}`,
+            config,
+          );
+          // eslint-disable-next-line
+          for (var item of myCoursesRes.data) {
+            let course = {};
+            try {
+              const coursesRes = await axiosGuestInstance.get(
+                `/courses/${item.courseId}`,
+              );
+              course = { ...coursesRes.data, myCourseId: item.id };
+            } catch {}
+            myCourses = [...myCourses, course];
+          }
+        }
 
         dispatch({
           type: 'init',
