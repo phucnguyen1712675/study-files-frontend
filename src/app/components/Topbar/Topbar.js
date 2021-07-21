@@ -26,6 +26,7 @@ export default function Topbar({ initQuery }) {
     delete localStorage.studyFiles_user_role;
     delete localStorage.studyFiles_user_name;
     delete localStorage.studyFiles_user_email;
+    delete localStorage.studyFiles_user_isVerified;
     const refreshToken = localStorage.studyFiles_user_refreshToken;
     console.log({
       refreshToken: refreshToken,
