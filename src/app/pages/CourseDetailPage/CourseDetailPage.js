@@ -341,6 +341,8 @@ export default function CourseDetailPage() {
       history.push('/login');
     } else if (localStorage.studyFiles_user_role !== 'student') {
       alert('Only student can do this task');
+    } else if (`${localStorage.studyFiles_user_isVerified}` === 'false') {
+      alert('Only student with verified email can do this task');
     } else {
       if (study.is) {
         // TODO delete out of my courses
