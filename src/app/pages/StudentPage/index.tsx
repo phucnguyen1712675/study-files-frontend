@@ -1,6 +1,7 @@
 import { Container, TextField } from '@material-ui/core';
 import React, { useContext, useEffect } from 'react';
 import { Grid, Tabs, Tab, Box, Button } from '@material-ui/core';
+import { NewReleases } from '@material-ui/icons';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import AppContext from 'app/AppContext';
 import { axiosInstance } from '../../../api/index';
@@ -10,6 +11,7 @@ import Footer from '../../components/Footer/Footer';
 import { CourseCard } from 'app/components/Cards/Cards';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { axiosAuthInstance } from 'api/auth';
 
 const AntTabs = withStyles({
   root: {
@@ -108,11 +110,19 @@ export function StudentPage() {
   const [emailValue, setEmailValue] = useState(
     localStorage.studyFiles_user_email,
   );
+  const [isVerified, setIsVerified] = useState(true);
   const config = {
     headers: {
       Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
     },
   };
+
+  useEffect(function () {
+    function loadApp() {
+      setIsVerified(localStorage.studyFiles_user_isVerified === 'true');
+    }
+    loadApp();
+  }, []);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -172,13 +182,16 @@ export function StudentPage() {
       email: emailValue,
     };
     const res = await axiosInstance.patch(
-      `/admin/users/${localStorage.studyFiles_user_id}`,
+      `/auth/update/${localStorage.studyFiles_user_id}`,
       data,
       config,
     );
     if (res.status === 200) {
+      console.log(res.data);
       localStorage.studyFiles_user_name = data.name;
       localStorage.studyFiles_user_email = data.email;
+      localStorage.studyFiles_user_isVerified = res.data.isEmailVerified;
+      setIsVerified(`${res.data.isEmailVerified}` === 'true');
       dispatch({
         type: 'update_user_id',
         payload: {
@@ -193,6 +206,33 @@ export function StudentPage() {
 
   const NavigateToUpdatePasswordPage = function () {
     history.push('/student/updatePassword');
+  };
+
+  const VerifyEmailClick = async function () {
+    // TODO send and navigate to verify email page
+    try {
+      const resSendEmail = await axiosAuthInstance.post(
+        '/send-verification-email',
+        {
+          email: localStorage.studyFiles_user_email,
+          id: localStorage.studyFiles_user_id,
+        },
+      );
+      if (resSendEmail.status === 200) {
+        alert('an Otp have sent to your register mail');
+        history.push('/verifyEmail');
+      } else {
+        alert('something wrong ?');
+      }
+    } catch (err) {
+      if (err.response) {
+        alert(err.response.data.message);
+      } else if (err.request) {
+        alert(err.request);
+      } else {
+        alert(err.message);
+      }
+    }
   };
 
   // widget function ===================
@@ -247,6 +287,26 @@ export function StudentPage() {
           ))}
         </Grid>
       </div>
+    );
+  };
+
+  const VerifiedEmailButton = function () {
+    if (isVerified) {
+      return <></>;
+    }
+    return (
+      <Button
+        variant="contained"
+        color="secondary"
+        style={{
+          marginTop: '10px',
+          marginRight: 'auto',
+        }}
+        startIcon={<NewReleases />}
+        onClick={VerifyEmailClick}
+      >
+        Xác thực mail
+      </Button>
     );
   };
 
@@ -313,6 +373,8 @@ export function StudentPage() {
             marginLeft: 'auto',
           }}
         >
+          {VerifiedEmailButton()}
+
           <Button
             variant="contained"
             color="primary"
