@@ -4,6 +4,7 @@ import { TextField, Button, Typography, Container } from '@material-ui/core/';
 import useStyles from '../../Components/style.module/UseStyles.js';
 import { axiosAdminInstance } from 'api/admin';
 import AppContext from '../../../../AppContext';
+import { AccessToken } from 'api/auth';
 
 export default function AddMainCategory() {
   const { dispatch } = useContext(AppContext);
@@ -17,6 +18,7 @@ export default function AddMainCategory() {
 
   const onSubmit = async function (data) {
     try {
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -31,7 +33,6 @@ export default function AddMainCategory() {
         reset({});
       } else {
         alert(res.data);
-        console.log(res);
       }
     } catch (err) {
       if (err.response) {

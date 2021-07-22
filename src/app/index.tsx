@@ -9,7 +9,7 @@
 import React, { useReducer, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
-
+import { useTranslation } from 'react-i18next';
 import { GlobalStyle } from 'styles/global-styles';
 
 import {
@@ -31,15 +31,15 @@ import {
   CategoryCoursesListPage,
 } from './pages/HomePage/Loadable';
 
+import { StudentPage } from './pages/StudentPage';
+import { UpdatePasswordPage } from './pages/StudentPage/UpdatePassword/updatePasswordPage';
 import { CourseDetailPage } from './pages/CourseDetailPage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
-import { useTranslation } from 'react-i18next';
-import { StudentPage } from './pages/StudentPage';
 
 import reducer from './pages/HomePage/components/homePageReducer';
 import AppContext from './AppContext';
 import { axiosGuestInstance } from '../api/guest';
-import { UpdatePasswordPage } from './pages/StudentPage/UpdatePassword/updatePasswordPage';
+import { AccessToken } from 'api/auth';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -75,6 +75,7 @@ export function App() {
         if (store.userId) {
         }
         if (`${localStorage.studyFiles_user_role}` === 'student') {
+          await AccessToken();
           const config = {
             headers: {
               Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,

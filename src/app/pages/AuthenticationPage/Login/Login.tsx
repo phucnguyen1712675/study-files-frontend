@@ -74,6 +74,8 @@ export default function LoginPage() {
       const res = await axiosAuthInstance.post('/login', data);
       if (res.status === 200) {
         localStorage.studyFiles_user_accessToken = res.data.tokens.access.token;
+        localStorage.studyFiles_user_accessToken_expires =
+          res.data.tokens.access.expires;
         localStorage.studyFiles_user_refreshToken =
           res.data.tokens.refresh.token;
         localStorage.studyFiles_user_id = res.data.user.id;

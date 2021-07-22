@@ -14,6 +14,7 @@ import AddSubCategory from './Components/AddSubCategories';
 import reducer from './Components/SubCategoriesPageReducer';
 import AppContext from '../../../AppContext';
 import { axiosAdminInstance } from '../../../../api/admin';
+import { AccessToken } from 'api/auth';
 
 export function AdminSubCategoriesPage() {
   const initialSubCategories = { subCategories: [] };
@@ -21,6 +22,7 @@ export function AdminSubCategoriesPage() {
 
   useEffect(function () {
     async function loadTasks() {
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,

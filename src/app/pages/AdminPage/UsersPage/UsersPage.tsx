@@ -12,6 +12,7 @@ import TableUsers from './Components/TableUsers.js';
 import AppContext from '../../../AppContext';
 import reducer from './Components/UsersPageReducer';
 import { axiosAdminInstance } from '../../../../api/admin';
+import { AccessToken } from 'api/auth';
 
 export function AdminUsersPage() {
   const initialUsersPage = { users: [] };
@@ -20,6 +21,7 @@ export function AdminUsersPage() {
 
   useEffect(function () {
     async function loadTasks() {
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,

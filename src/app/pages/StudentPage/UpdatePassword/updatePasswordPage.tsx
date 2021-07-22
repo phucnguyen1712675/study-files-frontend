@@ -5,7 +5,7 @@ import styles from '../components/style.module.css';
 import Sidebar from 'app/pages/AdminPage/Components/SideBar/Sidebar';
 import useStyles from 'app/pages/AdminPage/Components/style.module/UseStyles';
 import { useForm } from 'react-hook-form';
-import { axiosInstance } from 'api';
+import { axiosAuthInstance, AccessToken } from 'api/auth';
 
 export function UpdatePasswordPage() {
   const classes = useStyles();
@@ -19,17 +19,17 @@ export function UpdatePasswordPage() {
 
   const onSubmit = async function (data) {
     try {
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
         },
       };
-      const res = await axiosInstance.patch(
-        `/auth/update-password/${localStorage.studyFiles_user_id}`,
+      const res = await axiosAuthInstance.patch(
+        `/update-password/${localStorage.studyFiles_user_id}`,
         data,
         config,
       );
-      console.log(res);
       if (res.status === 200) {
         reset({});
         alert('Updated !');

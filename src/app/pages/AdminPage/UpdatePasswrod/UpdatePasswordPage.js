@@ -9,6 +9,7 @@ import Topbar from 'app/components/Topbar/Topbar';
 import Footer from 'app/components/Footer/Footer';
 import Sidebar from '../Components/SideBar/Sidebar';
 import { axiosInstance } from '../../../../api/admin';
+import { AccessToken } from 'api/auth';
 
 export function AdminUpdatePasswordPage() {
   const classes = useStyles();
@@ -21,6 +22,7 @@ export function AdminUpdatePasswordPage() {
 
   const onSubmit = async function (data) {
     try {
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -31,7 +33,6 @@ export function AdminUpdatePasswordPage() {
         data,
         config,
       );
-      console.log(res);
       if (res.status === 200) {
         reset({});
       }

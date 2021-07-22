@@ -3,6 +3,7 @@ import { CardContent, CardMedia, makeStyles, Avatar } from '@material-ui/core';
 import ReactStars from 'react-rating-stars-component';
 import AppContext from 'app/AppContext';
 import { useHistory } from 'react-router-dom';
+import { Image } from 'cloudinary-react';
 import userAvatar from 'images/user.jpg';
 
 const useStyles = makeStyles(theme => ({
@@ -20,7 +21,9 @@ const useStyles = makeStyles(theme => ({
   },
   cardMedia: {
     borderRadius: '3px',
-    paddingTop: '56.25%', // 16:9
+    // paddingTop: '56.25%', // 16:9
+    height: '160px',
+    width: '285px',
   },
   cardContent: {
     paddingLeft: '0px',
@@ -190,13 +193,19 @@ export function CourseCard({ course }) {
   };
 
   const NavigateToDetailCourses = function () {
-    // TODO navigate to detail course
     history.push(`/course/${course.name}`, { course: course });
   };
 
   return (
     <div className={classes.card} onClick={() => NavigateToDetailCourses()}>
-      <CardMedia className={classes.cardMedia} image={course.image} />
+      {/* <CardMedia className={classes.cardMedia} image={course.image} /> */}
+      <div className={classes.cardMedia}>
+        <Image
+          className={classes.cardMedia}
+          cloudName={process.env.REACT_APP_CLOUDINARY_NAME}
+          publicId={course.image}
+        />
+      </div>
       <CardContent className={classes.cardContent}>
         <div className={classes.cardTittle} style={{ marginTop: '8px' }}>
           {course.name}

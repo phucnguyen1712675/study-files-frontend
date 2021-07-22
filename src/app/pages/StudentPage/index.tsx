@@ -11,7 +11,7 @@ import Footer from '../../components/Footer/Footer';
 import { CourseCard, CourseCardNotFound } from 'app/components/Cards/Cards';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { axiosAuthInstance } from 'api/auth';
+import { axiosAuthInstance, AccessToken } from 'api/auth';
 
 const AntTabs = withStyles({
   root: {
@@ -111,11 +111,6 @@ export function StudentPage() {
     localStorage.studyFiles_user_email,
   );
   const [isVerified, setIsVerified] = useState(true);
-  const config = {
-    headers: {
-      Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
-    },
-  };
 
   useEffect(function () {
     function loadApp() {
@@ -129,11 +124,16 @@ export function StudentPage() {
   };
 
   const deleteCourseOfWatchList = async function (watchListId) {
+    await AccessToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+      },
+    };
     const res = await axiosInstance.delete(
       `/student/watchList/${watchListId}`,
       config,
     );
-    console.log(watchListId);
     if (res.status === 204) {
       dispatch({
         type: 'delete_watch_list',
@@ -147,11 +147,16 @@ export function StudentPage() {
   };
 
   const deleteCourseOfMyCourse = async function (myCourseId) {
+    await AccessToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+      },
+    };
     const res = await axiosInstance.delete(
       `/student/myCourses/${myCourseId}`,
       config,
     );
-    console.log(myCourseId);
     if (res.status === 204) {
       dispatch({
         type: 'delete_my_courses',
@@ -166,17 +171,19 @@ export function StudentPage() {
 
   const nameHandleChange = e => {
     setNameValue(e.target.value);
-    console.log(`${nameValue}`);
   };
 
   const emailHandleChange = e => {
     setEmailValue(e.target.value);
-    console.log(`${emailValue}`);
   };
 
   const updateDetailStudent = async function () {
-    console.log(nameValue);
-    console.log(emailValue);
+    await AccessToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
+      },
+    };
     const data = {
       name: nameValue,
       email: emailValue,
@@ -187,7 +194,6 @@ export function StudentPage() {
       config,
     );
     if (res.status === 200) {
-      console.log(res.data);
       localStorage.studyFiles_user_name = data.name;
       localStorage.studyFiles_user_email = data.email;
       localStorage.studyFiles_user_isVerified = res.data.isEmailVerified;
@@ -209,7 +215,6 @@ export function StudentPage() {
   };
 
   const VerifyEmailClick = async function () {
-    // TODO send and navigate to verify email page
     try {
       const resSendEmail = await axiosAuthInstance.post(
         '/send-verification-email',
@@ -251,7 +256,6 @@ export function StudentPage() {
                       variant="outlined"
                       color="primary"
                       onClick={() => {
-                        console.log(course.watchListId);
                         deleteCourseOfWatchList(course.watchListId);
                       }}
                     >
@@ -290,7 +294,6 @@ export function StudentPage() {
                       variant="outlined"
                       color="primary"
                       onClick={() => {
-                        console.log(course.myCourseId);
                         deleteCourseOfMyCourse(course.myCourseId);
                       }}
                     >
