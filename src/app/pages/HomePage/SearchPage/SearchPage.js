@@ -255,7 +255,7 @@ export default function SearchPage() {
     if (courses.length > 0) {
       return (
         <div>
-          <Grid container xs={12} style={{ padding: '20px 40px 40px 40px' }}>
+          <Grid container style={{ padding: '20px 40px 40px 40px' }}>
             <Grid item xs={3}>
               {SortFilterWidget()}
             </Grid>

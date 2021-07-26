@@ -86,7 +86,6 @@ export function App() {
 
   // useEffect(function () {
   //   function loadApp2() {
-  //     // TODO run to up sections/lectures here
   //     testAddSectionsAndLectures();
   //   }
   //   loadApp2();

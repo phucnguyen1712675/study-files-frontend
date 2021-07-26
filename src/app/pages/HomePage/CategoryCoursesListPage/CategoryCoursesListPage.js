@@ -74,8 +74,8 @@ export default function CategoryCoursesListPage() {
       <div style={{ padding: '20px 40px 40px 60px' }}>
         <Grid container xs={12} spacing={3} justifyContent="center">
           {courses.map(course => (
-            <Grid item xs={3}>
-              <CourseCard course={course} key={course.id} />
+            <Grid item xs={3} key={course.id}>
+              <CourseCard course={course} />
             </Grid>
           ))}
         </Grid>

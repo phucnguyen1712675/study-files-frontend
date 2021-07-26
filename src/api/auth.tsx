@@ -1,11 +1,9 @@
 import axios from 'axios';
-
+import { API } from './url';
+const APIUrl = API;
 export const axiosAuthInstance = axios.create({
-  baseURL: 'http://localhost:3030/v1/auth',
+  baseURL: `${APIUrl}/auth`,
   timeout: 5000,
-  // headers: {
-  //   'X-Access-Token': 'accessToken'
-  // }
 });
 
 export function parseJwt(token) {
@@ -31,7 +29,7 @@ export async function AccessToken() {
     token = localStorage.studyFiles_user_accessToken;
   } else {
     const axiosAuthInstance = axios.create({
-      baseURL: 'http://localhost:3030/v1/auth',
+      baseURL: `${APIUrl}/auth`,
       timeout: 5000,
     });
     const res = await axiosAuthInstance.post('/refresh-tokens', {
