@@ -13,6 +13,7 @@ import TableCourses from './Components/TableCourses';
 import reducer from './Components/CoursesPageReducer';
 import AppContext from '../../../AppContext';
 import { axiosAdminInstance } from '../../../../api/admin';
+import { AccessToken } from 'api/auth';
 
 export function AdminCoursesPage() {
   const initialCourses = { courses: [] };
@@ -20,6 +21,7 @@ export function AdminCoursesPage() {
 
   useEffect(function () {
     async function loadTasks() {
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,

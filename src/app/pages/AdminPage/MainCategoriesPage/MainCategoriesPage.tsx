@@ -13,6 +13,7 @@ import AddMainCategories from './Components/AddMainCategories';
 import reducer from './Components/MainCategoriesPageReducer';
 import AppContext from '../../../AppContext';
 import { axiosAdminInstance } from '../../../../api/admin';
+import { AccessToken } from 'api/auth';
 
 export function AdminMainCategoriesPage() {
   const initialMainCategoriesPage = { mainCategories: [] };
@@ -21,6 +22,7 @@ export function AdminMainCategoriesPage() {
 
   useEffect(function () {
     async function loadTasks() {
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,

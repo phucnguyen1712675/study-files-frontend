@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core/';
 import useStyles from '../../Components/style.module/UseStyles.js';
 import { axiosAdminInstance } from 'api/admin';
+import { AccessToken } from 'api/auth';
 import AppContext from '../../../../AppContext';
 
 export default function AddUser() {
@@ -25,6 +26,7 @@ export default function AddUser() {
 
   const onSubmit = async function (data) {
     try {
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,

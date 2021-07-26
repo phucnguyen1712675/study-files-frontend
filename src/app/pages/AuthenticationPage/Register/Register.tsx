@@ -74,6 +74,8 @@ export default function SignUp() {
       const res = await axiosAuthInstance.post('/register', data);
       if (res.status === 201) {
         localStorage.studyFiles_user_accessToken = res.data.tokens.access.token;
+        localStorage.studyFiles_user_accessToken_expires =
+          res.data.tokens.access.expires;
         localStorage.studyFiles_user_refreshToken =
           res.data.tokens.refresh.token;
         localStorage.studyFiles_user_id = res.data.user.id;
@@ -91,7 +93,6 @@ export default function SignUp() {
         if (localStorage.studyFiles_user_role === 'admin') {
           history.push('/admin');
         } else {
-          // TODO trang send mail OTP ---> email verified page
           const resSendEmail = await axiosAuthInstance.post(
             '/send-verification-email',
             {

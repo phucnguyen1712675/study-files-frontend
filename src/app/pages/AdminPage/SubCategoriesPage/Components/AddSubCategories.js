@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core/';
 import useStyles from '../../Components/style.module/UseStyles.js';
 import { axiosAdminInstance } from 'api/admin';
+import { AccessToken } from 'api/auth';
 import AppContext from '../../../../AppContext';
 
 export default function AddSubCategory() {
@@ -25,6 +26,7 @@ export default function AddSubCategory() {
 
   useEffect(function () {
     async function loadTasks() {
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -38,6 +40,7 @@ export default function AddSubCategory() {
 
   const onSubmit = async function (data) {
     try {
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -56,7 +59,6 @@ export default function AddSubCategory() {
         reset({});
       } else {
         alert(res.data);
-        console.log(res);
       }
     } catch (err) {
       if (err.response) {

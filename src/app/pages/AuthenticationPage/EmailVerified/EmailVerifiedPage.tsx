@@ -50,7 +50,6 @@ export default function EmailVerifiedPage() {
   const [countDown, setCountDown] = useState(600);
 
   const ResendOTPClick = async function () {
-    // TODO trang resend email otp
     try {
       const data = {
         email: localStorage.studyFiles_user_email,
@@ -78,7 +77,6 @@ export default function EmailVerifiedPage() {
   };
 
   const onSubmit = async function (data) {
-    // TODO trang send otp
     data = { ...data, id: localStorage.studyFiles_user_id };
     try {
       const resSendOTP = await axiosAuthInstance.post('/verify-email', data);

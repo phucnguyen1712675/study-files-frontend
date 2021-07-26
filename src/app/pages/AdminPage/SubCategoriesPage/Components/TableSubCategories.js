@@ -20,6 +20,7 @@ import { Edit, Delete } from '@material-ui/icons';
 import styles from '../../Components/style.module/style.module.css';
 import AppContext from '../../../../AppContext';
 import { axiosAdminInstance } from 'api/admin';
+import { AccessToken } from 'api/auth';
 
 export default function TableMainCategories() {
   const { store, dispatch } = useContext(AppContext);
@@ -30,6 +31,7 @@ export default function TableMainCategories() {
 
   useEffect(function () {
     async function loadTasks() {
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -52,6 +54,7 @@ export default function TableMainCategories() {
   const handleCloseDeleteDialog = async function (bool) {
     if (bool) {
       try {
+        await AccessToken();
         const config = {
           headers: {
             Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -90,6 +93,7 @@ export default function TableMainCategories() {
   const handleCloseDetailDialog = async function (bool) {
     if (bool) {
       try {
+        await AccessToken();
         const config = {
           headers: {
             Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,

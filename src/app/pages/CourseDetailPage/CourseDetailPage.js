@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import ShowMore from 'react-show-more-list';
 import ShowMoreText from 'react-show-more-text';
@@ -9,7 +8,6 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {
   Button,
   CardContent,
-  CardMedia,
   makeStyles,
   Avatar,
   TextField,
@@ -31,14 +29,15 @@ import {
 import Carousel, { slidesToShowPlugin } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import ReactStars from 'react-rating-stars-component';
+import { Image } from 'cloudinary-react';
 import AppContext from 'app/AppContext';
 import { axiosGuestInstance } from '../../../api/guest';
+import { AccessToken } from 'api/auth';
 import TopBar from '../../components/Topbar/Topbar';
 import Footer from '../../components/Footer/Footer';
 import userAvatar from 'images/user.jpg';
-
+import { SampleDataSections, SectionList } from './components/SectionList';
 import { CourseCard, RatingCard } from '../../components/Cards/Cards';
-import { isConstructorDeclaration } from 'typescript';
 
 const Accordion = withStyles({
   root: {
@@ -85,7 +84,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#030f2e',
     color: '#fafafa',
     width: '100%',
-    height: '100%',
+    // height: '100%',
     display: 'flex',
     borderRadius: '3px',
     flexDirection: 'row',
@@ -93,8 +92,8 @@ const useStyles = makeStyles(theme => ({
   cardMedia: {
     borderRadius: '3px',
     border: '2px solid #fafafa',
-    height: '360px',
-    width: '100%',
+    height: '100%',
+    width: '50%',
   },
   cardContent: {
     paddingTop: '5px',
@@ -144,7 +143,7 @@ export default function CourseDetailPage() {
   const history = useHistory();
   const course = location.state.course;
   const [thisTeacher, setThisTeacher] = useState(false);
-  const [videos, setVideos] = useState([]);
+  const [sections, setSections] = useState([]);
   const [rateInfo, setRateInfo] = useState({
     rating: course.rating,
     ratingCount: course.ratingCount,
@@ -170,7 +169,6 @@ export default function CourseDetailPage() {
     function () {
       // chạy lại mỗi khi userId, store.mycourses và store.watchList thay đổi
       async function loadApp() {
-        console.log(course.name);
         setStudy({ ...study, is: false, myCourseId: '' });
         setLike({
           ...like,
@@ -225,6 +223,11 @@ export default function CourseDetailPage() {
           bestSaleCoursesSameCategoryRes.data.results,
         );
 
+        const sectionsRes = await axiosGuestInstance.get(
+          `/courses/${course.id}/sections?courseId=${course.id}&limit=20`,
+        );
+        setSections([...sectionsRes.data.results]);
+
         const unlisten = history.listen(() => {
           window.scrollTo(0, 0);
         });
@@ -232,8 +235,6 @@ export default function CourseDetailPage() {
         return () => {
           unlisten();
         };
-
-        // TODO vu get videos here
       }
       loadApp();
     },
@@ -253,7 +254,6 @@ export default function CourseDetailPage() {
   };
 
   const NavigateToCategoryCousesListPage = function () {
-    // TODO navigate to category list course
     let categoryStr = '';
     for (var category of store.categories) {
       if (category.id === course.subCategory.categoryId) {
@@ -268,15 +268,14 @@ export default function CourseDetailPage() {
   };
 
   const WatchListButtonClickHandle = async function () {
-    // TODO watchlist handle
     if (!localStorage.studyFiles_user_role) {
       history.push('/login');
     } else if (localStorage.studyFiles_user_role !== 'student') {
       alert('Only student can do this task');
     } else {
       if (like.is) {
-        // TODO delete out of watch list
         try {
+          await AccessToken();
           const config = {
             headers: {
               Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -304,6 +303,7 @@ export default function CourseDetailPage() {
         }
       } else {
         try {
+          await AccessToken();
           const config = {
             headers: {
               Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -336,7 +336,6 @@ export default function CourseDetailPage() {
   };
 
   const MyCourseButtonClickHandle = async function () {
-    // TODO my course handle
     if (!localStorage.studyFiles_user_role) {
       history.push('/login');
     } else if (localStorage.studyFiles_user_role !== 'student') {
@@ -345,8 +344,8 @@ export default function CourseDetailPage() {
       alert('Only student with verified email can do this task');
     } else {
       if (study.is) {
-        // TODO delete out of my courses
         try {
+          await AccessToken();
           const config = {
             headers: {
               Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -373,8 +372,8 @@ export default function CourseDetailPage() {
           }
         }
       } else {
-        // TODO add to my courses
         try {
+          await AccessToken();
           const config = {
             headers: {
               Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -419,6 +418,7 @@ export default function CourseDetailPage() {
       content: myComment,
       score: myScoreRate,
     };
+    await AccessToken();
     const config = {
       headers: {
         Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -466,7 +466,6 @@ export default function CourseDetailPage() {
   };
 
   const HandleFeedBackSubmit = async function (ratingId) {
-    // TODO feedback sending
     if (myComment !== '') {
       const data = {
         teacherId: localStorage.studyFiles_user_id,
@@ -474,6 +473,7 @@ export default function CourseDetailPage() {
         content: myComment,
         ratingId: ratingId,
       };
+      await AccessToken();
       const config = {
         headers: {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -797,9 +797,46 @@ export default function CourseDetailPage() {
             {BottomMainInfoWidget()}
           </div>
         </CardContent>
-        <CardMedia className={classes.cardMedia} image={course.image} />
+        <Image
+          className={classes.cardMedia}
+          cloudName={process.env.REACT_APP_CLOUDINARY_NAME}
+          publicId={course.image}
+        />
       </div>
     );
+  };
+
+  const EnterStudyPage = function () {
+    if (study.is === true) {
+      const url = `/course/${course.name}/studyPage`;
+      return (
+        <div style={{ width: '70%', display: 'flex' }}>
+          <Button
+            onClick={() =>
+              history.push(url, {
+                courseName: course.name,
+                courseId: course.id,
+                myCourseId: study.myCourseId,
+              })
+            }
+            variant="contained"
+            style={{
+              marginTop: '50px',
+              width: '300px',
+              marginLeft: 'auto',
+              backgroundColor: '#041d33',
+              color: '#fafafa',
+              fontSize: 16,
+              fontWeight: 'bolder',
+            }}
+          >
+            Enter class
+          </Button>
+        </div>
+      );
+    } else {
+      return <></>;
+    }
   };
 
   const DetailDescriptionWidget = function () {
@@ -832,12 +869,17 @@ export default function CourseDetailPage() {
   };
 
   const VideosWidget = function () {
-    // TODO vu
-    return <div style={{ marginTop: '50px' }}>Video to study</div>;
+    return (
+      <div style={{ marginTop: '50px', width: '70%' }}>
+        <div className={classes.bigText} style={{ marginBottom: '10px' }}>
+          Course content
+        </div>
+        <SectionList sectionList={sections} />
+      </div>
+    );
   };
 
   const myRateWidget = function () {
-    // TODO rating widget for student
     const allRatings = ratings;
     if (localStorage.studyFiles_user_role === 'student' && study.is) {
       let myRate = null;
@@ -1280,6 +1322,7 @@ export default function CourseDetailPage() {
           color: '#525252',
         }}
       >
+        {EnterStudyPage()}
         {DetailDescriptionWidget()}
         {VideosWidget()}
         {RatingListWidget()}

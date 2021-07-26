@@ -22,15 +22,13 @@ export default function Topbar({ initQuery }) {
 
   const btnSignOut_Clicked = async function () {
     delete localStorage.studyFiles_user_accessToken;
+    delete localStorage.studyFiles_user_accessToken_expires;
     delete localStorage.studyFiles_user_id;
     delete localStorage.studyFiles_user_role;
     delete localStorage.studyFiles_user_name;
     delete localStorage.studyFiles_user_email;
     delete localStorage.studyFiles_user_isVerified;
     const refreshToken = localStorage.studyFiles_user_refreshToken;
-    console.log({
-      refreshToken: refreshToken,
-    });
     try {
       await axiosGuestInstance.post('/auth/logout', {
         refreshToken: refreshToken,
@@ -72,7 +70,6 @@ export default function Topbar({ initQuery }) {
     history.push(`/search?query=${query}`, { query: query });
   };
 
-  // TODO navigate to student/teacher/page
   const NavigateToUserPage = function () {
     if (localStorage.studyFiles_user_role === 'student') {
       history.push('/student');

@@ -12,13 +12,16 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import { Visibility, Delete } from '@material-ui/icons';
 
 import styles from '../../Components/style.module/style.module.css';
 import AppContext from '../../../../AppContext';
 import { axiosAdminInstance } from 'api/admin';
+import { AccessToken } from 'api/auth';
 
 export default function TableCourses() {
+  const history = useHistory();
   const { store, dispatch } = useContext(AppContext);
   const [selectedId, setSelectedId] = useState('');
 
@@ -32,6 +35,7 @@ export default function TableCourses() {
   const handleCloseDeleteDialog = async function (bool) {
     if (bool) {
       try {
+        await AccessToken();
         const config = {
           headers: {
             Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -60,8 +64,14 @@ export default function TableCourses() {
     setOpenDelete(false);
   };
 
-  const handleClickCourseDetail = async function (id) {
-    // TODO navigate to course Detail
+  const handleClickCourseDetail = async function (item) {
+    const course = { ...item };
+    delete course.subCategoryName;
+    delete course.teacherName;
+    delete course.delete;
+    delete course.detail;
+    history.push(`/course/${course.name}`, { course: course });
+    // history.push('/');
   };
 
   const DataTableUI = function () {
@@ -81,7 +91,7 @@ export default function TableCourses() {
       item.detail = (
         <Button
           style={{ width: '30px' }}
-          onClick={() => handleClickCourseDetail(item.id)}
+          onClick={() => handleClickCourseDetail(item)}
           variant="contained"
           color="primary"
         >

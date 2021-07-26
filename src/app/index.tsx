@@ -9,7 +9,7 @@
 import React, { useReducer, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
-
+import { useTranslation } from 'react-i18next';
 import { GlobalStyle } from 'styles/global-styles';
 
 import {
@@ -31,15 +31,17 @@ import {
   CategoryCoursesListPage,
 } from './pages/HomePage/Loadable';
 
+import { StudyPage } from './pages/StudyPage/Loadable';
+import { StudentPage } from './pages/StudentPage';
+import { UpdatePasswordPage } from './pages/StudentPage/UpdatePassword/updatePasswordPage';
 import { CourseDetailPage } from './pages/CourseDetailPage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
-import { useTranslation } from 'react-i18next';
-import { StudentPage } from './pages/StudentPage';
 
 import reducer from './pages/HomePage/components/homePageReducer';
 import AppContext from './AppContext';
 import { axiosGuestInstance } from '../api/guest';
-import { UpdatePasswordPage } from './pages/StudentPage/UpdatePassword/updatePasswordPage';
+import { AccessToken } from 'api/auth';
+import { SampleDataSections } from './pages/CourseDetailPage/components/SectionList';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -53,6 +55,42 @@ export function App() {
     watchList: [],
     myCourses: [],
   };
+
+  // const testAddSectionsAndLectures = async function () {
+  //   const sections = [...SampleDataSections()];
+  //   const coursesRes = await axiosGuestInstance.get(`/test/courses`);
+  //   const courses = coursesRes.data;
+  //   for (var course of courses) {
+  //     for (var section of sections) {
+  //       const dataSection = {
+  //         courseId: course.id,
+  //         title: section.title,
+  //       };
+  //       const sectionRes = await axiosGuestInstance.post(
+  //         `/test/sections`,
+  //         dataSection,
+  //       );
+  //       const sectionId = sectionRes.data.id;
+  //       for (var lecture of section.lectures) {
+  //         const dataLecture = {
+  //           sectionId: sectionId,
+  //           title: lecture.title,
+  //           canPreview: lecture.canPreview,
+  //           videoUrl: lecture.videoUrl,
+  //         };
+  //         await axiosGuestInstance.post(`/test/lectures`, dataLecture);
+  //       }
+  //     }
+  //   }
+  // };
+
+  // useEffect(function () {
+  //   function loadApp2() {
+  //     // TODO run to up sections/lectures here
+  //     testAddSectionsAndLectures();
+  //   }
+  //   loadApp2();
+  // }, []);
 
   const [store, dispatch] = useReducer(reducer, initialAppState);
   useEffect(
@@ -75,6 +113,7 @@ export function App() {
         if (store.userId) {
         }
         if (`${localStorage.studyFiles_user_role}` === 'student') {
+          await AccessToken();
           const config = {
             headers: {
               Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
@@ -151,6 +190,7 @@ export function App() {
           />
 
           <Route exact path="/course/:name" component={CourseDetailPage} />
+          <Route exact path="/course/:name/studyPage" component={StudyPage} />
 
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />
@@ -181,7 +221,6 @@ export function App() {
             path="/student/updatePassword"
             component={UpdatePasswordPage}
           />
-          {/* <Route exact path="/student"  component={StudentPage}/> */}
 
           <Route component={NotFoundPage} />
         </Switch>
