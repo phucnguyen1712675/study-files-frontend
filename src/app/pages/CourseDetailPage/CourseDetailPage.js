@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import ShowMore from 'react-show-more-list';
 import ShowMoreText from 'react-show-more-text';
@@ -37,7 +36,7 @@ import { AccessToken } from 'api/auth';
 import TopBar from '../../components/Topbar/Topbar';
 import Footer from '../../components/Footer/Footer';
 import userAvatar from 'images/user.jpg';
-import { SampleDataVideos, SectionList } from './components/SectionList';
+import { SampleDataSections, SectionList } from './components/SectionList';
 import { CourseCard, RatingCard } from '../../components/Cards/Cards';
 
 const Accordion = withStyles({
@@ -224,8 +223,10 @@ export default function CourseDetailPage() {
           bestSaleCoursesSameCategoryRes.data.results,
         );
 
-        // TODO vu get videos here
-        setSections([...SampleDataVideos()]);
+        const sectionsRes = await axiosGuestInstance.get(
+          `/courses/${course.id}/sections?courseId=${course.id}&limit=20`,
+        );
+        setSections([...sectionsRes.data.results]);
 
         const unlisten = history.listen(() => {
           window.scrollTo(0, 0);
@@ -805,6 +806,39 @@ export default function CourseDetailPage() {
     );
   };
 
+  const EnterStudyPage = function () {
+    if (study.is === true) {
+      const url = `/course/${course.name}/studyPage`;
+      return (
+        <div style={{ width: '70%', display: 'flex' }}>
+          <Button
+            onClick={() =>
+              history.push(url, {
+                courseName: course.name,
+                courseId: course.id,
+                myCourseId: study.myCourseId,
+              })
+            }
+            variant="contained"
+            style={{
+              marginTop: '50px',
+              width: '300px',
+              marginLeft: 'auto',
+              backgroundColor: '#041d33',
+              color: '#fafafa',
+              fontSize: 16,
+              fontWeight: 'bolder',
+            }}
+          >
+            Enter class
+          </Button>
+        </div>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   const DetailDescriptionWidget = function () {
     return (
       <div className={classes.shadowCard}>
@@ -835,7 +869,6 @@ export default function CourseDetailPage() {
   };
 
   const VideosWidget = function () {
-    // TODO vu
     return (
       <div style={{ marginTop: '50px', width: '70%' }}>
         <div className={classes.bigText} style={{ marginBottom: '10px' }}>
@@ -1289,6 +1322,7 @@ export default function CourseDetailPage() {
           color: '#525252',
         }}
       >
+        {EnterStudyPage()}
         {DetailDescriptionWidget()}
         {VideosWidget()}
         {RatingListWidget()}

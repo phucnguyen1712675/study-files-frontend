@@ -244,7 +244,7 @@ export function StudentPage() {
   const WatchListWidget = function () {
     return (
       <div style={{ padding: '20px' }}>
-        <Grid container xs={12} spacing={1}>
+        <Grid container spacing={1}>
           {store.watchList.map(course => {
             if (course.watchListId) {
               return (
@@ -282,23 +282,43 @@ export function StudentPage() {
   const MyCoursesWidget = function () {
     return (
       <div style={{ padding: '20px' }}>
-        <Grid container xs={12} spacing={3} justifyContent="center">
+        <Grid container spacing={3} justifyContent="center">
           {store.myCourses.map(course => {
             if (course.myCourseId) {
+              const url = `/course/${course.name}/studyPage`;
               return (
                 <Grid item xs={3} key={course.id}>
                   <div style={{ margin: '0px 0px' }}>
                     <CourseCard course={course} />
-                    <Button
-                      style={{ margin: '0px 20px' }}
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => {
-                        deleteCourseOfMyCourse(course.myCourseId);
-                      }}
-                    >
-                      Remove
-                    </Button>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                      <Button
+                        style={{ margin: '0px 20px' }}
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          deleteCourseOfMyCourse(course.myCourseId);
+                        }}
+                      >
+                        Remove
+                      </Button>
+                      <Button
+                        onClick={() =>
+                          history.push(url, {
+                            courseName: course.name,
+                            courseId: course.id,
+                            myCourseId: course.myCourseId,
+                          })
+                        }
+                        variant="contained"
+                        style={{
+                          marginLeft: 'auto',
+                          backgroundColor: '#041d33',
+                          color: '#fafafa',
+                        }}
+                      >
+                        Enter class
+                      </Button>
+                    </div>
                   </div>
                 </Grid>
               );

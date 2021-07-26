@@ -86,19 +86,19 @@ export function SectionList({ sectionList }) {
   );
 }
 
-export function SampleDataVideos() {
+export function SampleDataSections() {
   return [
     {
       id: '1',
       courseId: '1',
       title: 'Introduction',
-      ordinalNumber: 1,
+      ordinalNumber: 0,
       lectures: [
         {
           id: '1',
           sectionId: '1',
           title: 'COURSE UPDATES CHANGELOG',
-          ordinalNumber: 1,
+          ordinalNumber: 0,
           canPreview: true,
           videoUrl:
             'https://res.cloudinary.com/dqstbfcdu/video/upload/v1626858741/course_videos/Lockdown___One_Minute_Short_Film_Challenge___Film_Riot_iwxxox.mp4',
@@ -107,19 +107,19 @@ export function SampleDataVideos() {
           id: '2',
           sectionId: '1',
           title: 'Download the PDF resources of the video course',
-          ordinalNumber: 2,
+          ordinalNumber: 1,
           canPreview: false,
           videoUrl:
-            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1626858741/course_videos/Lockdown___One_Minute_Short_Film_Challenge___Film_Riot_iwxxox.mp4',
+            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1627031737/course_videos/lmstkld7us93hzmferuo.mp4',
         },
         {
           id: '3',
           sectionId: '1',
           title: 'Download & Install VirtualBox',
-          ordinalNumber: 3,
+          ordinalNumber: 2,
           canPreview: false,
           videoUrl:
-            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1626858741/course_videos/Lockdown___One_Minute_Short_Film_Challenge___Film_Riot_iwxxox.mp4',
+            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1627031771/course_videos/udfxaoznduitkye4vngo.mp4',
         },
       ],
     },
@@ -127,34 +127,34 @@ export function SampleDataVideos() {
       id: '2',
       courseId: '1',
       title: 'Easy installation of Kali Linux as a virtual machine on Windows',
-      ordinalNumber: 2,
+      ordinalNumber: 1,
       lectures: [
         {
-          id: '1',
+          id: '4',
           sectionId: '2',
           title: 'Installing Kali Linux with Virtualbox on Mac',
-          ordinalNumber: 1,
+          ordinalNumber: 0,
           canPreview: true,
           videoUrl:
-            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1626858741/course_videos/Lockdown___One_Minute_Short_Film_Challenge___Film_Riot_iwxxox.mp4',
+            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1627031801/course_videos/wjbrykkrdrulcdjkihkm.mp4',
         },
         {
-          id: '2',
-          sectionId: '3',
+          id: '5',
+          sectionId: '2',
           title: 'ANTI-ERROR CHECKLIST',
+          ordinalNumber: 1,
+          canPreview: false,
+          videoUrl:
+            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1627283559/course_videos/1_minute_video_introduction___Ceejay_Rain___Freelancer_fnvax4.mp4',
+        },
+        {
+          id: '6',
+          sectionId: '2',
+          title: 'Solve common errors with Virtualbox & Kali Linux',
           ordinalNumber: 2,
           canPreview: false,
           videoUrl:
-            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1626858741/course_videos/Lockdown___One_Minute_Short_Film_Challenge___Film_Riot_iwxxox.mp4',
-        },
-        {
-          id: '3',
-          sectionId: '2',
-          title: 'Solve common errors with Virtualbox & Kali Linux',
-          ordinalNumber: 3,
-          canPreview: false,
-          videoUrl:
-            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1626858741/course_videos/Lockdown___One_Minute_Short_Film_Challenge___Film_Riot_iwxxox.mp4',
+            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1627283519/course_videos/3790642373868340894_-_Copy_mguh8x.mp4',
         },
       ],
     },
@@ -162,36 +162,84 @@ export function SampleDataVideos() {
       id: '3',
       courseId: '1',
       title: 'Getting started with Kali Linux',
-      ordinalNumber: 3,
+      ordinalNumber: 2,
       lectures: [
         {
-          id: '1',
+          id: '7',
           sectionId: '3',
           title: 'Basic commands in Kali Linux (and Linux)',
-          ordinalNumber: 1,
+          ordinalNumber: 0,
           canPreview: true,
           videoUrl:
-            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1626858741/course_videos/Lockdown___One_Minute_Short_Film_Challenge___Film_Riot_iwxxox.mp4',
+            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1627283525/course_videos/Perfection_-_1_Minute_Short_Film_for_Film_Riot_s_Stay_at_Home_Challenge_qewmva.mp4',
         },
         {
-          id: '2',
+          id: '8',
           sectionId: '3',
           title: 'Introduction to C programming in Kali',
+          ordinalNumber: 1,
+          canPreview: false,
+          videoUrl:
+            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1627283525/course_videos/6_AM___Film_Riot_-_One_Minute_Short_Contest_h8f0rx.mp4',
+        },
+        {
+          id: '9',
+          sectionId: '3',
+          title: 'Introduction to Python programming in Kali',
           ordinalNumber: 2,
           canPreview: false,
           videoUrl:
-            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1626858741/course_videos/Lockdown___One_Minute_Short_Film_Challenge___Film_Riot_iwxxox.mp4',
-        },
-        {
-          id: '3',
-          sectionId: '3',
-          title: 'Introduction to Python programming in Kali',
-          ordinalNumber: 3,
-          canPreview: false,
-          videoUrl:
-            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1626858741/course_videos/Lockdown___One_Minute_Short_Film_Challenge___Film_Riot_iwxxox.mp4',
+            'https://res.cloudinary.com/dqstbfcdu/video/upload/v1627283521/course_videos/Toast_-_One_Minute_Comedy_Film___Award_Winning_mif8bm.mp4',
         },
       ],
     },
   ];
+}
+
+export function SampleDataStudyHistory() {
+  return [
+    {
+      id: '1',
+      myCourseId: '1',
+      lectureId: '1',
+      endTime: 59,
+      done: true,
+    },
+    {
+      id: '2',
+      myCourseId: '1',
+      lectureId: '2',
+      endTime: 90,
+      done: true,
+    },
+    {
+      id: '3',
+      myCourseId: '1',
+      lectureId: '3',
+      endTime: 45,
+      done: false,
+    },
+    {
+      id: '4',
+      myCourseId: '1',
+      lectureId: '4',
+      endTime: 59,
+      done: true,
+    },
+    {
+      id: '5',
+      myCourseId: '1',
+      lectureId: '6',
+      endTime: 15,
+      done: true,
+    },
+  ];
+}
+
+export function SampleDataLastLectureWatched() {
+  return {
+    id: '1',
+    historyId: '2',
+    myCourseId: '1',
+  };
 }

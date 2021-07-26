@@ -52,7 +52,6 @@ export function LectureCard({ lecture }) {
   let simpleDialog: any;
 
   const PreviewLecture = function (publicId) {
-    // TODO trang preview lecture
     simpleDialog.show();
   };
 
@@ -139,8 +138,4 @@ export function LectureCard({ lecture }) {
       )}
     </div>
   );
-}
-
-export function VideoPlayScreenOverlay({ url }) {
-  return <></>;
 }
