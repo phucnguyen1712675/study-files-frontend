@@ -29,14 +29,14 @@ import {
 import Carousel, { slidesToShowPlugin } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import ReactStars from 'react-rating-stars-component';
-import { Image } from 'cloudinary-react';
+import { Image, Transformation } from 'cloudinary-react';
 import AppContext from 'app/AppContext';
 import { axiosGuestInstance } from '../../../api/guest';
 import { AccessToken } from 'api/auth';
 import TopBar from '../../components/Topbar/Topbar';
 import Footer from '../../components/Footer/Footer';
 import userAvatar from 'images/user.jpg';
-import { SampleDataSections, SectionList } from './components/SectionList';
+import { SectionList } from './components/SectionList';
 import { CourseCard, RatingCard } from '../../components/Cards/Cards';
 
 const Accordion = withStyles({
@@ -144,10 +144,7 @@ export default function CourseDetailPage() {
   const course = location.state.course;
   const [thisTeacher, setThisTeacher] = useState(false);
   const [sections, setSections] = useState([]);
-  const [rateInfo, setRateInfo] = useState({
-    rating: course.rating,
-    ratingCount: course.ratingCount,
-  });
+  const [rateInfo, setRateInfo] = useState({});
   const [ratings, setRatings] = useState([]);
   const [feedbacks, setFeedBacks] = useState([]);
   const [study, setStudy] = useState({ is: false, myCourseId: '' });
@@ -175,6 +172,7 @@ export default function CourseDetailPage() {
           is: false,
           watchListId: '',
         });
+        setRateInfo({ rating: course.rating, ratingCount: course.ratingCount });
 
         const ratingsRes = await axiosGuestInstance.get(
           `/ratings/${course.id}`,
@@ -527,7 +525,7 @@ export default function CourseDetailPage() {
     const promotionEndDate = new Date(course.promotionEnd);
     const promotionStartDate = new Date(course.promotionStart);
     const dateNow = new Date();
-    if (dateNow > promotionEndDate && dateNow > promotionStartDate) {
+    if (dateNow < promotionEndDate && dateNow > promotionStartDate) {
       return (
         <div
           style={{
@@ -577,8 +575,6 @@ export default function CourseDetailPage() {
           <div
             className={classes.smallText}
             style={{
-              display: 'flex',
-              directionFlow: 'row',
               color: '#a80c14',
             }}
           >
@@ -1186,12 +1182,21 @@ export default function CourseDetailPage() {
             alignItems: 'center',
           }}
         >
-          <Avatar
+          {/* <Avatar
             onClick={NavigateToTeacherPage}
             alt="Remy Sharp"
             src={course.teacher.avatar}
             style={{ width: '180px', height: '180px', cursor: 'pointer' }}
-          />
+          /> */}
+          <Image
+            onClick={NavigateToTeacherPage}
+            style={{ cursor: 'pointer' }}
+            publicId={course.teacher.avatar}
+            cloudName={process.env.REACT_APP_CLOUDINARY_NAME}
+          >
+            <Transformation aspectRatio="1.0" width="180" crop="fill" />
+            <Transformation radius="max" />
+          </Image>
           <div style={{ marginLeft: '55px' }}>
             <div
               onClick={NavigateToTeacherPage}

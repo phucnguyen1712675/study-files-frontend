@@ -87,7 +87,7 @@ export function CourseCard({ course }) {
     const promotionEndDate = new Date(course.promotionEnd);
     const promotionStartDate = new Date(course.promotionStart);
     const dateNow = new Date();
-    if (dateNow > promotionEndDate && dateNow > promotionStartDate) {
+    if (dateNow < promotionEndDate && dateNow > promotionStartDate) {
       return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div
