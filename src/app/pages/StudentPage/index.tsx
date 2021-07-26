@@ -285,7 +285,7 @@ export function StudentPage() {
         <Grid container spacing={3} justifyContent="center">
           {store.myCourses.map(course => {
             if (course.myCourseId) {
-              const url = `/course/${course.name}/studyPage`;
+              const url = `/studyPage/${course.name}/`;
               return (
                 <Grid item xs={3} key={course.id}>
                   <div style={{ margin: '0px 0px' }}>

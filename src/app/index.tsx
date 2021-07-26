@@ -189,7 +189,7 @@ export function App() {
           />
 
           <Route exact path="/course/:name" component={CourseDetailPage} />
-          <Route exact path="/course/:name/studyPage" component={StudyPage} />
+          <Route exact path="/studyPage/:name/" component={StudyPage} />
 
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/register" component={RegisterPage} />

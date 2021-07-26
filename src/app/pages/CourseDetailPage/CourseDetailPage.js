@@ -237,12 +237,7 @@ export default function CourseDetailPage() {
       loadApp();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      store.watchList,
-      store.myCourses,
-      localStorage.studyFiles_user_id,
-      course.id,
-    ],
+    [store.watchList, store.myCourses, localStorage.studyFiles_user_id, course],
   );
 
   // function logic handle =======================================
@@ -804,7 +799,7 @@ export default function CourseDetailPage() {
 
   const EnterStudyPage = function () {
     if (study.is === true) {
-      const url = `/course/${course.name}/studyPage`;
+      const url = `/studyPage/${course.name}/`;
       return (
         <div style={{ width: '70%', display: 'flex' }}>
           <Button
