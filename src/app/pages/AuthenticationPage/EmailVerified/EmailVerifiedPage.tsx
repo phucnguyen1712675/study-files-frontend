@@ -16,8 +16,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { axiosAuthInstance } from '../../../../api/auth';
-import AppContext from 'app/AppContext';
-import { useContext } from 'react';
 
 const useStyles = makeStyles(theme => ({
   paper: {

@@ -11,6 +11,7 @@ import {
   makeStyles,
   Avatar,
   TextField,
+  CardMedia,
 } from '@material-ui/core';
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -29,7 +30,6 @@ import {
 import Carousel, { slidesToShowPlugin } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import ReactStars from 'react-rating-stars-component';
-import { Image, Transformation } from 'cloudinary-react';
 import AppContext from 'app/AppContext';
 import { axiosGuestInstance } from '../../../api/guest';
 import { AccessToken } from 'api/auth';
@@ -84,7 +84,6 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#030f2e',
     color: '#fafafa',
     width: '100%',
-    // height: '100%',
     display: 'flex',
     borderRadius: '3px',
     flexDirection: 'row',
@@ -92,12 +91,11 @@ const useStyles = makeStyles(theme => ({
   cardMedia: {
     borderRadius: '3px',
     border: '2px solid #fafafa',
-    height: '100%',
     width: '50%',
   },
   cardContent: {
     paddingTop: '5px',
-    flexGrow: 1,
+    width: '50%',
   },
   bigText: {
     fontSize: 24,
@@ -144,7 +142,10 @@ export default function CourseDetailPage() {
   const course = location.state.course;
   const [thisTeacher, setThisTeacher] = useState(false);
   const [sections, setSections] = useState([]);
-  const [rateInfo, setRateInfo] = useState({});
+  const [rateInfo, setRateInfo] = useState({
+    rating: course.rating,
+    ratingCount: course.ratingCount,
+  });
   const [ratings, setRatings] = useState([]);
   const [feedbacks, setFeedBacks] = useState([]);
   const [study, setStudy] = useState({ is: false, myCourseId: '' });
@@ -172,7 +173,6 @@ export default function CourseDetailPage() {
           is: false,
           watchListId: '',
         });
-        setRateInfo({ rating: course.rating, ratingCount: course.ratingCount });
 
         const ratingsRes = await axiosGuestInstance.get(
           `/ratings/${course.id}`,
@@ -490,17 +490,17 @@ export default function CourseDetailPage() {
   };
 
   // widget builder handle =======================================
-  const RatingStarsWidget = function (size, edit, isHalf, value) {
-    return (
-      <ReactStars
-        size={size}
-        count={5}
-        edit={edit}
-        value={value}
-        isHalf={isHalf}
-        activeColor="#F9BA00"
-      />
-    );
+  const RatingStarsWidget = function (size) {
+    const valueRate = rateInfo.rating;
+    const info = {
+      size: size,
+      count: 5,
+      edit: false,
+      value: valueRate,
+      isHalf: true,
+      activeColor: '#F9BA00',
+    };
+    return <ReactStars {...info} />;
   };
 
   const FormatNumberText = function (num) {
@@ -738,7 +738,7 @@ export default function CourseDetailPage() {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div className={classes.cardRatingText}>{rateInfo.rating}</div>
               <div style={{ marginRight: '10px', marginTop: '0px' }}>
-                {RatingStarsWidget(20, false, true, rateInfo.rating)}
+                {RatingStarsWidget(20)}
               </div>
               <div
                 className={classes.smallText}
@@ -788,11 +788,7 @@ export default function CourseDetailPage() {
             {BottomMainInfoWidget()}
           </div>
         </CardContent>
-        <Image
-          className={classes.cardMedia}
-          cloudName={process.env.REACT_APP_CLOUDINARY_NAME}
-          publicId={course.image}
-        />
+        <CardMedia className={classes.cardMedia} image={course.image} />
       </div>
     );
   };
@@ -1101,7 +1097,7 @@ export default function CourseDetailPage() {
               </div>
             </div>
 
-            {RatingStarsWidget(60, false, true, rateInfo.rating)}
+            {RatingStarsWidget(60)}
           </div>
         </div>
         {myRateWidget()}
@@ -1177,21 +1173,12 @@ export default function CourseDetailPage() {
             alignItems: 'center',
           }}
         >
-          {/* <Avatar
+          <Avatar
             onClick={NavigateToTeacherPage}
             alt="Remy Sharp"
             src={course.teacher.avatar}
             style={{ width: '180px', height: '180px', cursor: 'pointer' }}
-          /> */}
-          <Image
-            onClick={NavigateToTeacherPage}
-            style={{ cursor: 'pointer' }}
-            publicId={course.teacher.avatar}
-            cloudName={process.env.REACT_APP_CLOUDINARY_NAME}
-          >
-            <Transformation aspectRatio="1.0" width="180" crop="fill" />
-            <Transformation radius="max" />
-          </Image>
+          />
           <div style={{ marginLeft: '55px' }}>
             <div
               onClick={NavigateToTeacherPage}

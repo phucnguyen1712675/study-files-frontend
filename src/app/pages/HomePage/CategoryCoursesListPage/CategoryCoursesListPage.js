@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import '@brainhubeu/react-carousel/lib/style.css';
 
@@ -9,7 +9,6 @@ import { CourseCard } from '../../../components/Cards/Cards';
 import SubCategoryTabs from '../components/SubCategoryTabs';
 import TopBar from '../../../components/Topbar/Topbar';
 import Footer from '../../../components/Footer/Footer';
-import AppContext from '../../../AppContext';
 import { axiosGuestInstance } from '../../../../api/guest';
 
 export default function CategoryCoursesListPage() {
