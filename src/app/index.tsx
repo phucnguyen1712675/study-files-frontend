@@ -41,7 +41,10 @@ import reducer from './pages/HomePage/components/homePageReducer';
 import AppContext from './AppContext';
 import { axiosGuestInstance } from '../api/guest';
 import { AccessToken } from 'api/auth';
-import { SampleDataSections } from './pages/CourseDetailPage/components/SectionList';
+// import {
+//   SampleDataSections,
+//   SampleDataImages,
+// } from './pages/CourseDetailPage/components/SectionList';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -57,30 +60,37 @@ export function App() {
   };
 
   // const testAddSectionsAndLectures = async function () {
-  //   const sections = [...SampleDataSections()];
+  //   // const sections = [...SampleDataSections()];
+  //   const images = [...SampleDataImages()];
+  //   let i = 0;
+  //   const length = images.length;
   //   const coursesRes = await axiosGuestInstance.get(`/test/courses`);
   //   const courses = coursesRes.data;
   //   for (var course of courses) {
-  //     for (var section of sections) {
-  //       const dataSection = {
-  //         courseId: course.id,
-  //         title: section.title,
-  //       };
-  //       const sectionRes = await axiosGuestInstance.post(
-  //         `/test/sections`,
-  //         dataSection,
-  //       );
-  //       const sectionId = sectionRes.data.id;
-  //       for (var lecture of section.lectures) {
-  //         const dataLecture = {
-  //           sectionId: sectionId,
-  //           title: lecture.title,
-  //           canPreview: lecture.canPreview,
-  //           videoUrl: lecture.videoUrl,
-  //         };
-  //         await axiosGuestInstance.post(`/test/lectures`, dataLecture);
-  //       }
-  //     }
+  //     i = i % length;
+  //     const data = { image: images[i] };
+  //     await axiosGuestInstance.patch(`/test/courses/${course.id}`, data);
+  //     i = i + 1;
+  //     // for (var section of sections) {
+  //     //   const dataSection = {
+  //     //     courseId: course.id,
+  //     //     title: section.title,
+  //     //   };
+  //     //   const sectionRes = await axiosGuestInstance.post(
+  //     //     `/test/sections`,
+  //     //     dataSection,
+  //     //   );
+  //     //   const sectionId = sectionRes.data.id;
+  //     //   for (var lecture of section.lectures) {
+  //     //     const dataLecture = {
+  //     //       sectionId: sectionId,
+  //     //       title: lecture.title,
+  //     //       canPreview: lecture.canPreview,
+  //     //       videoUrl: lecture.videoUrl,
+  //     //     };
+  //     //     await axiosGuestInstance.post(`/test/lectures`, dataLecture);
+  //     //   }
+  //     // }
   //   }
   // };
 
