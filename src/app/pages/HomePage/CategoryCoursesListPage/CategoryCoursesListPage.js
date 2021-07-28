@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import '@brainhubeu/react-carousel/lib/style.css';
 
 import { Grid, Select } from '@material-ui/core';
@@ -13,6 +13,7 @@ import { axiosGuestInstance } from '../../../../api/guest';
 
 export default function CategoryCoursesListPage() {
   const location = useLocation();
+  const history = useHistory();
   const selectedSubCategory = location.state.selectedSubCategory;
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
@@ -29,6 +30,14 @@ export default function CategoryCoursesListPage() {
         setTotalCourses(coursesRes.data.totalResults);
         setTotalPages(coursesRes.data.totalPages);
         setCourses(coursesRes.data.results);
+
+        const unlisten = history.listen(() => {
+          window.scrollTo(0, 0);
+        });
+
+        return () => {
+          unlisten();
+        };
       }
       loadApp();
     },
