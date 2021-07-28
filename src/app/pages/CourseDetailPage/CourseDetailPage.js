@@ -242,7 +242,7 @@ export default function CourseDetailPage() {
 
   // function logic handle =======================================
   const NavigateToTeacherPage = function () {
-    // TODO navigatet to teacher page
+    // TODO Phuc navigatet to teacher page
     console.log(course.teacher);
   };
 
@@ -517,76 +517,80 @@ export default function CourseDetailPage() {
   };
 
   const FeeWidget = function () {
-    const promotionEndDate = new Date(course.promotionEnd);
-    const promotionStartDate = new Date(course.promotionStart);
-    const dateNow = new Date();
-    if (dateNow < promotionEndDate && dateNow > promotionStartDate) {
-      return (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div
-              className={classes.bigText}
-              style={{ marginRight: '18px', marginTop: '0px' }}
-            >
-              {course.fee} $US
+    if (course.promotionStart && course.promotionEnd) {
+      const promotionEndDate = new Date(course.promotionEnd);
+      const promotionStartDate = new Date(course.promotionStart);
+      const dateNow = new Date();
+      if (dateNow < promotionEndDate && dateNow > promotionStartDate) {
+        return (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div
+                className={classes.bigText}
+                style={{ marginRight: '18px', marginTop: '0px' }}
+              >
+                {course.fee} $US
+              </div>
+              <div
+                className={classes.smallText}
+                style={{ textDecoration: 'line-through', marginTop: '0px' }}
+              >
+                {course.originalFee} $US
+              </div>
             </div>
             <div
               className={classes.smallText}
-              style={{ textDecoration: 'line-through', marginTop: '0px' }}
+              style={{
+                display: 'flex',
+                directionFlow: 'row',
+                color: '#a80c14',
+              }}
             >
-              {course.originalFee} $US
+              <NewReleases style={{ marginRight: '8px', fontSize: 18 }} />
+              Promotion will end at {FormatDateText(course.promotionEnd)}
             </div>
           </div>
+        );
+      } else if (
+        promotionStartDate < promotionEndDate &&
+        dateNow < promotionStartDate
+      ) {
+        return (
           <div
-            className={classes.smallText}
             style={{
               display: 'flex',
-              directionFlow: 'row',
-              color: '#a80c14',
+              flexDirection: 'column',
             }}
           >
-            <NewReleases style={{ marginRight: '8px', fontSize: 18 }} />
-            Promotion will end at {FormatDateText(course.promotionEnd)}
+            <div className={classes.bigText}>{course.originalFee} $US</div>
+            <div
+              className={classes.smallText}
+              style={{
+                color: '#a80c14',
+              }}
+            >
+              <NewReleases style={{ marginRight: '8px', fontSize: 18 }} />
+              Promotion will start at {FormatDateText(
+                course.promotionStart,
+              )}{' '}
+              with new fee
+              <div style={{ fontWeight: 'bolder' }}> {course.fee} $US</div>
+            </div>
           </div>
-        </div>
-      );
-    } else if (
-      promotionStartDate < promotionEndDate &&
-      dateNow < promotionStartDate
-    ) {
-      return (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <div className={classes.bigText}>{course.originalFee} $US</div>
-          <div
-            className={classes.smallText}
-            style={{
-              color: '#a80c14',
-            }}
-          >
-            <NewReleases style={{ marginRight: '8px', fontSize: 18 }} />
-            Promotion will start at {FormatDateText(course.promotionStart)} with
-            new fee
-            <div style={{ fontWeight: 'bolder' }}> {course.fee} $US</div>
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className={classes.bigText} style={{ marginTop: '0px' }}>
-          {course.originalFee} $US
-        </div>
-      );
+        );
+      }
     }
+
+    return (
+      <div className={classes.bigText} style={{ marginTop: '0px' }}>
+        {course.originalFee} $US
+      </div>
+    );
   };
 
   const IsSpecialCourse = function () {

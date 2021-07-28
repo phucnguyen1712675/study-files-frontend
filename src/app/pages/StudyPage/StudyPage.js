@@ -67,7 +67,6 @@ const AccordionDetails = withStyles(theme => ({
   },
 }))(MuiAccordionDetails);
 
-// TODO update history --> update lastWatchedLecture
 export function StudyPage() {
   const location = useLocation();
   const courseName = location.state.courseName;

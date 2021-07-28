@@ -84,33 +84,34 @@ export function CourseCard({ course }) {
   const { store } = useContext(AppContext);
 
   const FeeWidget = function () {
-    const promotionEndDate = new Date(course.promotionEnd);
-    const promotionStartDate = new Date(course.promotionStart);
-    const dateNow = new Date();
-    if (dateNow < promotionEndDate && dateNow > promotionStartDate) {
-      return (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div
-            className={classes.cardTittle}
-            style={{ marginRight: '18px', marginTop: '0px' }}
-          >
-            {course.fee} $US
+    if (course.promotionEnd && course.promotionStart) {
+      const promotionEndDate = new Date(course.promotionEnd);
+      const promotionStartDate = new Date(course.promotionStart);
+      const dateNow = new Date();
+      if (dateNow < promotionEndDate && dateNow > promotionStartDate) {
+        return (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div
+              className={classes.cardTittle}
+              style={{ marginRight: '18px', marginTop: '0px' }}
+            >
+              {course.fee} $US
+            </div>
+            <div
+              className={classes.cardSmallText}
+              style={{ textDecoration: 'line-through', marginTop: '0px' }}
+            >
+              {course.originalFee} $US
+            </div>
           </div>
-          <div
-            className={classes.cardSmallText}
-            style={{ textDecoration: 'line-through', marginTop: '0px' }}
-          >
-            {course.originalFee} $US
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className={classes.cardTittle} style={{ marginTop: '0px' }}>
-          {course.originalFee} $US
-        </div>
-      );
+        );
+      }
     }
+    return (
+      <div className={classes.cardTittle} style={{ marginTop: '0px' }}>
+        {course.originalFee} $US
+      </div>
+    );
   };
 
   const RatingStarsWidget = function () {
