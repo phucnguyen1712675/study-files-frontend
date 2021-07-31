@@ -12,6 +12,7 @@ import NestedMenuItem from 'material-ui-nested-menu-item';
 import './Topbar.css';
 import AppContext from '../../AppContext';
 import { axiosGuestInstance } from 'api/guest';
+import { TEACHER_COURSES_PAGE_PATH } from '../../../constants/routes';
 
 export default function Topbar({ initQuery }) {
   const history = useHistory();
@@ -74,7 +75,7 @@ export default function Topbar({ initQuery }) {
     if (localStorage.studyFiles_user_role === 'student') {
       history.push('/student');
     } else if (localStorage.studyFiles_user_role === 'teacher') {
-      // TODO Phuc navigate to teacher page
+      history.push(TEACHER_COURSES_PAGE_PATH);
     } else if (localStorage.studyFiles_user_role === 'admin') {
       history.push('/admin/users');
     }

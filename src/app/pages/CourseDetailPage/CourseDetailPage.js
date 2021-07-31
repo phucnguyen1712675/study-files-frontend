@@ -38,6 +38,7 @@ import Footer from '../../components/Footer/Footer';
 import userAvatar from 'images/user.jpg';
 import { SectionList } from './components/SectionList';
 import { CourseCard, RatingCard } from '../../components/Cards/Cards';
+import { TEACHER_PROFILE_PAGE_PATH } from '../../../constants/routes';
 
 const Accordion = withStyles({
   root: {
@@ -242,8 +243,9 @@ export default function CourseDetailPage() {
 
   // function logic handle =======================================
   const NavigateToTeacherPage = function () {
-    // TODO Phuc navigatet to teacher page
-    console.log(course.teacher);
+    history.push(TEACHER_PROFILE_PAGE_PATH, {
+      teacherId: course.teacher.id,
+    });
   };
 
   const NavigateToCategoryCousesListPage = function () {
@@ -737,7 +739,7 @@ export default function CourseDetailPage() {
       <div className={classes.card}>
         <CardContent className={classes.cardContent}>
           <div style={{ padding: '0px 40px' }}>
-            <h1>{course.name}</h1>
+            <h1 style={{ color: '#fafafa' }}>{course.name}</h1>
             <div className={classes.normalText}>{course.shortDescription}</div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div className={classes.cardRatingText}>{rateInfo.rating}</div>
@@ -831,6 +833,7 @@ export default function CourseDetailPage() {
   };
 
   const DetailDescriptionWidget = function () {
+    const str = course.detailDescription.replaceAll('&lt;', '<');
     return (
       <div className={classes.shadowCard}>
         <div className={classes.bigText}>DESCRIPTION</div>
@@ -850,9 +853,7 @@ export default function CourseDetailPage() {
           <div
             className="preview"
             style={{ color: '#525252' }}
-            dangerouslySetInnerHTML={createMarkup(
-              `${course.detailDescription}`,
-            )}
+            dangerouslySetInnerHTML={createMarkup(`${str}`)}
           />
         </ShowMoreText>
       </div>

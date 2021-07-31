@@ -15,5 +15,25 @@
   },
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "cSpell.words": [
+    "CLOUDINARY",
+    "Dropzone",
+    "Helvetica",
+    "Neue",
+    "Popconfirm",
+    "Sider",
+    "Swal",
+    "antd",
+    "datepicker",
+    "draftjs",
+    "hookform",
+    "incompleted",
+    "middlewares",
+    "persistor",
+    "reduxjs",
+    "reloadable",
+    "serializable",
+    "sweetalert"
+  ]
 }

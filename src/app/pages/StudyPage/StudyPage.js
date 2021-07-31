@@ -21,7 +21,7 @@ import 'video-react/dist/video-react.css';
 import TopBar from '../../components/Topbar/Topbar';
 import Footer from '../../components/Footer/Footer';
 import { SectionCard, LectureCard } from './components/Cards';
-import { axiosInstance } from '../../../api/index';
+import { axiosGuestInstance } from '../../../api/guest';
 import { AccessToken } from 'api/auth';
 
 const Accordion = withStyles({
@@ -73,6 +73,7 @@ export function StudyPage() {
   const courseId = location.state.courseId;
   const myCourseId = location.state.myCourseId;
   let thisPlayer;
+  // eslint-disable-next-line no-unused-vars
   const [lastLectureWatchedDB, setLastLectureWatchedDB] = useState(null);
   const [sections, setSections] = useState(null);
   const [lectures, setLectures] = useState(null);
@@ -89,7 +90,7 @@ export function StudyPage() {
           },
         };
         try {
-          const historiesRes = await axiosInstance.get(
+          const historiesRes = await axiosGuestInstance.get(
             `/student/myCourses/${myCourseId}/histories`,
             config,
           );
@@ -98,7 +99,7 @@ export function StudyPage() {
             historiesTemp = [...historiesRes.data];
           }
 
-          const lastLectureWatchedRes = await axiosInstance.get(
+          const lastLectureWatchedRes = await axiosGuestInstance.get(
             `/student/myCourses/${myCourseId}/lastLectureWatched`,
             config,
           );
@@ -107,7 +108,7 @@ export function StudyPage() {
             lastLectureWatchedDBTemp = { ...lastLectureWatchedRes.data };
           }
 
-          const sectionsRes = await axiosInstance.get(
+          const sectionsRes = await axiosGuestInstance.get(
             `/courses/${courseId}/sections?courseId=${courseId}&limit=20`,
           );
           let sectionsTemp = [];
@@ -198,14 +199,14 @@ export function StudyPage() {
     };
     try {
       if (historyId !== '') {
-        const res = await axiosInstance.patch(
+        const res = await axiosGuestInstance.patch(
           `/student/myCourses/${myCourseId}/histories/${historyId}`,
           dataToSend,
           config,
         );
         return res;
       } else {
-        const res = await axiosInstance.post(
+        const res = await axiosGuestInstance.post(
           `/student/myCourses/${myCourseId}/histories`,
           dataToSend,
           config,
@@ -329,7 +330,7 @@ export function StudyPage() {
       };
       if (selectedLecture.lastId === '') {
         // post new last lecture watched
-        const res = await axiosInstance.post(
+        const res = await axiosGuestInstance.post(
           `/student/myCourses/${myCourseId}/lastLectureWatched`,
           dataToSend,
           config,
@@ -337,7 +338,7 @@ export function StudyPage() {
         tempSelectedLecture = { ...selectedLecture, lastId: res.data.id };
       } else {
         // patch last lecture watched
-        await axiosInstance.patch(
+        await axiosGuestInstance.patch(
           `/student/myCourses/${myCourseId}/lastLectureWatched/${selectedLecture.lastId}`,
           dataToSend,
           config,
