@@ -10,14 +10,14 @@ import { GettingTeacherCoursesQuery } from '../../../../../model/query/getting_t
 
 const { Text } = Typography;
 
+const teacherId = localStorage.studyFiles_user_id;
+
 export default function CoursesPagination(props: {
   limit: number;
   isCardEditable: boolean;
   gridType: object;
 }) {
   const { limit, isCardEditable, gridType } = props;
-
-  const teacherId = '60bb395c4dce1a05188ea3e0';
 
   const [page, setPage] = React.useState<number>(1);
 
@@ -32,7 +32,7 @@ export default function CoursesPagination(props: {
       // sortResults: 'desc',
     };
     dispatch(getCoursesOfTeacherQueryResult(getCoursesArgument));
-  }, [dispatch, limit, page, teacherId]);
+  }, [dispatch, limit, page]);
 
   const { data, isLoading, error } = useAppSelector(selectTeacherCourses);
 

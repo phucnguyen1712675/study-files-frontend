@@ -1,5 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
+import { AccessToken } from '../../api/auth';
+
 import {
   GET_COURSE_DETAILS,
   GET_CATEGORIES_DETAILS,
@@ -26,6 +28,7 @@ export const getCategoriesDetails = createAsyncThunk(
 export const getSectionsResults = createAsyncThunk(
   GET_SECTIONS_RESULTS,
   async (courseId: string) => {
+    await AccessToken();
     const { data } = await axios.get(
       `/teachers/sections/details?courseId=${courseId}&sortBy=ordinalNumber:asc`,
     );

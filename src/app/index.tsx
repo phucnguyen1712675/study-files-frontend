@@ -251,22 +251,18 @@ export function App() {
             path={TEACHER_PROFILE_PAGE_PATH}
             component={TeacherProfilePage}
           />
-          <Route
-            path={TEACHER_COURSES_PAGE_PATH}
-            component={TeacherCoursesPage}
-          />
-          <Route
-            path={TEACHER_SETTINGS_PAGE_PATH}
-            component={TeacherSettingsPage}
-          />
-          <Route
-            path={EDIT_COURSE_DETAILS_PAGE_PATH}
-            component={EditCourseDetailsPage}
-          />
-          <Route
-            path={COURSE_POSTING_PAGE_PATH}
-            component={CoursePostingPage}
-          />
+          <PrivateRoute path={TEACHER_COURSES_PAGE_PATH}>
+            <TeacherCoursesPage />
+          </PrivateRoute>
+          <PrivateRoute path={TEACHER_SETTINGS_PAGE_PATH}>
+            <TeacherSettingsPage />
+          </PrivateRoute>
+          <PrivateRoute path={EDIT_COURSE_DETAILS_PAGE_PATH}>
+            <EditCourseDetailsPage />
+          </PrivateRoute>
+          <PrivateRoute path={COURSE_POSTING_PAGE_PATH}>
+            <CoursePostingPage />
+          </PrivateRoute>
           <Route component={NotFoundPage} />
         </Switch>
       </AppContext.Provider>
@@ -280,7 +276,9 @@ function PrivateRoute({ children, ...rest }) {
     <Route
       {...rest}
       render={() =>
-        localStorage.studyFiles_user_role === 'admin' ? (
+        localStorage.studyFiles_user_role === 'admin' ||
+        localStorage.studyFiles_user_role === 'teacher' ||
+        localStorage.studyFiles_user_role === 'student' ? (
           children
         ) : (
           <Redirect

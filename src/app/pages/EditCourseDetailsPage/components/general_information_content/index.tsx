@@ -110,10 +110,11 @@ export default function GeneralInformationContent() {
     setValue('shortDescription', courseDetails.data?.shortDescription ?? '');
     setValue('subCategoryId', courseDetails.data?.subCategoryId ?? '');
 
-    var contentBlock = htmlToDraft(
+    const detailValue =
       courseDetails.data?.detailDescription ??
-        '<p>Hey this <strong>editor</strong> rocks 😀</p>',
-    );
+      '<p>Hey this <strong>editor</strong> rocks 😀</p>';
+
+    var contentBlock = htmlToDraft(detailValue.replaceAll('&lt;', '<'));
 
     var editorStateInitial: any;
 

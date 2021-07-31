@@ -9,9 +9,9 @@ import { getTeacherInfo } from '../../../features/guest/guestThunkAPI';
 
 const { Header, Footer, Content } = Layout;
 
-export function TeacherCoursesPage() {
-  const teacherId = '60bb395c4dce1a05188ea3e0';
+const teacherId = localStorage.studyFiles_user_id;
 
+export function TeacherCoursesPage() {
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {

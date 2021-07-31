@@ -1,7 +1,9 @@
 import axios from '../constants/axios';
+import { AccessToken } from '../../api/auth';
 
 export const addCourse = async (payload: any) => {
   try {
+    await AccessToken();
     const response = await axios.post('/teachers/courses', payload);
     return response;
   } catch (error) {
@@ -11,6 +13,7 @@ export const addCourse = async (payload: any) => {
 
 export const addSection = async (payload: any) => {
   try {
+    await AccessToken();
     const response = await axios.post('/teachers/sections', payload);
     return response;
   } catch (error) {
@@ -20,6 +23,7 @@ export const addSection = async (payload: any) => {
 
 export const addLecture = async (payload: any) => {
   try {
+    await AccessToken();
     const response = await axios.post('/teachers/lectures', payload);
     return response;
   } catch (error) {
@@ -27,21 +31,9 @@ export const addLecture = async (payload: any) => {
   }
 };
 
-export const getSectionsResults = async (courseId: string) => {
-  try {
-    const { data } = await axios.get(
-      `/teachers/sections/details?courseId=${courseId}&sortBy=ordinalNumber:asc`,
-    );
-    const { results } = data;
-    console.log(results);
-    return results;
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
 export const getLecturesTotalResults = async (sectionId: string) => {
   try {
+    await AccessToken();
     const { data } = await axios.get(
       `/teachers/lectures?sectionId=${sectionId}`,
     );
@@ -54,8 +46,9 @@ export const getLecturesTotalResults = async (sectionId: string) => {
 
 export const getSectionsDetailsResults = async (courseId: string) => {
   try {
+    await AccessToken();
     const { data } = await axios.get(
-      `/teachers/sections/details?courseId=${courseId}`,
+      `/teachers/sections/details?courseId=${courseId}&sortBy=ordinalNumber:asc`,
     );
     const { results } = data;
     return results;
@@ -66,6 +59,7 @@ export const getSectionsDetailsResults = async (courseId: string) => {
 
 export const updateCourse = async (payload: any) => {
   try {
+    await AccessToken();
     const { id, ...body } = payload;
     const response = await axios.patch(`/teachers/courses/${id}`, body);
     return response;

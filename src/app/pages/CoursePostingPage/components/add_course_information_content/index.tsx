@@ -36,6 +36,8 @@ import { addCourse } from '../../../../../features/teacher/teacherAPI';
 
 const { Text } = Typography;
 
+const teacherId = localStorage.studyFiles_user_id;
+
 type FormValues = {
   name: string;
   shortDescription: string;
@@ -125,9 +127,6 @@ export default function AddCourseInformationContent() {
 
   const onFinish = handleSubmit(async (data: FormValues) => {
     setLoading(true);
-
-    // TODO <Phuc>: Delete this line
-    const teacherId = '60bb395c4dce1a05188ea3e0';
 
     const {
       hasPromotion,

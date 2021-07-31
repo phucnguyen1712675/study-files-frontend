@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout, Row, Col } from 'antd';
+import { useLocation } from 'react-router-dom';
 
 import TeacherAvatarColumnContent from './components/teacher_avatar_column_content';
 import TeacherInfoColumnContent from './components/teacher_info_column_content';
@@ -9,14 +10,20 @@ import { getTeacherInfo } from '../../../features/guest/guestThunkAPI';
 
 const { Header, Footer, Content } = Layout;
 
-export function TeacherProfilePage() {
-  const teacherId = '60bb395c4dce1a05188ea3e0';
+interface LocationState {
+  teacherId: string;
+}
 
+export function TeacherProfilePage() {
   const dispatch = useAppDispatch();
+
+  const location = useLocation<LocationState>();
+
+  const { teacherId } = location.state;
 
   React.useEffect(() => {
     dispatch(getTeacherInfo(teacherId));
-  }, [dispatch]);
+  }, [dispatch, teacherId]);
 
   return (
     <>
