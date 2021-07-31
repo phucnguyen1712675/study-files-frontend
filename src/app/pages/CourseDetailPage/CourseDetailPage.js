@@ -831,6 +831,7 @@ export default function CourseDetailPage() {
   };
 
   const DetailDescriptionWidget = function () {
+    const str = course.detailDescription.replaceAll('&lt;', '<');
     return (
       <div className={classes.shadowCard}>
         <div className={classes.bigText}>DESCRIPTION</div>
@@ -850,9 +851,10 @@ export default function CourseDetailPage() {
           <div
             className="preview"
             style={{ color: '#525252' }}
-            dangerouslySetInnerHTML={createMarkup(
-              `${course.detailDescription}`,
-            )}
+            // dangerouslySetInnerHTML={createMarkup(
+            //   `${course.detailDescription}`,
+            // )}
+            dangerouslySetInnerHTML={createMarkup(`${str}`)}
           />
         </ShowMoreText>
       </div>

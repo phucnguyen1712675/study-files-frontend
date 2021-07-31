@@ -4,7 +4,7 @@ import { Grid, Tabs, Tab, Box, Button } from '@material-ui/core';
 import { NewReleases } from '@material-ui/icons';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import AppContext from 'app/AppContext';
-import { axiosInstance } from '../../../api/index';
+import { axiosGuestInstance } from '../../../api/guest';
 import './studentPage.css';
 import TopBar from '../../components/Topbar/Topbar';
 import Footer from '../../components/Footer/Footer';
@@ -130,7 +130,7 @@ export function StudentPage() {
         Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
       },
     };
-    const res = await axiosInstance.delete(
+    const res = await axiosGuestInstance.delete(
       `/student/watchList/${watchListId}`,
       config,
     );
@@ -153,7 +153,7 @@ export function StudentPage() {
         Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
       },
     };
-    const res = await axiosInstance.delete(
+    const res = await axiosGuestInstance.delete(
       `/student/myCourses/${myCourseId}`,
       config,
     );
@@ -188,7 +188,7 @@ export function StudentPage() {
       name: nameValue,
       email: emailValue,
     };
-    const res = await axiosInstance.patch(
+    const res = await axiosGuestInstance.patch(
       `/auth/update/${localStorage.studyFiles_user_id}`,
       data,
       config,
