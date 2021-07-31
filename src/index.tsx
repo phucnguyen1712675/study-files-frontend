@@ -11,41 +11,51 @@ import 'react-app-polyfill/stable';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
-
-import { rootReducer } from './reducers';
 
 // Use consistent styling
 import 'sanitize.css/sanitize.css';
 
 // Import root app
 import { App } from 'app';
-import './index.css';
 
 import { HelmetProvider } from 'react-helmet-async';
 
 // import { configureAppStore } from 'store/configureStore';
 
 import reportWebVitals from 'reportWebVitals';
-
 // Initialize languages
 import './locales/i18n';
 
+import './index.css';
+
+import { store } from './app/store';
+// import { PersistGate } from 'redux-persist/integration/react';
+// import { persistStore } from 'redux-persist';
+import * as serviceWorker from './serviceWorker';
+
 // const store = configureAppStore();
-const store = createStore(rootReducer, compose(applyMiddleware(thunk)));
+// const store = createStore(rootReducer, compose(applyMiddleware(thunk)));
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
+
+// let persistor = persistStore(store);
 
 ReactDOM.render(
   <Provider store={store}>
+    {/* <PersistGate loading={null} persistor={persistor}> */}
     <HelmetProvider>
       <React.StrictMode>
         <App />
       </React.StrictMode>
     </HelmetProvider>
+    {/* </PersistGate> */}
   </Provider>,
   MOUNT_NODE,
 );
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
 
 // Hot reloadable translation json files
 if (module.hot) {

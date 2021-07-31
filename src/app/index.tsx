@@ -35,6 +35,12 @@ import { StudyPage } from './pages/StudyPage/Loadable';
 import { StudentPage } from './pages/StudentPage';
 import { UpdatePasswordPage } from './pages/StudentPage/UpdatePassword/updatePasswordPage';
 import { CourseDetailPage } from './pages/CourseDetailPage/Loadable';
+
+import { TeacherProfilePage } from './pages/TeacherProfilePage/Loadable';
+import { TeacherCoursesPage } from './pages/TeacherCoursesPage/Loadable';
+import { TeacherSettingsPage } from './pages/TeacherSettingsPage/Loadable';
+import { EditCourseDetailsPage } from './pages/EditCourseDetailsPage/Loadable';
+import { CoursePostingPage } from './pages/CoursePostingPage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
 
 import reducer from './pages/HomePage/components/homePageReducer';
@@ -45,6 +51,16 @@ import { AccessToken } from 'api/auth';
 //   SampleDataSections,
 //   SampleDataImages,
 // } from './pages/CourseDetailPage/components/SectionList';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import {
+  TEACHER_PROFILE_PAGE_PATH,
+  TEACHER_COURSES_PAGE_PATH,
+  TEACHER_SETTINGS_PAGE_PATH,
+  EDIT_COURSE_DETAILS_PAGE_PATH,
+  COURSE_POSTING_PAGE_PATH,
+} from '../constants/routes';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -230,7 +246,23 @@ export function App() {
             path="/student/updatePassword"
             component={UpdatePasswordPage}
           />
-
+          <Route
+            exact
+            path={TEACHER_PROFILE_PAGE_PATH}
+            component={TeacherProfilePage}
+          />
+          <PrivateRoute path={TEACHER_COURSES_PAGE_PATH}>
+            <TeacherCoursesPage />
+          </PrivateRoute>
+          <PrivateRoute path={TEACHER_SETTINGS_PAGE_PATH}>
+            <TeacherSettingsPage />
+          </PrivateRoute>
+          <PrivateRoute path={EDIT_COURSE_DETAILS_PAGE_PATH}>
+            <EditCourseDetailsPage />
+          </PrivateRoute>
+          <PrivateRoute path={COURSE_POSTING_PAGE_PATH}>
+            <CoursePostingPage />
+          </PrivateRoute>
           <Route component={NotFoundPage} />
         </Switch>
       </AppContext.Provider>
@@ -244,7 +276,9 @@ function PrivateRoute({ children, ...rest }) {
     <Route
       {...rest}
       render={() =>
-        localStorage.studyFiles_user_role === 'admin' ? (
+        localStorage.studyFiles_user_role === 'admin' ||
+        localStorage.studyFiles_user_role === 'teacher' ||
+        localStorage.studyFiles_user_role === 'student' ? (
           children
         ) : (
           <Redirect
