@@ -1,0 +1,121 @@
+.userTopBar {
+  align-items: center;
+  display: flex;
+  padding: 0px 20px;
+  height: 50px;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 999;
+  -webkit-box-shadow: 0 3px 7px -7px black;
+  -moz-box-shadow: 0 3px 7px -7px black;
+  box-shadow: 0 3px 7px -7px black;
+}
+
+.userText {
+  font-weight: normal;
+  font-size: 16px;
+  display: flex;
+  color: #525252;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+.userLogo {
+  font-weight: bold;
+  font-size: 23px;
+  color: #387cff;
+  cursor: pointer;
+  margin-right: 25px;
+}
+
+.userTopbarIconContainer {
+  width: 35;
+  height: 35;
+  position: relative;
+  cursor: pointer;
+  margin-right: 10px;
+  color: #525252;
+}
+
+.searchAndCategoriesBar {
+  display: flex;
+  align-items: left;
+  float: none;
+  overflow: hidden;
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+}
+
+.topbar {
+  width: 100%;
+  height: 50px;
+  position: sticky;
+  top: 0;
+  background-color: #387cff;
+  z-index: 999;
+}
+
+.topbarWrapper {
+  height: 100%;
+  padding: 0px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 23px;
+  color: white;
+  cursor: pointer;
+  margin-right: 25px;
+}
+
+.text {
+  font-weight: normal;
+  font-size: 16px;
+  display: flex;
+  color: white;
+  cursor: pointer;
+  margin-right: 25px;
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+}
+
+.topbarIconContainer {
+  width: 35;
+  height: 35;
+  position: relative;
+  cursor: pointer;
+  margin-right: 10px;
+  color: white;
+}
+
+.topIconBadge {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  top: -5px;
+  right: 0px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.topAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
