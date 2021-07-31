@@ -1,0 +1,2 @@
+export const LECTURE_TITLE_MIN_LENGTH = 10;
+export const LECTURE_TITLE_MAX_LENGTH = 70;
