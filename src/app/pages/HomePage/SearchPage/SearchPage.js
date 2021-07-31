@@ -105,6 +105,7 @@ export default function SearchPage() {
       }
       LoadApp();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [limit, query, page, limit, sort, category],
   );
 

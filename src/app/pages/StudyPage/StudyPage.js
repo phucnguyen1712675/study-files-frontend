@@ -73,6 +73,7 @@ export function StudyPage() {
   const courseId = location.state.courseId;
   const myCourseId = location.state.myCourseId;
   let thisPlayer;
+  // eslint-disable-next-line no-unused-vars
   const [lastLectureWatchedDB, setLastLectureWatchedDB] = useState(null);
   const [sections, setSections] = useState(null);
   const [lectures, setLectures] = useState(null);
