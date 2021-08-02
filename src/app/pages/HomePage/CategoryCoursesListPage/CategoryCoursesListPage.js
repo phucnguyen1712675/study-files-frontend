@@ -41,6 +41,7 @@ export default function CategoryCoursesListPage() {
       }
       loadApp();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [limit, selectedSubCategory.id],
   );
 

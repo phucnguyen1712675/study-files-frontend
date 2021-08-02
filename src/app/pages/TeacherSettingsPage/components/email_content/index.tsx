@@ -1,14 +1,19 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Skeleton, Space, Button, Form } from 'antd';
 
 import FormInput from '../../../../components/features/teacher/form/form_input';
-import { useAppSelector } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
+import { updateTeacherInfo } from '../../../../../features/teacher/teacherAPI';
+import { getTeacherInfo } from '../../../../../features/guest/guestThunkAPI';
+
+import { axiosAuthInstance } from 'api/auth';
 
 type FormValues = {
   email: string;
@@ -30,6 +35,9 @@ const formItemLayout = {
 };
 
 export default function EmailContent() {
+  const history = useHistory();
+  const dispatch = useAppDispatch();
+
   const { data, isLoading } = useAppSelector(selectTeacherInfo);
 
   const defaultValues = {
@@ -53,10 +61,49 @@ export default function EmailContent() {
 
   const alertType = data?.isEmailVerified ? 'success' : 'warning';
 
-  const sendOTP = () => {};
+  const sendOTP = async () => {
+    try {
+      const resSendEmail = await axiosAuthInstance.post(
+        '/send-verification-email',
+        {
+          email: data?.email,
+          id: localStorage.studyFiles_user_id,
+        },
+      );
+      if (resSendEmail.status === 200) {
+        alert('an Otp have sent to your register mail');
+        history.push('/verifyEmail');
+        window.location.reload();
+      } else {
+        alert('something wrong ?');
+      }
+    } catch (err) {
+      if (err.response) {
+        alert(err.response.data.message);
+      } else if (err.request) {
+        alert(err.request);
+      } else {
+        alert(err.message);
+      }
+    }
+  };
 
-  const onSubmit = handleSubmit((data: FormValues) => {
-    console.log(data);
+  const onSubmit = handleSubmit(async (dataForm: FormValues) => {
+    if (dataForm.email !== data?.email) {
+      const dataToSend = {
+        email: dataForm.email,
+        name: data?.name,
+      };
+      const res = await updateTeacherInfo(dataToSend);
+      if (res.status === 200) {
+        localStorage.studyFiles_user_email = dataForm.email;
+        localStorage.studyFiles_user_isVerified = res.data.isEmailVerified;
+        dispatch(getTeacherInfo(data?.id ?? ''));
+        alert('Update successed');
+      } else {
+        alert(res.response.data.message);
+      }
+    }
   });
 
   return (

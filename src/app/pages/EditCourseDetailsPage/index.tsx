@@ -5,6 +5,9 @@ import { useAppDispatch } from '../../hooks';
 import HeaderSiderLayout from '../../components/features/teacher/header_sider_layout';
 import { getCourseDetails } from '../../../features/teacher/teacherThunkAPI';
 
+import TopBar from '../../components/Topbar/Topbar';
+import Footer from '../../components/Footer/Footer';
+
 export function EditCourseDetailsPage() {
   const courseId = '60fec06d49229d5ff003e126';
 
@@ -15,9 +18,13 @@ export function EditCourseDetailsPage() {
   }, [dispatch]);
 
   return (
-    <HeaderSiderLayout
-      siderItems={SIDER_MENU_ITEMS}
-      siderHeaderText="Edit course"
-    />
+    <>
+      <TopBar initQuery={''} />
+      <HeaderSiderLayout
+        siderItems={SIDER_MENU_ITEMS}
+        siderHeaderText="Edit course"
+      />
+      <Footer />
+    </>
   );
 }

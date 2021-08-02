@@ -1,5 +1,5 @@
-import axios from '../constants/axios';
-
+import _axios from '../constants/axios';
+const axios = _axios('');
 export const getCategoriesResults = async () => {
   try {
     const { data } = await axios.get('/categories');

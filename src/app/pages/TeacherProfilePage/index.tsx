@@ -8,7 +8,10 @@ import { useAppDispatch } from '../../hooks';
 import PageHelmet from '../../components/features/teacher/page_helmet';
 import { getTeacherInfo } from '../../../features/guest/guestThunkAPI';
 
-const { Header, Footer, Content } = Layout;
+import TopBar from '../../components/Topbar/Topbar';
+import Footer from '../../components/Footer/Footer';
+
+const { Content } = Layout;
 
 interface LocationState {
   teacherId: string;
@@ -29,7 +32,7 @@ export function TeacherProfilePage() {
     <>
       <PageHelmet title="Teacher Profile" />
       <Layout>
-        <Header>Header</Header>
+        <TopBar initQuery={''} />
         <Content style={{ backgroundColor: 'white' }}>
           <Row className="my-5">
             <Col span={14} offset={5}>
@@ -44,8 +47,8 @@ export function TeacherProfilePage() {
             </Col>
           </Row>
         </Content>
-        <Footer>Footer</Footer>
       </Layout>
+      <Footer />
     </>
   );
 }
