@@ -7,7 +7,10 @@ import { useAppDispatch } from '../../hooks';
 import PageHelmet from '../../components/features/teacher/page_helmet';
 import { getTeacherInfo } from '../../../features/guest/guestThunkAPI';
 
-const { Header, Footer, Content } = Layout;
+import TopBar from '../../components/Topbar/Topbar';
+import Footer from '../../components/Footer/Footer';
+
+const { Content } = Layout;
 
 const teacherId = localStorage.studyFiles_user_id;
 
@@ -21,10 +24,10 @@ export function TeacherCoursesPage() {
   return (
     <>
       <PageHelmet title="Your courses" />
+      <TopBar initQuery={''} />
       <Layout>
-        <Header>Header</Header>
         <Content style={{ backgroundColor: 'white' }}>
-          <Divider className="mt-5" />
+          <Divider className="mt-4" />
           <Row className="mb-5">
             <Col span={20} offset={2}>
               <Row>
@@ -38,8 +41,8 @@ export function TeacherCoursesPage() {
             </Col>
           </Row>
         </Content>
-        <Footer>Footer</Footer>
       </Layout>
+      <Footer />
     </>
   );
 }

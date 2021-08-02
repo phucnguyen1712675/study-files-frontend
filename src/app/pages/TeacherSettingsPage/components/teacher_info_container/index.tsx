@@ -17,7 +17,7 @@ export default function TeacherInfoContainer() {
   const teacherName = data?.name ?? 'Name';
 
   const navigateToTeacherPersonalProfilePage = () =>
-    history.push(TEACHER_PROFILE_PAGE_PATH);
+    history.push(TEACHER_PROFILE_PAGE_PATH, { teacherId: data?.id });
 
   return (
     <Row justify="space-between" style={{ margin: '25px 0' }}>

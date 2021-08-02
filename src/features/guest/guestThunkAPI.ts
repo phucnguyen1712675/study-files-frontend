@@ -1,8 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { GET_TEACHER_INFO, GET_TEACHER_COURSES } from './guestActionTypes';
-import axios from '../constants/axios';
+import _axios from '../constants/axios';
 import { GettingTeacherCoursesQuery } from '../../model/query/getting_teacher_courses';
+
+const axios = _axios('');
 
 export const getTeacherInfo = createAsyncThunk(
   GET_TEACHER_INFO,

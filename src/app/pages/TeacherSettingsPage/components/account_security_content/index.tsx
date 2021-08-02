@@ -3,6 +3,8 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button } from 'antd';
 
+import { updatePassword } from 'features/teacher/teacherAPI';
+
 import FormPassword from '../../../../components/features/teacher/form/form_password';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
@@ -14,9 +16,13 @@ type FormValues = {
 };
 
 const schema = yup.object().shape({
-  oldPassword: yup.string().min(8).required(),
-  newPassword: yup.string().min(8).required(),
-  confirmNewPassword: yup.string().min(8).required(),
+  oldPassword: yup.string().min(9).required(),
+  newPassword: yup.string().min(9).required(),
+  confirmNewPassword: yup
+    .string()
+    .min(9)
+    .required()
+    .oneOf([yup.ref('newPassword'), null], 'Passwords must match'),
 });
 
 const formItemLayout = {
@@ -42,10 +48,25 @@ export default function AccountSecurityContent() {
     defaultValues,
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, reset } = methods;
 
-  const onSubmit = handleSubmit((data: FormValues) => {
-    console.log(data);
+  const onSubmit = handleSubmit(async (data: FormValues) => {
+    if (data.newPassword !== data.confirmNewPassword) {
+      alert('The passwords do not match');
+      reset({ confirmNewPassword: '' });
+    } else {
+      const dataToSend = {
+        oldPassword: data.oldPassword,
+        newPassword: data.newPassword,
+      };
+      const res = await updatePassword(dataToSend);
+      if (res.status === 200) {
+        reset({ ...defaultValues });
+        alert('Updated !');
+      } else if (res.response) {
+        alert(res.response.data.message);
+      }
+    }
   });
 
   return (
