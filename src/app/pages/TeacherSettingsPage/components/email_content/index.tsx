@@ -55,8 +55,8 @@ export default function EmailContent() {
 
   const sendOTP = () => {};
 
-  const onSubmit = handleSubmit((data: FormValues) => {
-    console.log(data);
+  const onSubmit = handleSubmit((values: FormValues) => {
+    console.log(values);
   });
 
   return (
@@ -69,7 +69,7 @@ export default function EmailContent() {
           components={[
             {
               title: 'Email',
-              contentComponent: (
+              children: (
                 <>
                   <FormProvider {...methods}>
                     <Form

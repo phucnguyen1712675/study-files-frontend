@@ -13,6 +13,7 @@ import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
+import { EditPictureFormValues } from '../../../../../model/edit_picture_form_values';
 
 const { Text } = Typography;
 
@@ -29,7 +30,7 @@ const schema = yup.object().shape({
 });
 
 export default function ProfileContent() {
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = React.useState<boolean>(false);
 
   const { data, isLoading } = useAppSelector(selectTeacherInfo);
 
@@ -52,13 +53,21 @@ export default function ProfileContent() {
     setValue('detailDescription', data?.detailDescription ?? '');
   }, [data, setValue]);
 
-  const onCreate = (values: any) => {
+  const onCreate = async (values: EditPictureFormValues) => {
     console.log('Received values of form: ', values);
     setVisible(false);
   };
 
-  const onSubmit = handleSubmit((data: FormValues) => {
-    console.log(data);
+  const onClickBtnEdit = () => {
+    setVisible(true);
+  };
+
+  const onCancel = () => {
+    setVisible(false);
+  };
+
+  const onSubmit = handleSubmit((values: FormValues) => {
+    console.log(values);
   });
 
   return (
@@ -71,7 +80,7 @@ export default function ProfileContent() {
           components={[
             {
               title: 'Public profile',
-              contentComponent: (
+              children: (
                 <Row>
                   <Col span={16} style={{ padding: '0px 20px' }}>
                     <FormProvider {...methods}>
@@ -114,12 +123,7 @@ export default function ProfileContent() {
                           xxl: 180,
                         }}
                       />
-                      <Button
-                        icon={<EditOutlined />}
-                        onClick={() => {
-                          setVisible(true);
-                        }}
-                      >
+                      <Button icon={<EditOutlined />} onClick={onClickBtnEdit}>
                         Edit
                       </Button>
                     </Space>
@@ -133,7 +137,7 @@ export default function ProfileContent() {
       <EditPictureForm
         visible={visible}
         onCreate={onCreate}
-        onCancel={() => setVisible(false)}
+        onCancel={onCancel}
         title="Change profile picture"
         label="Choose a picture"
       />

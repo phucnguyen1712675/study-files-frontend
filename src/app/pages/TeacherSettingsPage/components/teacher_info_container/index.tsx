@@ -1,11 +1,10 @@
-// import React from 'react';
 import { Row, Col, Typography, Space, Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 
 import { useAppSelector } from '../../../../hooks';
-import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
-import { TEACHER_PROFILE_PAGE_PATH } from '../../../../../constants/routes';
+import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
+import { getTeacherProfilePagePath } from '../../../../../constants/routes';
 
 const { Title, Text } = Typography;
 
@@ -16,8 +15,16 @@ export default function TeacherInfoContainer() {
 
   const teacherName = data?.name ?? 'Name';
 
-  const navigateToTeacherPersonalProfilePage = () =>
-    history.push(TEACHER_PROFILE_PAGE_PATH);
+  const navigateToTeacherPersonalProfilePage = () => {
+    const { id, name } = data!;
+    const param = name.toLowerCase().replaceAll(' ', '-');
+    const path = getTeacherProfilePagePath(param);
+    const state = {
+      teacherId: id,
+    };
+
+    history.push(path, state);
+  };
 
   return (
     <Row justify="space-between" style={{ margin: '25px 0' }}>

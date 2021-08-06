@@ -44,8 +44,8 @@ export default function AccountSecurityContent() {
 
   const { handleSubmit } = methods;
 
-  const onSubmit = handleSubmit((data: FormValues) => {
-    console.log(data);
+  const onSubmit = handleSubmit((values: FormValues) => {
+    console.log(values);
   });
 
   return (
@@ -55,7 +55,7 @@ export default function AccountSecurityContent() {
         components={[
           {
             title: 'Change password',
-            contentComponent: (
+            children: (
               <FormProvider {...methods}>
                 <Form {...formItemLayout} layout="vertical" onFinish={onSubmit}>
                   <FormPassword name="oldPassword" label="Old password" />
