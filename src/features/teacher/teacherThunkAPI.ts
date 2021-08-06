@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { AccessToken } from '../../api/auth';
+import { teacherRequest } from './utils';
 
 import {
   GET_COURSE_DETAILS,
@@ -28,11 +28,13 @@ export const getCategoriesDetails = createAsyncThunk(
 export const getSectionsResults = createAsyncThunk(
   GET_SECTIONS_RESULTS,
   async (courseId: string) => {
-    await AccessToken();
-    const { data } = await axios.get(
-      `/teachers/sections/details?courseId=${courseId}&sortBy=ordinalNumber:asc`,
-    );
-    const { results } = data;
-    return results;
+    const request = async () => {
+      const { data } = await axios.get(
+        `/teachers/sections/details?courseId=${courseId}&sortBy=ordinalNumber:asc`,
+      );
+      const { results } = data;
+      return results;
+    };
+    return teacherRequest(request);
   },
 );
