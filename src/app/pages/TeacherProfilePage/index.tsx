@@ -4,22 +4,24 @@ import { useLocation } from 'react-router-dom';
 
 import TeacherAvatarColumnContent from './components/teacher_avatar_column_content';
 import TeacherInfoColumnContent from './components/teacher_info_column_content';
+
 import { useAppDispatch } from '../../hooks';
+import PageLayout from '../../components/features/teacher/page_layout';
 import PageHelmet from '../../components/features/teacher/page_helmet';
 import { getTeacherInfo } from '../../../features/guest/guestThunkAPI';
 
-const { Header, Footer, Content } = Layout;
+const { Content } = Layout;
 
-interface LocationState {
+type LocationState = {
   teacherId: string;
-}
+};
 
 export function TeacherProfilePage() {
-  const dispatch = useAppDispatch();
-
   const location = useLocation<LocationState>();
 
   const { teacherId } = location.state;
+
+  const dispatch = useAppDispatch();
 
   React.useEffect(() => {
     dispatch(getTeacherInfo(teacherId));
@@ -28,8 +30,7 @@ export function TeacherProfilePage() {
   return (
     <>
       <PageHelmet title="Teacher Profile" />
-      <Layout>
-        <Header>Header</Header>
+      <PageLayout>
         <Content style={{ backgroundColor: 'white' }}>
           <Row className="my-5">
             <Col span={14} offset={5}>
@@ -44,8 +45,7 @@ export function TeacherProfilePage() {
             </Col>
           </Row>
         </Content>
-        <Footer>Footer</Footer>
-      </Layout>
+      </PageLayout>
     </>
   );
 }
