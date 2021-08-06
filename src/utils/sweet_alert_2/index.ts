@@ -5,7 +5,7 @@ const MySwal = withReactContent(Swal);
 
 export const showLoadingSwal = () => {
   return MySwal.fire({
-    title: 'Now loading',
+    title: 'Action in progress..',
     allowEscapeKey: false,
     allowOutsideClick: false,
     didOpen: () => {
@@ -16,9 +16,9 @@ export const showLoadingSwal = () => {
 
 export const closeSwal = () => MySwal.close();
 
-export const showSuccessSwal = (text?: string | undefined) => {
+export const showSuccessSwal = (text?: string) => {
   return MySwal.fire({
-    title: 'Finished!',
+    title: 'Processing complete!',
     icon: 'success',
     text,
     timer: 1000,
