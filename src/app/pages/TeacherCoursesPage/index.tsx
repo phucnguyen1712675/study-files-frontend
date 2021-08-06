@@ -4,10 +4,11 @@ import { Layout, Row, Col, Divider } from 'antd';
 import CoursesColumnContent from './components/courses_column_content';
 import TeacherInfoColumnContent from './components/teacher_info_column_content';
 import { useAppDispatch } from '../../hooks';
+import PageLayout from '../../components/features/teacher/page_layout';
 import PageHelmet from '../../components/features/teacher/page_helmet';
 import { getTeacherInfo } from '../../../features/guest/guestThunkAPI';
 
-const { Header, Footer, Content } = Layout;
+const { Content } = Layout;
 
 const teacherId = localStorage.studyFiles_user_id;
 
@@ -21,8 +22,7 @@ export function TeacherCoursesPage() {
   return (
     <>
       <PageHelmet title="Your courses" />
-      <Layout>
-        <Header>Header</Header>
+      <PageLayout>
         <Content style={{ backgroundColor: 'white' }}>
           <Divider className="mt-5" />
           <Row className="mb-5">
@@ -38,8 +38,7 @@ export function TeacherCoursesPage() {
             </Col>
           </Row>
         </Content>
-        <Footer>Footer</Footer>
-      </Layout>
+      </PageLayout>
     </>
   );
 }

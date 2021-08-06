@@ -3,13 +3,14 @@ import { FolderOpenTwoTone, PlusOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 
 import CoursesPagination from '../../../../components/features/teacher/courses_pagination';
+import { COURSE_POSTING_PAGE_PATH } from '../../../../../constants/routes';
 
 const { Title } = Typography;
 
 export default function CoursesColumnContent() {
   const history = useHistory();
 
-  const addNewCourseOnClick = () => history.push('/teacher/add-new-course');
+  const addNewCourseOnClick = () => history.push(COURSE_POSTING_PAGE_PATH);
 
   return (
     <>
