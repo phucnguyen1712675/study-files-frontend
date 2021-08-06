@@ -240,7 +240,6 @@ export function App() {
           </PrivateRoute>
           {/* end admin routes */}
 
-          {/* <Route exact path="/teacher" component={TeacherPage} /> */}
           <Route exact path="/student" component={StudentPage} />
           <Route
             exact

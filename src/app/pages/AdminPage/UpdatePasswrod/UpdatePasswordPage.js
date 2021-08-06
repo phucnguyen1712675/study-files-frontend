@@ -8,7 +8,7 @@ import useStyles from '../Components/style.module/UseStyles.js';
 import Topbar from 'app/components/Topbar/Topbar';
 import Footer from 'app/components/Footer/Footer';
 import Sidebar from '../Components/SideBar/Sidebar';
-import { axiosInstance } from '../../../../api/admin';
+import { axiosGuestInstance } from '../../../../api/guest';
 import { AccessToken } from 'api/auth';
 
 export function AdminUpdatePasswordPage() {
@@ -28,7 +28,7 @@ export function AdminUpdatePasswordPage() {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
         },
       };
-      const res = await axiosInstance.patch(
+      const res = await axiosGuestInstance.patch(
         `/auth/update-password/${localStorage.studyFiles_user_id}`,
         data,
         config,

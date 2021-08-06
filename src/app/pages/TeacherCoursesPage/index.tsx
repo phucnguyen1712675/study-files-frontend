@@ -24,7 +24,7 @@ export function TeacherCoursesPage() {
       <PageHelmet title="Your courses" />
       <PageLayout>
         <Content style={{ backgroundColor: 'white' }}>
-          <Divider className="mt-5" />
+          <Divider className="mt-4" />
           <Row className="mb-5">
             <Col span={20} offset={2}>
               <Row>

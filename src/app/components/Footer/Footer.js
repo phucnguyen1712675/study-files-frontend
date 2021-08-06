@@ -7,10 +7,10 @@ export default function Footer() {
       style={{
         marginTop: '70px',
         padding: '10px 0px',
-        backgroundColor: '#fffff',
-        WebkitBoxShadow: ' 0 -3px 7px -7px black',
-        MozBoxShadow: ' 0 -3px 7px -7px black',
-        boxShadow: ' 0 -3px 7px -7px black',
+        backgroundColor: '#EBEBEB',
+        // WebkitBoxShadow: ' 0 -3px 7px -7px black',
+        // MozBoxShadow: ' 0 -3px 7px -7px black',
+        // boxShadow: ' 0 -3px 7px -7px black',
       }}
     >
       <Typography variant="h6" align="center" gutterBottom>

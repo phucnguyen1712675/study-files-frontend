@@ -100,20 +100,22 @@ export default function SubCategoryTabs({ subCategory, isNavigate }) {
   const [bestSellerCourses, setBestSellerCourses] = useState([]);
   const [mostViewCourses, setMostViewCourses] = useState([]);
 
-  useEffect(function () {
-    async function loadApp() {
-      const mostViewCoursesRes = await axiosGuestInstance.get(
-        `/courses?sortBy=view:desc&limit=10&subCategoryId=${subCategory.id}`,
-      );
-      const bestSellerCoursesRes = await axiosGuestInstance.get(
-        `/courses?sortBy=subscriberNumber:desc&limit=10&subCategoryId=${subCategory.id}`,
-      );
-      setMostViewCourses(mostViewCoursesRes.data.results);
-      setBestSellerCourses(bestSellerCoursesRes.data.results);
-    }
-    loadApp();
-    // eslint-disable-next-line
-  }, []);
+  useEffect(
+    function () {
+      async function loadApp() {
+        const mostViewCoursesRes = await axiosGuestInstance.get(
+          `/courses?sortBy=view:desc&limit=10&subCategoryId=${subCategory.id}`,
+        );
+        const bestSellerCoursesRes = await axiosGuestInstance.get(
+          `/courses?sortBy=subscriberNumber:desc&limit=10&subCategoryId=${subCategory.id}`,
+        );
+        setMostViewCourses(mostViewCoursesRes.data.results);
+        setBestSellerCourses(bestSellerCoursesRes.data.results);
+      }
+      loadApp();
+    },
+    [subCategory.id],
+  );
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

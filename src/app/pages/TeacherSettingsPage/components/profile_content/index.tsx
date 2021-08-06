@@ -5,13 +5,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button, Space, Skeleton, Row, Col, Typography } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 
-import { useAppSelector } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import EditPictureForm from '../../../../components/features/teacher/form/edit_picture_form';
 import FormInput from '../../../../components/features/teacher/form/form_input';
 import FormTextArea from '../../../../components/features/teacher/form/form_text_area';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
+import { updateTeacherInfo } from '../../../../../features/teacher/teacherAPI';
+import { getTeacherInfo } from '../../../../../features/guest/guestThunkAPI';
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
 import { EditPictureFormValues } from '../../../../../model/edit_picture_form_values';
 
@@ -31,6 +33,8 @@ const schema = yup.object().shape({
 
 export default function ProfileContent() {
   const [visible, setVisible] = React.useState<boolean>(false);
+
+  const dispatch = useAppDispatch();
 
   const { data, isLoading } = useAppSelector(selectTeacherInfo);
 
@@ -53,8 +57,21 @@ export default function ProfileContent() {
     setValue('detailDescription', data?.detailDescription ?? '');
   }, [data, setValue]);
 
+  const updateTeacher = async dataToSend => {
+    const res = await updateTeacherInfo(dataToSend);
+    if (res.status === 200) {
+      dispatch(getTeacherInfo(data?.id ?? ''));
+      alert('Update successed');
+    } else {
+      alert(res.response.data.message);
+    }
+  };
+
   const onCreate = async (values: EditPictureFormValues) => {
-    console.log('Received values of form: ', values);
+    const dataToSend = {
+      avatar: values.image,
+    };
+    await updateTeacher(dataToSend);
     setVisible(false);
   };
 
@@ -66,8 +83,8 @@ export default function ProfileContent() {
     setVisible(false);
   };
 
-  const onSubmit = handleSubmit((values: FormValues) => {
-    console.log(values);
+  const onSubmit = handleSubmit(async (values: FormValues) => {
+    await updateTeacher(values);
   });
 
   return (

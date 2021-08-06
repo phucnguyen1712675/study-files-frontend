@@ -2,6 +2,28 @@ import { AxiosStatic } from 'axios';
 
 import { teacherRequest } from './utils';
 
+export const updateTeacherInfo = async (payload: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.patch(
+      `/auth/update/${localStorage.studyFiles_user_id}`,
+      payload,
+    );
+    return response;
+  };
+  return teacherRequest(request);
+};
+
+export const updatePassword = async (payload: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.patch(
+      `/auth/update-password/${localStorage.studyFiles_user_id}`,
+      payload,
+    );
+    return response;
+  };
+  return teacherRequest(request);
+};
+
 export const addCourse = async (payload: any) => {
   const request = async (axios: AxiosStatic) => {
     const response = await axios.post('/teachers/courses', payload);

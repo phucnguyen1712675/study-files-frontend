@@ -2,15 +2,24 @@ import { Button, Row, Typography, Divider } from 'antd';
 import { FolderOpenTwoTone, PlusOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 
+import { useAppSelector } from '../../../../hooks';
 import CoursesPagination from '../../../../components/features/teacher/courses_pagination';
+import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 import { COURSE_POSTING_PAGE_PATH } from '../../../../../constants/routes';
 
 const { Title } = Typography;
 
 export default function CoursesColumnContent() {
   const history = useHistory();
+  const { data } = useAppSelector(selectTeacherInfo);
 
-  const addNewCourseOnClick = () => history.push(COURSE_POSTING_PAGE_PATH);
+  const addNewCourseOnClick = () => {
+    if (data?.isEmailVerified) {
+      history.push(COURSE_POSTING_PAGE_PATH);
+    } else {
+      alert('Please verify email to do this task');
+    }
+  };
 
   return (
     <>
