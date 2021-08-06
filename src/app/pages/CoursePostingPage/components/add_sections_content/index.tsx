@@ -50,33 +50,29 @@ export default function AddSectionsContent() {
 
   const { handleSubmit, reset } = methods;
 
-  const onFinish = handleSubmit(async (data: FormValues) => {
+  const onFinish = handleSubmit(async (values: FormValues) => {
     setLoading(true);
 
-    const { title } = data;
-
     const payload = {
-      title,
+      ...values,
       courseId: newCourseId,
     };
 
     const response = await addSection(payload);
 
     if (!response || response.status !== 201) {
-      message.error('Something wrong. Please try again');
+      message.error(`Error: ${response}`);
+    } else {
+      message.success('Processing complete!');
+
+      setAddedSectionTitles(arr => [...arr, values.title]);
+
+      setOrdinalNumber(ordinalNumber + 1);
+
+      reset();
     }
 
-    setAddedSectionTitles(arr => [...arr, title]);
-
-    setOrdinalNumber(ordinalNumber + 1);
-
-    reset({
-      title: '',
-    });
-
     setLoading(false);
-
-    message.success('Processing complete!');
   });
 
   const onDone = () => setShouldShowNextButton(true);
@@ -87,7 +83,7 @@ export default function AddSectionsContent() {
       <CustomContent
         step={1}
         shouldShowNextButton={shouldShowNextButton}
-        component={
+        children={
           <>
             {addedSectionTitles.length !== 0 && (
               <Alert

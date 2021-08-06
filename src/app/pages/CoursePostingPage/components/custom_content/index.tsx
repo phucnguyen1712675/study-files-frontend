@@ -12,13 +12,17 @@ import {
 } from '../../../../../features/teacher/teacherSlice';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
 
-export default function CustomContent(props: {
+type Props = {
   step: number;
-  component: JSX.Element;
+  children: React.ReactNode;
   shouldShowNextButton: boolean;
-}) {
-  const { step, component, shouldShowNextButton } = props;
+};
 
+export default function CustomContent({
+  step,
+  children,
+  shouldShowNextButton,
+}: Props) {
   const coursePostingStep = useAppSelector(selectCoursePostingStep);
 
   const dispatch = useAppDispatch();
@@ -26,16 +30,14 @@ export default function CustomContent(props: {
   const history = useHistory();
 
   React.useEffect(() => {
-    // console.log(coursePostingStep);
-    // console.log(step);
     coursePostingStep !== step && dispatch(setCoursePostingStep(step));
   }, [coursePostingStep, dispatch, step]);
 
   const next = () => {
     if (coursePostingStep === STEP_ITEMS.length - 1) {
-      dispatch(setCoursePostingStep(0));
-      // Done
       message.success('Processing complete!');
+
+      dispatch(setCoursePostingStep(0));
     } else {
       // Next step
       dispatch(coursePostingNextStep());
@@ -50,14 +52,14 @@ export default function CustomContent(props: {
         components={[
           {
             title: `Step ${step + 1}`,
-            contentComponent: (
+            children: (
               <>
                 {shouldShowNextButton ? (
                   <Button type="primary" onClick={() => next()}>
                     {step !== STEP_ITEMS.length - 1 ? 'Next step' : 'Done'}
                   </Button>
                 ) : (
-                  component
+                  children
                 )}
               </>
             ),
