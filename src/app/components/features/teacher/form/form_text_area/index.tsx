@@ -4,14 +4,19 @@ import { Form, Input, Typography } from 'antd';
 const { TextArea } = Input;
 const { Text } = Typography;
 
-export default function FormTextArea(props: {
+type Props = {
   name: any;
   label: string;
   autoSize: boolean;
   placeholder?: string;
-}) {
-  const { name, label, autoSize, placeholder } = props;
+};
 
+export default function FormTextArea({
+  name,
+  label,
+  autoSize,
+  placeholder,
+}: Props) {
   const {
     control,
     formState: { errors },

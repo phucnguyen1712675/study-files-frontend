@@ -1,19 +1,25 @@
 import { Layout } from 'antd';
 
-const { Header, Content, Footer } = Layout;
+import PageLayout from '../page_layout';
 
-export default function TeacherPageLayout(props: { content: JSX.Element }) {
-  const { content } = props;
+const { Content } = Layout;
 
+type Props = {
+  children: React.ReactNode;
+};
+
+export default function TeacherPageLayout({ children }: Props) {
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header className="header">Header</Header>
-      <Content style={{ padding: '0 280px', backgroundColor: 'white' }}>
-        {content}
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>
-        Study-files ©2021 Created by Study-files team
-      </Footer>
-    </Layout>
+    <PageLayout
+      style={{
+        minHeight: '100vh',
+        width: '100%',
+        backgroundColor: 'white',
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
+      <Content style={{ width: '65%' }}>{children}</Content>
+    </PageLayout>
   );
 }

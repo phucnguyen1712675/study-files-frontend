@@ -6,14 +6,19 @@ import { CategoryDetails } from '../../../../../../model/category_details';
 const { Option, OptGroup } = Select;
 const { Text } = Typography;
 
-export default function FormSubCategoryOptGroupSelect(props: {
+type Props = {
   name: any;
   label: string;
   defaultValue?: string;
   categories: CategoryDetails[];
-}) {
-  const { name, label, defaultValue, categories } = props;
+};
 
+export default function FormSubCategoryOptGroupSelect({
+  name,
+  label,
+  defaultValue,
+  categories,
+}: Props) {
   const {
     control,
     formState: { errors },
