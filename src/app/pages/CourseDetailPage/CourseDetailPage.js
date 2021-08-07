@@ -38,7 +38,8 @@ import Footer from '../../components/Footer/Footer';
 import userAvatar from 'images/user.jpg';
 import { SectionList } from './components/SectionList';
 import { CourseCard, RatingCard } from '../../components/Cards/Cards';
-import { TEACHER_PROFILE_PAGE_PATH } from '../../../constants/routes';
+import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
+import { getTeacherProfilePagePath } from '../../../constants/routes';
 
 const Accordion = withStyles({
   root: {
@@ -141,6 +142,7 @@ export default function CourseDetailPage() {
   const location = useLocation();
   const history = useHistory();
   const course = location.state.course;
+  const [exist, setExist] = useState(true);
   const [thisTeacher, setThisTeacher] = useState(false);
   const [sections, setSections] = useState([]);
   const [rateInfo, setRateInfo] = useState({
@@ -168,6 +170,7 @@ export default function CourseDetailPage() {
     function () {
       // chạy lại mỗi khi userId, store.mycourses và store.watchList thay đổi
       async function loadApp() {
+        // TODO phuc setLoading = true
         setStudy({ ...study, is: false, myCourseId: '' });
         setLike({
           ...like,
@@ -175,57 +178,68 @@ export default function CourseDetailPage() {
           watchListId: '',
         });
 
-        const ratingsRes = await axiosGuestInstance.get(
-          `/ratings/${course.id}`,
-        );
-        setRatings(ratingsRes.data);
-        const feedBackRes = await axiosGuestInstance.get(
-          `/feedbacks/${course.id}`,
-        );
-        setFeedBacks(feedBackRes.data);
+        try {
+          await axiosGuestInstance.get(`/courses/${course.id}`);
+          const ratingsRes = await axiosGuestInstance.get(
+            `/ratings/${course.id}`,
+          );
+          setRatings(ratingsRes.data);
+          const feedBackRes = await axiosGuestInstance.get(
+            `/feedbacks/${course.id}`,
+          );
+          setFeedBacks(feedBackRes.data);
 
-        // check if student then get is study or like this course
-        if (localStorage.studyFiles_user_role === 'student') {
-          for (var myCourse of store.myCourses) {
-            if (myCourse.id === course.id) {
-              setStudy({ ...study, is: true, myCourseId: myCourse.myCourseId });
-              break;
+          // check if student then get is study or like this course
+          if (localStorage.studyFiles_user_role === 'student') {
+            for (var myCourse of store.myCourses) {
+              if (myCourse.id === course.id) {
+                setStudy({
+                  ...study,
+                  is: true,
+                  myCourseId: myCourse.myCourseId,
+                });
+                break;
+              }
             }
-          }
-          for (var watchList of store.watchList) {
-            if (watchList.id === course.id) {
-              setLike({
-                ...like,
-                is: true,
-                watchListId: watchList.watchListId,
-              });
-              break;
+            for (var watchList of store.watchList) {
+              if (watchList.id === course.id) {
+                setLike({
+                  ...like,
+                  is: true,
+                  watchListId: watchList.watchListId,
+                });
+                break;
+              }
             }
+          } else if (
+            localStorage.studyFiles_user_role === 'teacher' &&
+            course.teacherId === localStorage.studyFiles_user_id
+          ) {
+            setThisTeacher(true);
           }
-        } else if (
-          localStorage.studyFiles_user_role === 'teacher' &&
-          course.teacherId === localStorage.studyFiles_user_id
-        ) {
-          setThisTeacher(true);
+
+          // get best 5 coures of teacherId
+          const bestSaleCoursesOfTeacherRes = await axiosGuestInstance.get(
+            `/courses?teacherId=${course.teacher.id}&sortBy=subscriberNumber:desc&limit=5`,
+          );
+          setBestSaleCoursesOfTeacher(bestSaleCoursesOfTeacherRes.data.results);
+          // get best 5 coures of subCategory
+          const bestSaleCoursesSameCategoryRes = await axiosGuestInstance.get(
+            `/courses?subCategoryId=${course.subCategory.id}&sortBy=subscriberNumber:desc&limit=5`,
+          );
+          setBestSaleCoursesSameCategory(
+            bestSaleCoursesSameCategoryRes.data.results,
+          );
+
+          const sectionsRes = await axiosGuestInstance.get(
+            `/courses/${course.id}/sections?courseId=${course.id}&limit=20`,
+          );
+          setSections([...sectionsRes.data.results]);
+        } catch {
+          setExist(false);
         }
 
-        // get best 5 coures of teacherId
-        const bestSaleCoursesOfTeacherRes = await axiosGuestInstance.get(
-          `/courses?teacherId=${course.teacher.id}&sortBy=subscriberNumber:desc&limit=5`,
-        );
-        setBestSaleCoursesOfTeacher(bestSaleCoursesOfTeacherRes.data.results);
-        // get best 5 coures of subCategory
-        const bestSaleCoursesSameCategoryRes = await axiosGuestInstance.get(
-          `/courses?subCategoryId=${course.subCategory.id}&sortBy=subscriberNumber:desc&limit=5`,
-        );
-        setBestSaleCoursesSameCategory(
-          bestSaleCoursesSameCategoryRes.data.results,
-        );
-
-        const sectionsRes = await axiosGuestInstance.get(
-          `/courses/${course.id}/sections?courseId=${course.id}&limit=20`,
-        );
-        setSections([...sectionsRes.data.results]);
+        // TODO Phuc setLoading = false
 
         const unlisten = history.listen(() => {
           window.scrollTo(0, 0);
@@ -242,10 +256,15 @@ export default function CourseDetailPage() {
   );
 
   // function logic handle =======================================
-  const NavigateToTeacherPage = function () {
-    history.push(TEACHER_PROFILE_PAGE_PATH, {
-      teacherId: course.teacher.id,
-    });
+  const NavigateToTeacherPage = () => {
+    const { id, name } = course.teacher;
+    const param = name.toLowerCase().replaceAll(' ', '-');
+    const path = getTeacherProfilePagePath(param);
+    const state = {
+      teacherId: id,
+    };
+
+    history.push(path, state);
   };
 
   const NavigateToCategoryCousesListPage = function () {
@@ -1306,26 +1325,32 @@ export default function CourseDetailPage() {
   return (
     <>
       <TopBar initQuery={''} />
-      {MainInfoWidget()}
-      <div
-        style={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexDirection: 'column',
-          color: '#525252',
-        }}
-      >
-        {EnterStudyPage()}
-        {DetailDescriptionWidget()}
-        {VideosWidget()}
-        {RatingListWidget()}
-        {TeacherInfoWidget()}
-
-        {TopFiveBestSaleCoursesOfSameSubCategory()}
-      </div>
+      {/* TODO phuc loading here */}
+      {exist ? (
+        <>
+          {MainInfoWidget()}
+          <div
+            style={{
+              height: '100%',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              color: '#525252',
+            }}
+          >
+            {EnterStudyPage()}
+            {DetailDescriptionWidget()}
+            {VideosWidget()}
+            {RatingListWidget()}
+            {TeacherInfoWidget()}
+            {TopFiveBestSaleCoursesOfSameSubCategory()}
+          </div>
+        </>
+      ) : (
+        <NotFoundPage />
+      )}
       <Footer />
     </>
   );

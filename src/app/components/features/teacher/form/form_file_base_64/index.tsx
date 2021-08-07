@@ -1,16 +1,25 @@
 import { useFormContext, Controller } from 'react-hook-form';
-import { Form, Typography } from 'antd';
+import { Form, Typography, message } from 'antd';
 import FileBase from 'react-file-base64';
 
 const { Text } = Typography;
 
-export default function FormFileBase64(props: {
+type Props = {
   name: any;
   label: string;
   fileKey?: any;
-}) {
-  const { name, label, fileKey } = props;
+  desiredFileType: 'image' | 'video';
+};
 
+const isDesiredFileType = (fileType: string, desiredFileType: string) =>
+  !!fileType.match(`${desiredFileType}.*`);
+
+export default function FormFileBase64({
+  name,
+  label,
+  fileKey,
+  desiredFileType,
+}: Props) {
   const {
     control,
     formState: { errors },
@@ -24,18 +33,24 @@ export default function FormFileBase64(props: {
     errorMessage = errors[name].message;
   }
 
+  const onDone = ({ type, base64 }) => {
+    const isMatchedType = isDesiredFileType(type, desiredFileType);
+
+    if (isMatchedType) {
+      setValue(name, base64);
+    } else {
+      setValue(name, '');
+      message.warning(`Please select File with ${desiredFileType} type `);
+    }
+  };
+
   return (
     <Form.Item label={label}>
       <Controller
         control={control}
         name={name}
         render={({ field }) => (
-          <FileBase
-            {...field}
-            key={fileKey}
-            multiple={false}
-            onDone={({ base64 }) => setValue(name, base64)}
-          />
+          <FileBase {...field} key={fileKey} multiple={false} onDone={onDone} />
         )}
       />
       {isError && <Text type="danger">{errorMessage}</Text>}

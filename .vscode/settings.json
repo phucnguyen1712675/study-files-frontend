@@ -24,6 +24,7 @@
     "Popconfirm",
     "Sider",
     "Swal",
+    "Topbar",
     "antd",
     "datepicker",
     "draftjs",
@@ -33,6 +34,7 @@
     "persistor",
     "reduxjs",
     "reloadable",
+    "scrollable",
     "serializable",
     "sweetalert"
   ]

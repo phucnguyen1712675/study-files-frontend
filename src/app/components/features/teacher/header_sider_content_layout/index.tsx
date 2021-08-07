@@ -1,14 +1,16 @@
 import { Space } from 'antd';
 import ContentTitle from '../content_title';
 
-export default function HeaderSiderContentLayout(props: {
-  components: {
-    title: string;
-    contentComponent: JSX.Element;
-  }[];
-}) {
-  const { components } = props;
+type Component = {
+  title: string;
+  children: React.ReactNode;
+};
 
+type Props = {
+  components: Component[];
+};
+
+export default function HeaderSiderContentLayout({ components }: Props) {
   return (
     <Space size="large" direction="vertical" style={{ width: '100%' }}>
       {components.map((component, idx) => (
@@ -19,7 +21,7 @@ export default function HeaderSiderContentLayout(props: {
           style={{ width: '100%' }}
         >
           <ContentTitle title={component.title} />
-          {component.contentComponent}
+          {component.children}
         </Space>
       ))}
     </Space>

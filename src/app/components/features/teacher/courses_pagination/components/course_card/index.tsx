@@ -1,54 +1,88 @@
 import { Card, Skeleton, Image, Typography, Button, Tooltip } from 'antd';
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { EditTwoTone, EyeOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
 
-import { Course } from '../../../../../../../model/course';
 import { useAppSelector } from '../../../../../../hooks';
+import { Course } from '../../../../../../../model/course';
+import {
+  getCourseDetailsPagePath,
+  getCourseSettingsPagePath,
+} from '../../../../../../../constants/routes';
 import { selectTeacherCourses } from '../../../../../../../features/guest/guestSlice';
+import { PLACEHOLDER_IMAGE_URL } from '../../../../../../../constants/images';
 
 const { Paragraph } = Typography;
 const { Meta } = Card;
 
-const courseCardActionItems = [
-  {
-    tooltipTitle: 'Setting',
-    icon: <SettingOutlined style={{ color: 'grey' }} />,
-  },
-  {
-    tooltipTitle: 'Edit',
-    icon: <EditOutlined style={{ color: 'grey' }} />,
-  },
-  {
-    tooltipTitle: 'More',
-    icon: <EllipsisOutlined style={{ color: 'grey' }} />,
-  },
-];
-
-export default function CourseCard(props: {
+type Props = {
   course: Course;
   isEditable: boolean;
-}) {
-  const { course, isEditable } = props;
+};
+
+export default function CourseCard({ course, isEditable }: Props) {
+  const history = useHistory();
 
   const { isLoading } = useAppSelector(selectTeacherCourses);
 
+  const navigateToCourseSettingsPage = () => {
+    const { id } = course;
+
+    const path = getCourseSettingsPagePath(id);
+
+    history.push(path);
+  };
+
+  const navigateToCourseDetailsPage = () => {
+    const { name } = course;
+
+    const param = name.toLowerCase().replaceAll(' ', '-');
+
+    const path = getCourseDetailsPagePath(param);
+
+    const state = {
+      course,
+    };
+
+    history.push(path, state);
+  };
+
+  const courseCardActionItems = [
+    {
+      tooltipTitle: 'Edit this course',
+      icon: <EditTwoTone />,
+      onClick: () => navigateToCourseSettingsPage(),
+    },
+    {
+      tooltipTitle: 'View this course as a Guest',
+      icon: <EyeOutlined style={{ color: 'grey' }} />,
+      onClick: () => navigateToCourseDetailsPage(),
+    },
+  ];
+
+  const onClick = () => navigateToCourseDetailsPage();
+
   return (
     <Card
-      // style={{ height: 200 }}
-      // loading={isLoading}
-      cover={!isLoading && <Image src={course.image} />}
+      cover={
+        !isLoading && (
+          <Image
+            src={course.image}
+            preview={false}
+            placeholder={<Image preview={false} src={PLACEHOLDER_IMAGE_URL} />}
+          />
+        )
+      }
       actions={
         isEditable && !isLoading
           ? courseCardActionItems.map((item, idx) => (
               <Tooltip key={idx} title={item.tooltipTitle}>
-                <Button type="text" icon={item.icon} />
+                <Button type="text" icon={item.icon} onClick={item.onClick} />
               </Tooltip>
             ))
           : undefined
       }
+      onClick={!isEditable ? onClick : undefined}
+      style={!isEditable ? { cursor: 'pointer' } : undefined}
     >
       <Skeleton loading={isLoading} avatar active>
         <Meta
@@ -58,7 +92,6 @@ export default function CourseCard(props: {
               {course.shortDescription}
             </Paragraph>
           }
-          // description={course.shortDescription}
         />
       </Skeleton>
     </Card>

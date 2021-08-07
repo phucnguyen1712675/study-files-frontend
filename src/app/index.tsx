@@ -6,7 +6,7 @@
  * contain code that should be seen on all pages. (e.g. navigation bar)
  */
 
-import React, { useReducer, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -34,33 +34,34 @@ import {
 import { StudyPage } from './pages/StudyPage/Loadable';
 import { StudentPage } from './pages/StudentPage';
 import { UpdatePasswordPage } from './pages/StudentPage/UpdatePassword/updatePasswordPage';
-import { CourseDetailPage } from './pages/CourseDetailPage/Loadable';
 
+import { CourseDetailPage } from './pages/CourseDetailPage/Loadable';
 import { TeacherProfilePage } from './pages/TeacherProfilePage/Loadable';
 import { TeacherCoursesPage } from './pages/TeacherCoursesPage/Loadable';
 import { TeacherSettingsPage } from './pages/TeacherSettingsPage/Loadable';
-import { EditCourseDetailsPage } from './pages/EditCourseDetailsPage/Loadable';
+import { CourseSettingsPage } from './pages/CourseSettingsPage/Loadable';
 import { CoursePostingPage } from './pages/CoursePostingPage/Loadable';
+
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
 
 import reducer from './pages/HomePage/components/homePageReducer';
 import AppContext from './AppContext';
+import {
+  TEACHER_PROFILE_PAGE_PATH,
+  TEACHER_COURSES_PAGE_PATH,
+  TEACHER_SETTINGS_PAGE_PATH,
+  COURSE_SETTINGS_PAGE_PATH,
+  COURSE_POSTING_PAGE_PATH,
+} from '../constants/routes';
+import { ROLES } from '../constants/roles';
 import { axiosGuestInstance } from '../api/guest';
-import { AccessToken } from 'api/auth';
+import { AccessToken } from '../api/auth';
 // import {
 //   SampleDataSections,
 //   SampleDataImages,
 // } from './pages/CourseDetailPage/components/SectionList';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-import {
-  TEACHER_PROFILE_PAGE_PATH,
-  TEACHER_COURSES_PAGE_PATH,
-  TEACHER_SETTINGS_PAGE_PATH,
-  EDIT_COURSE_DETAILS_PAGE_PATH,
-  COURSE_POSTING_PAGE_PATH,
-} from '../constants/routes';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -246,22 +247,25 @@ export function App() {
             component={UpdatePasswordPage}
           />
           <Route
-            exact
             path={TEACHER_PROFILE_PAGE_PATH}
             component={TeacherProfilePage}
           />
-          <PrivateRoute path={TEACHER_COURSES_PAGE_PATH}>
+          <PrivateRoute exact path={TEACHER_COURSES_PAGE_PATH}>
             <TeacherCoursesPage />
           </PrivateRoute>
+
           <PrivateRoute path={TEACHER_SETTINGS_PAGE_PATH}>
             <TeacherSettingsPage />
           </PrivateRoute>
-          <PrivateRoute path={EDIT_COURSE_DETAILS_PAGE_PATH}>
-            <EditCourseDetailsPage />
+
+          <PrivateRoute path={COURSE_SETTINGS_PAGE_PATH}>
+            <CourseSettingsPage />
           </PrivateRoute>
+
           <PrivateRoute path={COURSE_POSTING_PAGE_PATH}>
             <CoursePostingPage />
           </PrivateRoute>
+
           <Route component={NotFoundPage} />
         </Switch>
       </AppContext.Provider>
@@ -269,15 +273,12 @@ export function App() {
     </BrowserRouter>
   );
 }
-
 function PrivateRoute({ children, ...rest }) {
   return (
     <Route
       {...rest}
       render={() =>
-        localStorage.studyFiles_user_role === 'admin' ||
-        localStorage.studyFiles_user_role === 'teacher' ||
-        localStorage.studyFiles_user_role === 'student' ? (
+        ROLES.includes(localStorage.studyFiles_user_role) ? (
           children
         ) : (
           <Redirect

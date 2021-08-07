@@ -19,3 +19,14 @@ export const SIDER_MENU_ITEMS = [
     component: EmailContent,
   },
 ];
+
+export const FORM_ITEM_LAYOUT = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};

@@ -6,46 +6,39 @@ import LoadingCard from './components/loading_card';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import { getCoursesOfTeacherQueryResult } from '../../../../../features/guest/guestThunkAPI';
 import { selectTeacherCourses } from '../../../../../features/guest/guestSlice';
-import { GettingTeacherCoursesQuery } from '../../../../../model/query/getting_teacher_courses';
+import { ListGridType } from 'antd/lib/list';
 
 const { Text } = Typography;
 
 const teacherId = localStorage.studyFiles_user_id;
 
-export default function CoursesPagination(props: {
+type Props = {
   limit: number;
   isCardEditable: boolean;
-  gridType: object;
-}) {
-  const { limit, isCardEditable, gridType } = props;
+  gridType: ListGridType;
+};
 
+export default function CoursesPagination({
+  limit,
+  isCardEditable,
+  gridType,
+}: Props) {
   const [page, setPage] = React.useState<number>(1);
 
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
-    const getCoursesArgument: GettingTeacherCoursesQuery = {
-      teacherId,
-      page,
-      limit: limit,
-      // sortBy: 'subscriberNumber',
-      // sortResults: 'desc',
-    };
-    dispatch(getCoursesOfTeacherQueryResult(getCoursesArgument));
+    const query = `teacherId=${teacherId}&page=${page}&limit=${limit}`;
+    dispatch(getCoursesOfTeacherQueryResult(query));
   }, [dispatch, limit, page]);
 
-  const { data, isLoading, error } = useAppSelector(selectTeacherCourses);
+  const { data, isLoading } = useAppSelector(selectTeacherCourses);
 
   const resultTeacherCourses = data?.results ?? [];
 
-  // for (var course of resultTeacherCourses) {
-  //   console.log(course.id);
-  // }
-
   const resultTotalPages = data?.totalPages ?? 0;
-  const teacherTotalCourseAmount = data?.totalResults ?? 0;
 
-  Object.keys(error).length !== 0 && console.log(error);
+  const teacherTotalCourseAmount = data?.totalResults ?? 0;
 
   const paginationOnChange = (page: number) => setPage(page);
 

@@ -17,14 +17,18 @@ import TeacherPageLayout from '../teacher_page_layout';
 const { Content, Sider } = Layout;
 const { Text } = Typography;
 
-export default function HeaderSiderLayout(props: {
+type Props = {
   siderItems: any[];
-  headerContainer?: JSX.Element;
+  headerContainer?: React.ReactNode;
   siderHeaderText: string;
-}) {
-  const { siderItems, headerContainer, siderHeaderText } = props;
+};
 
-  let { path, url } = useRouteMatch();
+export default function HeaderSiderLayout({
+  siderItems,
+  headerContainer,
+  siderHeaderText,
+}: Props) {
+  let { url } = useRouteMatch();
 
   const location = useLocation();
 
@@ -32,69 +36,67 @@ export default function HeaderSiderLayout(props: {
 
   const [selectedKey, setSelectedKey] = React.useState<string | undefined>(
     siderItems.find(_item =>
-      location.pathname.startsWith(`${path}/${_item.path}`),
+      location.pathname.startsWith(`${url}/${_item.path}`),
     )?.path,
   );
 
   const onClickMenu = item => {
     const clicked = siderItems.find(_item => _item.path === item.key);
-    history.push(`${path}/${clicked?.path}` ?? siderItems[0].path);
+    history.push(`${url}/${clicked?.path}` ?? siderItems[0].path);
   };
 
   React.useEffect(() => {
     setSelectedKey(
       siderItems.find(_item =>
-        location.pathname.startsWith(`${path}/${_item.path}`),
+        location.pathname.startsWith(`${url}/${_item.path}`),
       )?.path,
     );
-  }, [location, path, siderItems]);
+  }, [location, siderItems, url]);
 
   return (
-    <TeacherPageLayout
-      content={
-        <>
-          {headerContainer}
-          <Router>
-            <Layout
-              className="site-layout-background"
-              style={{ padding: '24px 0' }}
-            >
-              <Sider className="site-layout-background" width={200}>
-                <Menu
-                  mode="inline"
-                  selectedKeys={[selectedKey ?? siderItems[0].path]}
-                  onClick={onClickMenu}
-                >
-                  <Menu.Item key="header" disabled>
-                    <Text strong>{siderHeaderText}</Text>
-                  </Menu.Item>
-
-                  {siderItems.map(item => (
-                    <Menu.Item key={item.path}>
-                      <Link to={`${url}/${item.path}`}>{item.title}</Link>
-                    </Menu.Item>
-                  ))}
-                </Menu>
-              </Sider>
-              <Content
-                style={{ padding: '0 24px', minHeight: 280, minWidth: 600 }}
+    <TeacherPageLayout>
+      <>
+        {headerContainer}
+        <Router>
+          <Layout
+            className="site-layout-background"
+            style={{ padding: '24px 0' }}
+          >
+            <Sider className="site-layout-background" width="20%">
+              <Menu
+                mode="inline"
+                selectedKeys={[selectedKey ?? siderItems[0].path]}
+                onClick={onClickMenu}
               >
-                <Route exact path={path}>
-                  <Redirect to={`${path}/${siderItems[0].path}`} />
-                </Route>
+                <Menu.Item key="header" disabled>
+                  <Text strong>{siderHeaderText}</Text>
+                </Menu.Item>
 
                 {siderItems.map(item => (
-                  <Route
-                    key={item.path}
-                    path={`${path}/${item.path}`}
-                    component={item.component}
-                  />
+                  <Menu.Item key={item.path}>
+                    <Link to={`${url}/${item.path}`}>{item.title}</Link>
+                  </Menu.Item>
                 ))}
-              </Content>
-            </Layout>
-          </Router>
-        </>
-      }
-    />
+              </Menu>
+            </Sider>
+            <Content
+              style={{ padding: '0 24px', minHeight: 280, minWidth: 600 }}
+            >
+              <Route exact path={url}>
+                <Redirect to={`${url}/${siderItems[0].path}`} />
+              </Route>
+
+              {siderItems.map(item => (
+                <Route
+                  key={item.path}
+                  path={`${url}/${item.path}`}
+                  component={item.component}
+                />
+              ))}
+            </Content>
+          </Layout>
+        </Router>
+      </>
+    </TeacherPageLayout>
   );
 }

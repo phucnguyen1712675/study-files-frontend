@@ -2,9 +2,9 @@ import { Helmet } from 'react-helmet-async';
 
 import { APP_BASE_URL } from '../../../../../constants/strings';
 
-export default function PageHelmet(props: { title: string }) {
-  const { title } = props;
+type Props = { title: string };
 
+export default function PageHelmet({ title }: Props) {
   return (
     <Helmet>
       <title>{title}</title>

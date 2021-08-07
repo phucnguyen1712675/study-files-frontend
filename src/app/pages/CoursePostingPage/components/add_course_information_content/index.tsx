@@ -3,6 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button, message, Image, Typography } from 'antd';
+import moment from 'moment';
 
 import CustomContent from '../custom_content';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
@@ -33,6 +34,7 @@ import {
 } from '../../../../../features/teacher/teacherSlice';
 import { getCategoriesDetails } from '../../../../../features/teacher/teacherThunkAPI';
 import { addCourse } from '../../../../../features/teacher/teacherAPI';
+import { PLACEHOLDER_IMAGE_URL } from '../../../../../constants/images';
 
 const { Text } = Typography;
 
@@ -98,6 +100,11 @@ const schema = yup.object().shape({
   image: yup.string().required('Image is Required'),
 });
 
+const disabledDate = current => {
+  // Can not select days before today and today
+  return current && current < moment().endOf('day');
+};
+
 export default function AddCourseInformationContent() {
   const dispatch = useAppDispatch();
 
@@ -125,63 +132,39 @@ export default function AddCourseInformationContent() {
 
   const watchImage = watch('image');
 
-  const onFinish = handleSubmit(async (data: FormValues) => {
+  const onFinish = handleSubmit(async (values: FormValues) => {
     setLoading(true);
 
-    const {
-      hasPromotion,
-      name,
-      subCategoryId,
-      shortDescription,
-      detailDescription,
-      image,
-      status,
-      originalFee,
-      fee,
-      promotionStart,
-      promotionEnd,
-    } = data;
+    const { hasPromotion, ...data } = values;
 
-    const payload = hasPromotion
-      ? {
-          name,
-          subCategoryId,
-          teacherId,
-          shortDescription,
-          detailDescription,
-          image,
-          status,
-          originalFee,
-          fee,
-          promotionStart,
-          promotionEnd,
-        }
-      : {
-          name,
-          subCategoryId,
-          teacherId,
-          shortDescription,
-          detailDescription,
-          image,
-          status,
-          originalFee,
-          fee: originalFee,
-        };
+    var payload: object;
+
+    if (!hasPromotion) {
+      const { promotionStart, promotionEnd, ...rest } = data;
+
+      payload = { ...rest, fee: rest.originalFee, teacherId };
+    } else {
+      payload = {
+        ...data,
+        teacherId,
+      };
+    }
 
     const response = await addCourse(payload);
 
     if (!response || response.status !== 201) {
-      message.error('Something wrong. Please try again');
-    }
-    const { id } = response?.data;
+      message.error(`Error: ${response}`);
+    } else {
+      message.success('Processing complete!');
 
-    dispatch(setNewCourseId(id));
+      const { id } = response?.data;
+
+      dispatch(setNewCourseId(id));
+
+      setShouldShowNextButton(true);
+    }
 
     setLoading(false);
-
-    setShouldShowNextButton(true);
-
-    message.success('Processing complete!');
   });
 
   var imageKey = Date.now();
@@ -192,7 +175,7 @@ export default function AddCourseInformationContent() {
       <CustomContent
         step={0}
         shouldShowNextButton={shouldShowNextButton}
-        component={
+        children={
           <FormProvider {...methods}>
             <Form layout="vertical" onFinish={onFinish}>
               <FormInput name="name" label="Name" placeholder="Enter name" />
@@ -219,7 +202,7 @@ export default function AddCourseInformationContent() {
                 defaultValue={0}
                 min={COURSE_ORIGINAL_FEE_MIN_VALUE}
                 max={COURSE_ORIGINAL_FEE_MAX_VALUE}
-                noteChild={
+                note={
                   <Text type="warning">{`Value <= ${COURSE_ORIGINAL_FEE_MAX_VALUE} $`}</Text>
                 }
               />
@@ -238,7 +221,7 @@ export default function AddCourseInformationContent() {
                         defaultValue={0}
                         min={COURSE_FEE_MIN_VALUE}
                         max={watchOriginalFee - 0.01}
-                        noteChild={
+                        note={
                           <Text type="warning">{`Value < ${watchOriginalFee} $`}</Text>
                         }
                       />
@@ -246,18 +229,32 @@ export default function AddCourseInformationContent() {
                         label="Promotion date range"
                         stateTimeName="promotionStart"
                         endTimeName="promotionEnd"
+                        disabledDate={disabledDate}
                       />
                     </>
                   )}
                 </>
               )}
-              <FormFileBase64 name="image" label="Image" fileKey={imageKey} />
+              <FormFileBase64
+                name="image"
+                label="Image"
+                fileKey={imageKey}
+                desiredFileType="image"
+              />
               {watchImage && (
                 <Image
                   src={watchImage}
                   alt="chosen"
                   style={{ height: '300px' }}
                   className="mb-3"
+                  placeholder={
+                    <Image
+                      preview={false}
+                      style={{ height: '300px' }}
+                      className="mb-3"
+                      src={PLACEHOLDER_IMAGE_URL}
+                    />
+                  }
                 />
               )}
               <Form.Item>
