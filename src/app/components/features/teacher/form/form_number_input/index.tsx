@@ -3,17 +3,25 @@ import { Form, InputNumber, Typography, Space } from 'antd';
 
 const { Text } = Typography;
 
-export default function FormNumberInput(props: {
+type Props = {
   name: any;
   label: string;
   min?: number;
   max?: number;
   disabled?: boolean;
   defaultValue?: number;
-  noteChild?: JSX.Element;
-}) {
-  const { name, label, min, max, disabled, defaultValue, noteChild } = props;
+  note?: React.ReactNode;
+};
 
+export default function FormNumberInput({
+  name,
+  label,
+  min,
+  max,
+  disabled,
+  defaultValue,
+  note,
+}: Props) {
   const {
     control,
     formState: { errors },
@@ -48,7 +56,7 @@ export default function FormNumberInput(props: {
               />
             )}
           />
-          {noteChild}
+          {note}
           {isError && <Text type="danger">{errorMessage}</Text>}
         </Space>
       </Form.Item>

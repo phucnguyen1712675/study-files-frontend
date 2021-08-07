@@ -1,4 +1,4 @@
-export interface Course {
+export type Course = {
   id: string;
   subCategoryId: string;
   teacherId: string;
@@ -11,7 +11,7 @@ export interface Course {
   view: number;
   raring: number;
   originalFee: number;
-  fee?: number;
+  fee: number;
   promotionStart?: Date;
   promotionEnd?: Date;
-}
+};

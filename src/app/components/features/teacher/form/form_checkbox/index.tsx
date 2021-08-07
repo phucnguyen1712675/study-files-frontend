@@ -3,14 +3,19 @@ import { Form, Checkbox, Typography } from 'antd';
 
 const { Text } = Typography;
 
-export default function FormCheckbox(props: {
+type Props = {
   name: any;
   label: string;
   disabled?: boolean;
   defaultChecked?: boolean;
-}) {
-  const { name, label, disabled, defaultChecked } = props;
+};
 
+export default function FormCheckbox({
+  name,
+  label,
+  disabled,
+  defaultChecked,
+}: Props) {
   const {
     control,
     formState: { errors },

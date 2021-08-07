@@ -1,16 +1,17 @@
 import { useFormContext, Controller } from 'react-hook-form';
 import { Form, Input, Typography } from 'antd';
-const { Text } = Typography;
 
 const { Password } = Input;
+const { Text } = Typography;
 
-export default function FormPassword(props: { name: any; label: string }) {
-  const { name, label } = props;
+type Props = { name: any; label: string };
 
+export default function FormPassword({ name, label }: Props) {
   const {
     control,
     formState: { errors },
   } = useFormContext();
+
   let isError = false;
   let errorMessage = '';
   if (errors && errors.hasOwnProperty(name)) {
@@ -18,7 +19,6 @@ export default function FormPassword(props: { name: any; label: string }) {
     errorMessage = errors[name].message;
   }
 
-  // Maybe has hasFeedback prop
   return (
     <Form.Item label={label}>
       <Controller

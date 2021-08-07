@@ -3,13 +3,13 @@ import { Form, Input, Typography } from 'antd';
 
 const { Text } = Typography;
 
-export default function FormInput(props: {
+type Props = {
   name: any;
   label: string;
   placeholder?: string;
-}) {
-  const { name, label, placeholder } = props;
+};
 
+export default function FormInput({ name, label, placeholder }: Props) {
   const {
     control,
     formState: { errors },

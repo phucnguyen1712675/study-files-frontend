@@ -2,9 +2,11 @@ import { Typography, Divider } from 'antd';
 
 const { Title } = Typography;
 
-export default function ContentTitle(props: { title: string }) {
-  const { title } = props;
+type Props = {
+  title: string;
+};
 
+export default function ContentTitle({ title }: Props) {
   return (
     <>
       <Title level={3} style={{ fontWeight: 'lighter' }}>

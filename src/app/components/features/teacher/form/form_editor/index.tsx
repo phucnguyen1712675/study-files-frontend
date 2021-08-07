@@ -11,9 +11,12 @@ import './index.css';
 
 const { Text } = Typography;
 
-export default function FormEditor(props: { name: any; label: string }) {
-  const { name, label } = props;
+type Props = {
+  name: any;
+  label: string;
+};
 
+export default function FormEditor({ name, label }: Props) {
   const [editorState, setEditorState] = React.useState(() =>
     EditorState.createEmpty(),
   );

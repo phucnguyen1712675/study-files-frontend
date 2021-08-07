@@ -3,10 +3,9 @@ import { FolderOpenTwoTone, PlusOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 
 import { useAppSelector } from '../../../../hooks';
+import CoursesPagination from '../../../../components/features/teacher/courses_pagination';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 import { COURSE_POSTING_PAGE_PATH } from '../../../../../constants/routes';
-
-import CoursesPagination from '../../../../components/features/teacher/courses_pagination';
 
 const { Title } = Typography;
 

@@ -3,21 +3,21 @@ import { Form, Switch, Typography } from 'antd';
 
 const { Text } = Typography;
 
-export default function FormSwitch(props: {
+type Props = {
   name: any;
   label: string;
   checkedChildren?: React.ReactNode;
   unCheckedChildren?: React.ReactNode;
   defaultChecked?: boolean;
-}) {
-  const {
-    name,
-    label,
-    checkedChildren,
-    unCheckedChildren,
-    defaultChecked,
-  } = props;
+};
 
+export default function FormSwitch({
+  name,
+  label,
+  checkedChildren,
+  unCheckedChildren,
+  defaultChecked,
+}: Props) {
   const {
     control,
     formState: { errors },

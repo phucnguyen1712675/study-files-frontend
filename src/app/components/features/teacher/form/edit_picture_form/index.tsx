@@ -1,23 +1,23 @@
-import React from 'react';
-import { useForm, FormProvider, Controller } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { Form, Modal, Image, Row } from 'antd';
-import FileBase from 'react-file-base64';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+import FormFileBase64 from '../form_file_base_64';
+import { EditPictureFormValues } from '../../../../../../model/edit_picture_form_values';
+import { PLACEHOLDER_IMAGE_URL } from '../../../../../../constants/images';
+
+const schema = yup.object().shape({
+  image: yup.string().required('Image is Required'),
+});
 
 interface CollectionCreateFormProps {
   visible: boolean;
-  onCreate: (image: FormValues) => void;
+  onCreate: (values: EditPictureFormValues) => Promise<void>;
   onCancel: () => void;
   title: string;
   label: string;
 }
-
-type FormValues = {
-  image: string;
-};
-
-const defaultValues = {
-  image: '',
-};
 
 export default function EditPictureForm({
   visible,
@@ -26,22 +26,19 @@ export default function EditPictureForm({
   title,
   label,
 }: CollectionCreateFormProps) {
-  const [confirmLoading, setConfirmLoading] = React.useState(false);
-
-  const methods = useForm<FormValues>({
-    defaultValues,
+  const methods = useForm<EditPictureFormValues>({
+    resolver: yupResolver(schema),
+    mode: 'onBlur',
   });
 
-  const { setValue, control, watch, getValues } = methods;
+  const { watch, getValues, reset } = methods;
 
   const watchImage = watch('image');
 
-  const handleOk = () => {
-    setConfirmLoading(true);
-    setTimeout(() => {
-      setConfirmLoading(false);
-      onCreate(getValues());
-    }, 2000);
+  const handleOk = async () => {
+    await onCreate(getValues());
+
+    reset();
   };
 
   return (
@@ -50,27 +47,13 @@ export default function EditPictureForm({
       title={title}
       okText="Edit"
       cancelText="Cancel"
-      confirmLoading={confirmLoading}
       onCancel={onCancel}
       onOk={handleOk}
       okButtonProps={{ disabled: !watchImage }}
-      cancelButtonProps={{ disabled: confirmLoading }}
     >
       <FormProvider {...methods}>
         <Form layout="vertical" name="form_in_modal">
-          <Form.Item label={label}>
-            <Controller
-              control={control}
-              name="image"
-              render={({ field }) => (
-                <FileBase
-                  {...field}
-                  multiple={false}
-                  onDone={({ base64 }) => setValue('image', base64)}
-                />
-              )}
-            />
-          </Form.Item>
+          <FormFileBase64 name="image" label={label} desiredFileType="image" />
         </Form>
       </FormProvider>
       {watchImage && (
@@ -80,6 +63,14 @@ export default function EditPictureForm({
             alt="chosen"
             style={{ height: '300px' }}
             className="mb-3"
+            placeholder={
+              <Image
+                preview={false}
+                className="mb-3"
+                style={{ height: '300px' }}
+                src={PLACEHOLDER_IMAGE_URL}
+              />
+            }
           />
         </Row>
       )}

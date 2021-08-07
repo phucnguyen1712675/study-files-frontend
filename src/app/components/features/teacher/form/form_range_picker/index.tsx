@@ -5,26 +5,25 @@ import moment from 'moment';
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
 
-function disabledDate(current) {
-  // Can not select days before today and today
-  return current && current < moment().endOf('day');
-}
-
-export default function FormRangePicker(props: {
+type Props = {
   stateTimeName: any;
   endTimeName: any;
   label: string;
-}) {
-  const { stateTimeName, endTimeName, label } = props;
-  function onDateChange(dates, _) {
-    // console.log('From: ', dates[0], ', to: ', dates[1]);
-    // console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
-    // setPromotionStart(dates[0]);
-    // setPromotionEnd(dates[1]);
+  disabledDate: (currentDate: any) => boolean;
+};
 
-    setValue(stateTimeName, dates[0].format());
-    setValue(endTimeName, dates[1].format());
-  }
+export default function FormRangePicker({
+  stateTimeName,
+  endTimeName,
+  label,
+  disabledDate,
+}: Props) {
+  const onDateChange = (dates, _) => {
+    if (dates && dates.length === 2) {
+      setValue(stateTimeName, dates[0].format());
+      setValue(endTimeName, dates[1].format());
+    }
+  };
 
   const {
     setValue,

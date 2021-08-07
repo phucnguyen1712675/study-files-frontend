@@ -38,7 +38,7 @@ import Footer from '../../components/Footer/Footer';
 import userAvatar from 'images/user.jpg';
 import { SectionList } from './components/SectionList';
 import { CourseCard, RatingCard } from '../../components/Cards/Cards';
-import { TEACHER_PROFILE_PAGE_PATH } from '../../../constants/routes';
+import { getTeacherProfilePagePath } from '../../../constants/routes';
 
 const Accordion = withStyles({
   root: {
@@ -242,10 +242,15 @@ export default function CourseDetailPage() {
   );
 
   // function logic handle =======================================
-  const NavigateToTeacherPage = function () {
-    history.push(TEACHER_PROFILE_PAGE_PATH, {
-      teacherId: course.teacher.id,
-    });
+  const NavigateToTeacherPage = () => {
+    const { id, name } = course.teacher;
+    const param = name.toLowerCase().replaceAll(' ', '-');
+    const path = getTeacherProfilePagePath(param);
+    const state = {
+      teacherId: id,
+    };
+
+    history.push(path, state);
   };
 
   const NavigateToCategoryCousesListPage = function () {

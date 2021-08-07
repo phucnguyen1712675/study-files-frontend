@@ -6,15 +6,21 @@ import { Section } from '../../../../../../model/section';
 const { Option } = Select;
 const { Text } = Typography;
 
-export default function FormSectionSelect(props: {
+type Props = {
   name: any;
   label: string;
-  defaultValue?: string;
   sections: Section[];
-  changeHandler: (value: string) => void;
-}) {
-  const { name, label, defaultValue, sections, changeHandler } = props;
+  checkDisabledForSection: boolean;
+  changeHandler?: (value: string) => void;
+};
 
+export default function FormSectionSelect({
+  name,
+  label,
+  sections,
+  checkDisabledForSection,
+  changeHandler,
+}: Props) {
   const {
     control,
     formState: { errors },
@@ -35,15 +41,22 @@ export default function FormSectionSelect(props: {
         render={({ field }) => (
           <Select
             {...field}
-            defaultValue={defaultValue}
             style={{ width: '100%' }}
             onChange={(value: string) => {
               field.onChange(value);
-              changeHandler(value);
+              changeHandler && changeHandler(value);
             }}
           >
             {sections.map(section => (
-              <Option key={section.id} value={section.id}>
+              <Option
+                key={section.id}
+                value={section.id}
+                disabled={
+                  checkDisabledForSection
+                    ? section.lectures.length < 2
+                    : undefined
+                }
+              >
                 {section.title}
               </Option>
             ))}

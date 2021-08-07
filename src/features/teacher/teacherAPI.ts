@@ -1,103 +1,115 @@
-import _axios from '../constants/axios';
-import { AccessToken } from '../../api/auth';
+import { AxiosStatic } from 'axios';
 
-export const updateTeacherInfo = async (payload: any) => {
-  try {
-    await AccessToken();
-    const axios = _axios(localStorage.studyFiles_user_accessToken);
-    const res = await axios.patch(
-      `/auth/update/${localStorage.studyFiles_user_id}`,
-      payload,
-    );
-    return res;
-  } catch (err) {
-    return err;
-  }
+import { teacherRequest } from './utils';
+
+export const updateTeacherInfo = async (teacherId: string, data: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.patch(`/auth/update/${teacherId}`, data);
+    return response;
+  };
+  return teacherRequest(request);
 };
 
-export const updatePassword = async (payload: any) => {
-  try {
-    await AccessToken();
-    const axios = _axios(localStorage.studyFiles_user_accessToken);
+export const updatePassword = async (teacherId: string, data: any) => {
+  const request = async (axios: AxiosStatic) => {
     const response = await axios.patch(
-      `/auth/update-password/${localStorage.studyFiles_user_id}`,
-      payload,
+      `/auth/update-password/${teacherId}`,
+      data,
     );
     return response;
-  } catch (error) {
-    return error;
-  }
+  };
+  return teacherRequest(request);
 };
 
-export const addCourse = async (payload: any) => {
-  try {
-    await AccessToken();
-    const axios = _axios(localStorage.studyFiles_user_accessToken);
-    const response = await axios.post('/teachers/courses', payload);
+export const addCourse = async (data: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.post('/teachers/courses', data);
     return response;
-  } catch (error) {
-    console.log(error.message);
-  }
+  };
+  return teacherRequest(request);
 };
 
-export const addSection = async (payload: any) => {
-  try {
-    await AccessToken();
-    const axios = _axios(localStorage.studyFiles_user_accessToken);
-    const response = await axios.post('/teachers/sections', payload);
+export const addSection = async (data: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.post('/teachers/sections', data);
     return response;
-  } catch (error) {
-    console.log(error.message);
-  }
+  };
+  return teacherRequest(request);
 };
 
-export const addLecture = async (payload: any) => {
-  try {
-    await AccessToken();
-    const axios = _axios(localStorage.studyFiles_user_accessToken);
-    const response = await axios.post('/teachers/lectures', payload);
+export const addLecture = async (data: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.post('/teachers/lectures', data);
     return response;
-  } catch (error) {
-    console.log(error.message);
-  }
+  };
+  return teacherRequest(request);
 };
 
 export const getLecturesTotalResults = async (sectionId: string) => {
-  try {
-    await AccessToken();
-    const axios = _axios(localStorage.studyFiles_user_accessToken);
+  const request = async (axios: AxiosStatic) => {
     const { data } = await axios.get(
       `/teachers/lectures?sectionId=${sectionId}`,
     );
     const { totalResults } = data;
     return totalResults;
-  } catch (error) {
-    console.log(error.message);
-  }
+  };
+  return teacherRequest(request);
 };
 
 export const getSectionsDetailsResults = async (courseId: string) => {
-  try {
-    await AccessToken();
-    const axios = _axios(localStorage.studyFiles_user_accessToken);
+  const request = async (axios: AxiosStatic) => {
     const { data } = await axios.get(
       `/teachers/sections/details?courseId=${courseId}&sortBy=ordinalNumber:asc`,
     );
     const { results } = data;
     return results;
-  } catch (error) {
-    console.log(error.message);
-  }
+  };
+  return teacherRequest(request);
 };
 
-export const updateCourse = async (payload: any) => {
-  try {
-    await AccessToken();
-    const axios = _axios(localStorage.studyFiles_user_accessToken);
-    const { id, ...body } = payload;
-    const response = await axios.patch(`/teachers/courses/${id}`, body);
+export const updateCourse = async (courseId: string, data: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.patch(`/teachers/courses/${courseId}`, data);
+
     return response;
-  } catch (error) {
-    console.log(error.message);
-  }
+  };
+  return teacherRequest(request);
+};
+
+export const updateSection = async (sectionId: string, data: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.patch(`/teachers/sections/${sectionId}`, data);
+    return response;
+  };
+  return teacherRequest(request);
+};
+
+export const swapSectionOrdinalNumber = async (data: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.patch(
+      '/teachers/sections/swap-ordinal-number',
+      data,
+    );
+    return response;
+  };
+  return teacherRequest(request);
+};
+
+export const updateLecture = async (lectureId: string, data: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.patch(`/teachers/lectures/${lectureId}`, data);
+    return response;
+  };
+  return teacherRequest(request);
+};
+
+export const swapLectureOrdinalNumber = async (data: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.patch(
+      '/teachers/lectures/swap-ordinal-number',
+      data,
+    );
+    return response;
+  };
+  return teacherRequest(request);
 };

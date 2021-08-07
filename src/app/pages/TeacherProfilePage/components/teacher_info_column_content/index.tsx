@@ -1,8 +1,6 @@
 import { Typography, Col, Space, Skeleton } from 'antd';
 
 import Section from './components/section';
-import { SectionProps } from './props/section_props';
-
 import CoursesPagination from '../../../../components/features/teacher/courses_pagination';
 import { useAppSelector } from '../../../../hooks';
 import {
@@ -23,7 +21,7 @@ export default function TeacherInfoColumnContent() {
 
   const teacherTotalCourseAmount = teacherCourses.data?.totalResults ?? 0;
 
-  const sectionArray: SectionProps[] = [
+  const sectionArray = [
     {
       title: 'About me',
       content: (
@@ -61,7 +59,11 @@ export default function TeacherInfoColumnContent() {
         <Col>
           <Space direction="vertical" size="middle">
             {sectionArray.map((section, idx) => (
-              <Section key={idx} section={section} />
+              <Section
+                key={idx}
+                title={section.title}
+                content={section.content}
+              />
             ))}
           </Space>
         </Col>

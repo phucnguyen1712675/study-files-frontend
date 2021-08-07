@@ -32,8 +32,8 @@ import {
 type FormValues = {
   sectionId: string;
   title: string;
-  video: string;
   canPreview: boolean;
+  video: string;
 };
 
 const schema = yup.object().shape({
@@ -43,8 +43,13 @@ const schema = yup.object().shape({
     .min(LECTURE_TITLE_MIN_LENGTH)
     .max(LECTURE_TITLE_MAX_LENGTH)
     .required('Title is Required'),
-  video: yup.string(),
   canPreview: yup.boolean(),
+  video: yup.string().when('canPreview', {
+    is: true,
+    then: yup
+      .string()
+      .required('Video is required when Lecture can be previewed'),
+  }),
 });
 
 export default function AddLecturesContent() {
@@ -87,7 +92,9 @@ export default function AddLecturesContent() {
 
   const sectionChangeHandler = async (sectionId: string) => {
     showLoadingSwal();
+
     await getLectureCount(sectionId);
+
     closeSwal();
   };
 
@@ -105,50 +112,46 @@ export default function AddLecturesContent() {
     return result;
   };
 
-  const onFinish = handleSubmit(async (data: FormValues) => {
+  const onFinish = handleSubmit(async (values: FormValues) => {
     setLoading(true);
 
-    const { sectionId, title, video, canPreview } = data;
+    var payload: object;
 
-    const payload = video
-      ? {
-          sectionId,
-          title,
-          video,
-          canPreview,
-        }
-      : {
-          sectionId,
-          title,
-          canPreview,
-        };
+    if (values.video) {
+      payload = values;
+    } else {
+      const { video, ...rest } = values;
+
+      payload = rest;
+    }
 
     const response = await addLecture(payload);
 
     if (!response || response.status !== 201) {
-      message.error('Something wrong. Please try again');
+      message.error(`Error: ${response}`);
+    } else {
+      message.success('Processing complete!');
+
+      reset({
+        sectionId: watchSectionId,
+        canPreview: false,
+      });
+
+      await getLectureCount(values.sectionId);
+
+      const isDone = await checkIfDone();
+
+      isDone && setIsEachSectionHadAtLeastOneLecture(true);
+
+      videoKey = Date.now();
     }
 
-    reset({
-      sectionId: watchSectionId,
-      canPreview: false,
-    });
-
-    await getLectureCount(sectionId);
-
-    const isDone = await checkIfDone();
-
-    isDone && setIsEachSectionHadAtLeastOneLecture(true);
-
-    videoKey = Date.now();
-
     setLoading(false);
-
-    message.success('Processing complete!');
   });
 
   const onDone = () => {
     dispatch(clearNewCourseId());
+
     setShouldShowNextButton(true);
   };
 
@@ -158,7 +161,7 @@ export default function AddLecturesContent() {
       <CustomContent
         step={2}
         shouldShowNextButton={shouldShowNextButton}
-        component={
+        children={
           <>
             <Alert
               message="Guide"
@@ -184,6 +187,7 @@ export default function AddLecturesContent() {
                     name="sectionId"
                     label="Section"
                     sections={newCourseSections.data}
+                    checkDisabledForSection={false}
                     changeHandler={sectionChangeHandler}
                   />
                 )}
@@ -204,6 +208,7 @@ export default function AddLecturesContent() {
                       name="video"
                       label="Video"
                       fileKey={videoKey}
+                      desiredFileType="video"
                     />
                     <Form.Item>
                       <Button
