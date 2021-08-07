@@ -4,7 +4,7 @@ import { Layout, Row, Col, Divider } from 'antd';
 import CoursesColumnContent from './components/courses_column_content';
 import TeacherInfoColumnContent from './components/teacher_info_column_content';
 import { useAppDispatch } from '../../hooks';
-import PageLayout from '../../components/features/teacher/page_layout';
+import PageLayoutWrapper from '../../components/features/teacher/page_layout_wrapper';
 import PageHelmet from '../../components/features/teacher/page_helmet';
 import { getTeacherInfo } from '../../../features/guest/guestThunkAPI';
 
@@ -22,23 +22,31 @@ export function TeacherCoursesPage() {
   return (
     <>
       <PageHelmet title="Your courses" />
-      <PageLayout>
-        <Content style={{ backgroundColor: 'white' }}>
-          <Divider className="mt-4" />
-          <Row className="mb-5">
-            <Col span={20} offset={2}>
-              <Row>
-                <Col span={6} style={{ padding: '0px 20px' }}>
-                  <TeacherInfoColumnContent />
-                </Col>
-                <Col span={18} style={{ padding: '0px 20px' }}>
-                  <CoursesColumnContent />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Content>
-      </PageLayout>
+      <PageLayoutWrapper>
+        <Layout
+          style={{
+            minHeight: '100vh',
+            width: '100%',
+            backgroundColor: 'white',
+          }}
+        >
+          <Content>
+            <Divider className="mt-4" />
+            <Row className="mb-5">
+              <Col span={20} offset={2}>
+                <Row>
+                  <Col span={6} style={{ padding: '0px 20px' }}>
+                    <TeacherInfoColumnContent />
+                  </Col>
+                  <Col span={18} style={{ padding: '0px 20px' }}>
+                    <CoursesColumnContent />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Content>
+        </Layout>
+      </PageLayoutWrapper>
     </>
   );
 }
