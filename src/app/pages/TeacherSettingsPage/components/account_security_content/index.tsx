@@ -1,13 +1,15 @@
+import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Form, Button } from 'antd';
+import { Form, Button, message } from 'antd';
 
-import { updatePassword } from 'features/teacher/teacherAPI';
-
+import { FORM_ITEM_LAYOUT } from '../../constants';
 import FormPassword from '../../../../components/features/teacher/form/form_password';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
+import { USER_PASSWORD_MIN_LENGTH } from '../../../../../constants/user';
+import { updatePassword } from '../../../../../features/teacher/teacherAPI';
 
 type FormValues = {
   oldPassword: string;
@@ -16,57 +18,55 @@ type FormValues = {
 };
 
 const schema = yup.object().shape({
-  oldPassword: yup.string().min(9).required(),
-  newPassword: yup.string().min(9).required(),
+  oldPassword: yup.string().min(USER_PASSWORD_MIN_LENGTH).required(),
+  newPassword: yup
+    .string()
+    .min(USER_PASSWORD_MIN_LENGTH)
+    .required()
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+      'Password must contain at least one letter and one number',
+    ),
   confirmNewPassword: yup
     .string()
-    .min(9)
+    .min(USER_PASSWORD_MIN_LENGTH)
     .required()
     .oneOf([yup.ref('newPassword'), null], 'Passwords must match'),
 });
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-  },
-};
-
-const defaultValues = {
-  oldPassword: '',
-  newPassword: '',
-  confirmNewPassword: '',
-};
-
 export default function AccountSecurityContent() {
+  const teacherId = localStorage.studyFiles_user_id;
+
+  const [loading, setLoading] = React.useState<boolean>(false);
+
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
-    defaultValues,
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, watch } = methods;
+
+  const watchOldPassword = watch('oldPassword');
+
+  const watchNewPassword = watch('newPassword');
+
+  const watchConfirmNewPassword = watch('confirmNewPassword');
 
   const onSubmit = handleSubmit(async (values: FormValues) => {
-    if (values.newPassword !== values.confirmNewPassword) {
-      alert('The passwords do not match');
-      reset({ confirmNewPassword: '' });
+    setLoading(true);
+
+    const { confirmNewPassword, ...dataToSend } = values;
+
+    const response = await updatePassword(teacherId, dataToSend);
+
+    if (!response || response.status !== 200) {
+      message.error(`Error: ${response}`);
     } else {
-      const dataToSend = {
-        oldPassword: values.oldPassword,
-        newPassword: values.newPassword,
-      };
-      const res = await updatePassword(dataToSend);
-      if (res.status === 200) {
-        reset({ ...defaultValues });
-        alert('Updated !');
-      } else if (res.response) {
-        alert(res.response.data.message);
-      }
+      message.success('Processing complete!');
+
+      reset();
     }
+
+    setLoading(false);
   });
 
   return (
@@ -78,7 +78,11 @@ export default function AccountSecurityContent() {
             title: 'Change password',
             children: (
               <FormProvider {...methods}>
-                <Form {...formItemLayout} layout="vertical" onFinish={onSubmit}>
+                <Form
+                  {...FORM_ITEM_LAYOUT}
+                  layout="vertical"
+                  onFinish={onSubmit}
+                >
                   <FormPassword name="oldPassword" label="Old password" />
                   <FormPassword name="newPassword" label="New password" />
                   <FormPassword
@@ -86,7 +90,17 @@ export default function AccountSecurityContent() {
                     label="Confirm new password"
                   />
                   <Form.Item>
-                    <Button type="primary" htmlType="submit">
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      loading={loading}
+                      disabled={
+                        !watchOldPassword ||
+                        !watchNewPassword ||
+                        !watchConfirmNewPassword ||
+                        watchOldPassword === watchNewPassword
+                      }
+                    >
                       Submit
                     </Button>
                   </Form.Item>

@@ -6,14 +6,14 @@ import { useAppDispatch } from '../../hooks';
 import HeaderSiderLayout from '../../components/features/teacher/header_sider_layout';
 import { getTeacherInfo } from '../../../features/guest/guestThunkAPI';
 
-const teacherId = localStorage.studyFiles_user_id;
-
 export function TeacherSettingsPage() {
   const dispatch = useAppDispatch();
 
+  const teacherId = localStorage.studyFiles_user_id;
+
   React.useEffect(() => {
     dispatch(getTeacherInfo(teacherId));
-  }, [dispatch]);
+  }, [dispatch, teacherId]);
 
   return (
     <HeaderSiderLayout

@@ -2,19 +2,35 @@ import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Form, Button, Space, Skeleton, Row, Col, Typography } from 'antd';
+import {
+  Form,
+  Button,
+  Space,
+  Skeleton,
+  Row,
+  Col,
+  Typography,
+  message,
+} from 'antd';
 import { EditOutlined } from '@ant-design/icons';
+import { updatedDiff } from 'deep-object-diff';
 
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
 import EditPictureForm from '../../../../components/features/teacher/form/edit_picture_form';
 import FormInput from '../../../../components/features/teacher/form/form_input';
 import FormTextArea from '../../../../components/features/teacher/form/form_text_area';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
+import {
+  showLoadingSwal,
+  closeSwal,
+  showErrorSwal,
+  showSuccessSwal,
+} from '../../../../../utils/sweet_alert_2';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 import { updateTeacherInfo } from '../../../../../features/teacher/teacherAPI';
 import { getTeacherInfo } from '../../../../../features/guest/guestThunkAPI';
-import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
 import { EditPictureFormValues } from '../../../../../model/edit_picture_form_values';
 
 const { Text } = Typography;
@@ -32,11 +48,15 @@ const schema = yup.object().shape({
 });
 
 export default function ProfileContent() {
-  const [visible, setVisible] = React.useState<boolean>(false);
-
   const dispatch = useAppDispatch();
 
   const { data, isLoading } = useAppSelector(selectTeacherInfo);
+
+  const teacherId = localStorage.studyFiles_user_id;
+
+  const [visible, setVisible] = React.useState<boolean>(false);
+
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
@@ -49,42 +69,74 @@ export default function ProfileContent() {
     }, [data]),
   });
 
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, watch } = methods;
+
+  const watchName = watch('name');
+
+  const watchShortDescription = watch('shortDescription');
+
+  const watchDetailDescription = watch('detailDescription');
 
   React.useEffect(() => {
-    setValue('name', data?.name ?? '');
-    setValue('shortDescription', data?.shortDescription ?? '');
-    setValue('detailDescription', data?.detailDescription ?? '');
-  }, [data, setValue]);
-
-  const updateTeacher = async dataToSend => {
-    const res = await updateTeacherInfo(dataToSend);
-    if (res.status === 200) {
-      dispatch(getTeacherInfo(data?.id ?? ''));
-      alert('Update successed');
-    } else {
-      alert(res.response.data.message);
+    if (!isLoading && data) {
+      setValue('name', data?.name ?? '');
+      setValue('shortDescription', data?.shortDescription ?? '');
+      setValue('detailDescription', data?.detailDescription ?? '');
     }
-  };
+  }, [data, isLoading, setValue]);
 
   const onCreate = async (values: EditPictureFormValues) => {
+    setVisible(false);
+
+    showLoadingSwal();
+
     const dataToSend = {
       avatar: values.image,
     };
-    await updateTeacher(dataToSend);
-    setVisible(false);
+
+    const response = await updateTeacherInfo(teacherId, dataToSend);
+
+    closeSwal();
+
+    if (!response || response.status !== 200) {
+      showErrorSwal(`Error: ${response}`);
+    } else {
+      showSuccessSwal();
+
+      dispatch(getTeacherInfo(data!.id));
+    }
   };
 
-  const onClickBtnEdit = () => {
-    setVisible(true);
-  };
+  const onClickBtnEdit = () => setVisible(true);
 
-  const onCancel = () => {
-    setVisible(false);
-  };
+  const onCancel = () => setVisible(false);
 
   const onSubmit = handleSubmit(async (values: FormValues) => {
-    await updateTeacher(values);
+    const teacherData = data!;
+
+    const differenceToUpdate = updatedDiff(teacherData, values);
+
+    if (
+      !differenceToUpdate ||
+      Object.keys(differenceToUpdate).length !== 0 ||
+      differenceToUpdate.constructor !== Object
+    ) {
+      setLoading(true);
+
+      const response = await updateTeacherInfo(teacherId, differenceToUpdate);
+
+      if (!response || response.status !== 200) {
+        message.error(`Error: ${response}`);
+      } else {
+        message.success('Processing complete!');
+
+        dispatch(getTeacherInfo(data!.id));
+      }
+
+      setLoading(false);
+    } else {
+      message.success('Processing complete!');
+    }
   });
 
   return (
@@ -114,7 +166,21 @@ export default function ProfileContent() {
                           autoSize={true}
                         />
                         <Form.Item>
-                          <Button type="primary" htmlType="submit">
+                          <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={loading}
+                            disabled={
+                              !watchName ||
+                              !watchShortDescription ||
+                              !watchDetailDescription ||
+                              (watchName === data?.name &&
+                                watchShortDescription ===
+                                  data?.shortDescription &&
+                                watchDetailDescription ===
+                                  data.detailDescription)
+                            }
+                          >
                             Submit
                           </Button>
                         </Form.Item>
