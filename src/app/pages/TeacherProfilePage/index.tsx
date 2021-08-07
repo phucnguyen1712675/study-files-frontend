@@ -30,8 +30,8 @@ export function TeacherProfilePage() {
     <>
       <PageHelmet title="Teacher Profile" />
       <PageLayoutWrapper>
-        <Layout>
-          <Content style={{ backgroundColor: 'white' }}>
+        <Layout style={{ backgroundColor: 'white' }}>
+          <Content>
             <Row className="my-5">
               <Col span={14} offset={5}>
                 <Row>
