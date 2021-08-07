@@ -1,13 +1,11 @@
 import {
   Avatar,
   Button,
-  CssBaseline,
   TextField,
   FormControlLabel,
   Checkbox,
   Link,
   Grid,
-  Box,
   Typography,
   Container,
 } from '@material-ui/core';
@@ -21,19 +19,6 @@ import { axiosAuthInstance } from '../../../../api/auth';
 import TopBar from '../../../components/Topbar/Topbar';
 import AppContext from 'app/AppContext';
 import { useContext } from 'react';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -114,7 +99,6 @@ export default function LoginPage() {
     <>
       <TopBar initQuery={''} />
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
@@ -158,7 +142,7 @@ export default function LoginPage() {
               color="primary"
               className={classes.submit}
             >
-              Log In
+              Sign In
             </Button>
             <Grid container>
               <Grid item xs>
@@ -174,9 +158,6 @@ export default function LoginPage() {
             </Grid>
           </form>
         </div>
-        <Box mt={8}>
-          <Copyright />
-        </Box>
       </Container>
     </>
   );
