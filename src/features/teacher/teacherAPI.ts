@@ -2,47 +2,44 @@ import { AxiosStatic } from 'axios';
 
 import { teacherRequest } from './utils';
 
-export const updateTeacherInfo = async (payload: any) => {
+export const updateTeacherInfo = async (teacherId: string, data: any) => {
+  const request = async (axios: AxiosStatic) => {
+    const response = await axios.patch(`/auth/update/${teacherId}`, data);
+    return response;
+  };
+  return teacherRequest(request);
+};
+
+export const updatePassword = async (teacherId: string, data: any) => {
   const request = async (axios: AxiosStatic) => {
     const response = await axios.patch(
-      `/auth/update/${localStorage.studyFiles_user_id}`,
-      payload,
+      `/auth/update-password/${teacherId}`,
+      data,
     );
     return response;
   };
   return teacherRequest(request);
 };
 
-export const updatePassword = async (payload: any) => {
+export const addCourse = async (data: any) => {
   const request = async (axios: AxiosStatic) => {
-    const response = await axios.patch(
-      `/auth/update-password/${localStorage.studyFiles_user_id}`,
-      payload,
-    );
+    const response = await axios.post('/teachers/courses', data);
     return response;
   };
   return teacherRequest(request);
 };
 
-export const addCourse = async (payload: any) => {
+export const addSection = async (data: any) => {
   const request = async (axios: AxiosStatic) => {
-    const response = await axios.post('/teachers/courses', payload);
+    const response = await axios.post('/teachers/sections', data);
     return response;
   };
   return teacherRequest(request);
 };
 
-export const addSection = async (payload: any) => {
+export const addLecture = async (data: any) => {
   const request = async (axios: AxiosStatic) => {
-    const response = await axios.post('/teachers/sections', payload);
-    return response;
-  };
-  return teacherRequest(request);
-};
-
-export const addLecture = async (payload: any) => {
-  const request = async (axios: AxiosStatic) => {
-    const response = await axios.post('/teachers/lectures', payload);
+    const response = await axios.post('/teachers/lectures', data);
     return response;
   };
   return teacherRequest(request);
@@ -70,55 +67,47 @@ export const getSectionsDetailsResults = async (courseId: string) => {
   return teacherRequest(request);
 };
 
-export const updateCourse = async (payload: any) => {
+export const updateCourse = async (courseId: string, data: any) => {
   const request = async (axios: AxiosStatic) => {
-    const { courseId, ...body } = payload;
-
-    const response = await axios.patch(`/teachers/courses/${courseId}`, body);
+    const response = await axios.patch(`/teachers/courses/${courseId}`, data);
 
     return response;
   };
   return teacherRequest(request);
 };
 
-export const updateSection = async (payload: any) => {
+export const updateSection = async (sectionId: string, data: any) => {
   const request = async (axios: AxiosStatic) => {
-    const { sectionId, ...body } = payload;
-
-    const response = await axios.patch(`/teachers/sections/${sectionId}`, body);
-
+    const response = await axios.patch(`/teachers/sections/${sectionId}`, data);
     return response;
   };
   return teacherRequest(request);
 };
 
-export const swapSectionOrdinalNumber = async (payload: any) => {
+export const swapSectionOrdinalNumber = async (data: any) => {
   const request = async (axios: AxiosStatic) => {
     const response = await axios.patch(
       '/teachers/sections/swap-ordinal-number',
-      payload,
+      data,
     );
     return response;
   };
   return teacherRequest(request);
 };
 
-export const updateLecture = async (payload: any) => {
+export const updateLecture = async (lectureId: string, data: any) => {
   const request = async (axios: AxiosStatic) => {
-    const { lectureId, ...body } = payload;
-
-    const response = await axios.patch(`/teachers/lectures/${lectureId}`, body);
-
+    const response = await axios.patch(`/teachers/lectures/${lectureId}`, data);
     return response;
   };
   return teacherRequest(request);
 };
 
-export const swapLectureOrdinalNumber = async (payload: any) => {
+export const swapLectureOrdinalNumber = async (data: any) => {
   const request = async (axios: AxiosStatic) => {
     const response = await axios.patch(
       '/teachers/lectures/swap-ordinal-number',
-      payload,
+      data,
     );
     return response;
   };
