@@ -93,6 +93,12 @@ export default function GeneralInformationContent() {
 
   const { handleSubmit, setValue, watch } = methods;
 
+  const watchName = watch('name');
+
+  const watchShortDescription = watch('shortDescription');
+
+  const watchDetailDescription = watch('detailDescription');
+
   const watchSubCategoryId = watch('subCategoryId');
 
   const handleEditorChange = state => {
@@ -109,27 +115,29 @@ export default function GeneralInformationContent() {
   );
 
   React.useEffect(() => {
-    setValue('name', courseDetails.data?.name ?? '');
-    setValue('shortDescription', courseDetails.data?.shortDescription ?? '');
-    setValue('subCategoryId', courseDetails.data?.subCategoryId ?? '');
+    if (!courseDetails.isLoading && courseDetails.data) {
+      setValue('name', courseDetails.data?.name ?? '');
+      setValue('shortDescription', courseDetails.data?.shortDescription ?? '');
+      setValue('subCategoryId', courseDetails.data?.subCategoryId ?? '');
 
-    const detailValue = courseDetails.data
-      ? courseDetails.data?.detailDescription.replaceAll('&lt;', '<')
-      : '<p>Hey this <strong>editor</strong> rocks 😀</p>';
+      const detailValue = courseDetails.data
+        ? courseDetails.data?.detailDescription.replaceAll('&lt;', '<')
+        : '<p>Hey this <strong>editor</strong> rocks 😀</p>';
 
-    var contentBlock = htmlToDraft(detailValue);
+      var contentBlock = htmlToDraft(detailValue);
 
-    var editorStateInitial: any;
+      var editorStateInitial: any;
 
-    if (contentBlock) {
-      const contentState = ContentState.createFromBlockArray(
-        contentBlock.contentBlocks,
-      );
-      editorStateInitial = EditorState.createWithContent(contentState);
+      if (contentBlock) {
+        const contentState = ContentState.createFromBlockArray(
+          contentBlock.contentBlocks,
+        );
+        editorStateInitial = EditorState.createWithContent(contentState);
+      }
+
+      setEditorState(editorStateInitial);
+      convertContentToHTML(editorStateInitial);
     }
-
-    setEditorState(editorStateInitial);
-    convertContentToHTML(editorStateInitial);
   }, [courseDetails, setValue, convertContentToHTML]);
 
   const onSubmit = handleSubmit(async (values: FormValues) => {
@@ -153,12 +161,7 @@ export default function GeneralInformationContent() {
 
       const { id } = courseData;
 
-      const payload = {
-        ...differenceToUpdate,
-        courseId: id,
-      };
-
-      const response = await updateCourse(payload);
+      const response = await updateCourse(id, differenceToUpdate);
 
       if (!response || response.status !== 200) {
         message.error(`Error: ${response}`);
@@ -215,6 +218,19 @@ export default function GeneralInformationContent() {
                         type="primary"
                         htmlType="submit"
                         loading={loading}
+                        disabled={
+                          !watchName ||
+                          !watchShortDescription ||
+                          !watchDetailDescription ||
+                          !watchSubCategoryId ||
+                          (watchName === courseDetails.data?.name &&
+                            watchShortDescription ===
+                              courseDetails.data?.shortDescription &&
+                            watchDetailDescription.replaceAll('<', '&lt;') ===
+                              courseDetails.data.detailDescription &&
+                            watchSubCategoryId ===
+                              courseDetails.data.subCategoryId)
+                        }
                       >
                         Submit
                       </Button>

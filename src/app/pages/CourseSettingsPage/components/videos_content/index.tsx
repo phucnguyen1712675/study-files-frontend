@@ -44,7 +44,9 @@ export default function VideosContent() {
 
     showLoadingSwal();
 
-    const response = await updateLecture(values);
+    const { lectureId, ...payload } = values;
+
+    const response = await updateLecture(lectureId, payload);
 
     closeSwal();
 
@@ -59,13 +61,9 @@ export default function VideosContent() {
     }
   };
 
-  const onClickBtnUpload = () => {
-    setVisible(true);
-  };
+  const onClickBtnUpload = () => setVisible(true);
 
-  const onCancel = () => {
-    setVisible(false);
-  };
+  const onCancel = () => setVisible(false);
 
   return (
     <>

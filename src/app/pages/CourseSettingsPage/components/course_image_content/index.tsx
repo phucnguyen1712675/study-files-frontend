@@ -32,12 +32,7 @@ export default function CourseImageContent() {
 
     const { id } = data!;
 
-    const payload = {
-      ...values,
-      courseId: id,
-    };
-
-    const response = await updateCourse(payload);
+    const response = await updateCourse(id, values);
 
     closeSwal();
 
@@ -50,13 +45,9 @@ export default function CourseImageContent() {
     }
   };
 
-  const onClickBtnEdit = () => {
-    setVisible(true);
-  };
+  const onClickBtnEdit = () => setVisible(true);
 
-  const onCancel = () => {
-    setVisible(false);
-  };
+  const onCancel = () => setVisible(false);
 
   return (
     <>

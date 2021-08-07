@@ -33,10 +33,9 @@ export default function CourseStatusContent() {
 
     const payload = {
       status: !status,
-      courseId: id,
     };
 
-    const response = await updateCourse(payload);
+    const response = await updateCourse(id, payload);
 
     if (!response || response.status !== 200) {
       message.error(`Error: ${response}`);
@@ -50,16 +49,6 @@ export default function CourseStatusContent() {
     setConfirmLoading(false);
   };
 
-  const alertMessage = data?.status
-    ? 'This course is completed.'
-    : 'This course is incompleted!';
-
-  const alertType = data?.status ? 'success' : 'warning';
-
-  const buttonType = !data?.status ? 'primary' : undefined;
-
-  const buttonText = `Mark as ${data?.status ? 'Incompleted' : 'Completed'}`;
-
   return (
     <>
       <PageHelmet title="Status" />
@@ -72,7 +61,15 @@ export default function CourseStatusContent() {
               title: 'Status',
               children: (
                 <Space direction="vertical" size="middle">
-                  <Alert message={alertMessage} type={alertType} showIcon />
+                  <Alert
+                    message={
+                      data?.status
+                        ? 'This course is completed.'
+                        : 'This course is incompleted!'
+                    }
+                    type={data?.status ? 'success' : 'warning'}
+                    showIcon
+                  />
                   <Popconfirm
                     title="Are you sure?"
                     visible={endPromotionPopconfirmVisible}
@@ -81,11 +78,11 @@ export default function CourseStatusContent() {
                     onCancel={handleCancel}
                   >
                     <Button
-                      type={buttonType}
+                      type={!data?.status ? 'primary' : undefined}
                       danger={data?.status}
                       onClick={showPopconfirm}
                     >
-                      {buttonText}
+                      {`Mark as ${data?.status ? 'Incompleted' : 'Completed'}`}
                     </Button>
                   </Popconfirm>
                 </Space>

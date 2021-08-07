@@ -109,7 +109,9 @@ export default function CourseSectionContent() {
 
     showLoadingSwal();
 
-    const response = await updateSection(values);
+    const { sectionId, ...payload } = values;
+
+    const response = await updateSection(sectionId, payload);
 
     closeSwal();
 
@@ -146,21 +148,17 @@ export default function CourseSectionContent() {
     }
   };
 
-  const onClickBtnUpdateSectionTitle = () => {
+  const onClickBtnUpdateSectionTitle = () =>
     setUpdateSectionTitleFormVisible(true);
-  };
 
-  const onClickBtnUpdateSectionOrdinalNumber = () => {
+  const onClickBtnUpdateSectionOrdinalNumber = () =>
     setUpdateSectionOrdinalNumberFormVisible(true);
-  };
 
-  const onCancelUpdateSectionTitleVisible = () => {
+  const onCancelUpdateSectionTitleVisible = () =>
     setUpdateSectionTitleFormVisible(false);
-  };
 
-  const onCancelUpdateSectionOrdinalNumberVisible = () => {
+  const onCancelUpdateSectionOrdinalNumberVisible = () =>
     setUpdateSectionOrdinalNumberFormVisible(false);
-  };
 
   const getSectionsToShow = () => {
     if (!courseDetails.data?.sections) {

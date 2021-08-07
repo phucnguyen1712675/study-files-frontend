@@ -109,17 +109,16 @@ export default function CourseFeeAndPromotionContent() {
     }, [data]),
   });
 
-  const { handleSubmit, setValue, getValues } = methods;
+  const { handleSubmit, setValue, getValues, watch } = methods;
 
-  React.useEffect(() => {
-    setValue('originalFee', data?.originalFee ?? 0);
-  }, [data, setValue]);
+  const watchOriginalFee = watch('originalFee');
 
   React.useEffect(() => {
     if (!isLoading && data) {
+      setValue('originalFee', data?.originalFee ?? 0);
       setHasPromotion(checkPromotion());
     }
-  }, [isLoading, data, checkPromotion]);
+  }, [data, isLoading, setValue, checkPromotion]);
 
   const onSubmit = handleSubmit(async (values: FormValues) => {
     const courseData = courseDetails.data!;
@@ -138,10 +137,9 @@ export default function CourseFeeAndPromotionContent() {
       const payload = {
         ...values,
         fee: getValues('originalFee'),
-        courseId: id,
       };
 
-      const response = await updateCourse(payload);
+      const response = await updateCourse(id, payload);
 
       if (!response || response.status !== 200) {
         message.error(`Error: ${response}`);
@@ -169,12 +167,7 @@ export default function CourseFeeAndPromotionContent() {
 
       const { id } = data!;
 
-      const payload = {
-        ...values,
-        courseId: id,
-      };
-
-      const response = await updateCourse(payload);
+      const response = await updateCourse(id, values);
 
       closeSwal();
 
@@ -201,10 +194,9 @@ export default function CourseFeeAndPromotionContent() {
 
     const payload = {
       fee: originalFee,
-      courseId: id,
     };
 
-    const response = await updateCourse(payload);
+    const response = await updateCourse(id, payload);
 
     if (!response || response.status !== 200) {
       message.error(`Error: ${response}`);
@@ -262,6 +254,10 @@ export default function CourseFeeAndPromotionContent() {
                             type="primary"
                             htmlType="submit"
                             loading={btnSubmitLoading}
+                            disabled={
+                              !watchOriginalFee &&
+                              watchOriginalFee === data?.originalFee
+                            }
                           >
                             Submit
                           </Button>

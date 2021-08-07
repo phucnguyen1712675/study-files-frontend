@@ -140,7 +140,9 @@ export default function CourseLectureContent() {
 
     showLoadingSwal();
 
-    const response = await updateLecture(values);
+    const { lectureId, ...payload } = values;
+
+    const response = await updateLecture(lectureId, payload);
 
     closeSwal();
 
@@ -179,21 +181,17 @@ export default function CourseLectureContent() {
     }
   };
 
-  const onClickBtnUpdateLectureInfo = () => {
+  const onClickBtnUpdateLectureInfo = () =>
     setUpdateLectureInfoFormVisible(true);
-  };
 
-  const onClickBtnUpdateLectureOrdinalNumber = () => {
+  const onClickBtnUpdateLectureOrdinalNumber = () =>
     setUpdateLectureOrdinalNumberFormVisible(true);
-  };
 
-  const onCancelUpdateLectureInfoVisible = () => {
+  const onCancelUpdateLectureInfoVisible = () =>
     setUpdateLectureInfoFormVisible(false);
-  };
 
-  const onCancelUpdateLectureOrdinalNumberVisible = () => {
+  const onCancelUpdateLectureOrdinalNumberVisible = () =>
     setUpdateLectureOrdinalNumberFormVisible(false);
-  };
 
   return (
     <>
