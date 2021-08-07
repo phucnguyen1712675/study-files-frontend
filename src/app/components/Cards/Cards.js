@@ -84,7 +84,11 @@ export function CourseCard({ course }) {
   const { store } = useContext(AppContext);
 
   const FeeWidget = function () {
-    if (course.promotionEnd && course.promotionStart) {
+    if (
+      course.promotionEnd &&
+      course.promotionStart &&
+      course.fee !== course.originalFee
+    ) {
       const promotionEndDate = new Date(course.promotionEnd);
       const promotionStartDate = new Date(course.promotionStart);
       const dateNow = new Date();

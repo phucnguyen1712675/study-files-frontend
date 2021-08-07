@@ -519,7 +519,11 @@ export default function CourseDetailPage() {
   };
 
   const FeeWidget = function () {
-    if (course.promotionStart && course.promotionEnd) {
+    if (
+      course.promotionStart &&
+      course.promotionEnd &&
+      course.fee !== course.originalFee
+    ) {
       const promotionEndDate = new Date(course.promotionEnd);
       const promotionStartDate = new Date(course.promotionStart);
       const dateNow = new Date();
