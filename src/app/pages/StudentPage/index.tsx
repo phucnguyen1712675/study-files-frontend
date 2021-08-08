@@ -246,7 +246,7 @@ export function StudentPage() {
       <div style={{ padding: '20px' }}>
         <Grid container spacing={1}>
           {store.watchList.map(course => {
-            if (course.watchListId) {
+            if (course.id) {
               return (
                 <Grid item xs={3} key={course.id}>
                   <div style={{ margin: '0px 0px' }}>
@@ -269,6 +269,16 @@ export function StudentPage() {
                 <Grid item xs={3}>
                   <div style={{ margin: '0px 0px' }}>
                     <CourseCardNotFound />
+                    <Button
+                      style={{ margin: '0px 20px' }}
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        deleteCourseOfWatchList(course.watchListId);
+                      }}
+                    >
+                      Remove
+                    </Button>
                   </div>
                 </Grid>
               );
@@ -284,7 +294,7 @@ export function StudentPage() {
       <div style={{ padding: '20px' }}>
         <Grid container spacing={3} justifyContent="center">
           {store.myCourses.map(course => {
-            if (course.myCourseId) {
+            if (course.id) {
               const url = `/studyPage/${course.name}/`;
               return (
                 <Grid item xs={3} key={course.id}>
@@ -327,6 +337,16 @@ export function StudentPage() {
                 <Grid item xs={3}>
                   <div style={{ margin: '0px 0px' }}>
                     <CourseCardNotFound />
+                    <Button
+                      style={{ margin: '0px 20px' }}
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        deleteCourseOfMyCourse(course.myCourseId);
+                      }}
+                    >
+                      Remove
+                    </Button>
                   </div>
                 </Grid>
               );

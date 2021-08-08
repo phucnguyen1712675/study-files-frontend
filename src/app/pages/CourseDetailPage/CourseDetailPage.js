@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
+import { Spin } from 'antd';
 import ShowMore from 'react-show-more-list';
 import ShowMoreText from 'react-show-more-text';
 import DOMPurify from 'dompurify';
@@ -142,6 +143,9 @@ export default function CourseDetailPage() {
   const location = useLocation();
   const history = useHistory();
   const course = location.state.course;
+  const [loading, setLoading] = useState(true);
+  const [loadingStudy, setLoadingStudy] = useState(true);
+  const [loadingLike, setLoadingLike] = useState(true);
   const [exist, setExist] = useState(true);
   const [thisTeacher, setThisTeacher] = useState(false);
   const [sections, setSections] = useState([]);
@@ -168,18 +172,12 @@ export default function CourseDetailPage() {
 
   useEffect(
     function () {
-      // chạy lại mỗi khi userId, store.mycourses và store.watchList thay đổi
       async function loadApp() {
-        // TODO phuc setLoading = true
-        setStudy({ ...study, is: false, myCourseId: '' });
-        setLike({
-          ...like,
-          is: false,
-          watchListId: '',
-        });
-
         try {
+          setLoading(true);
           await axiosGuestInstance.get(`/courses/${course.id}`);
+          loadAppLike();
+          loadAppStudy();
           const ratingsRes = await axiosGuestInstance.get(
             `/ratings/${course.id}`,
           );
@@ -188,35 +186,6 @@ export default function CourseDetailPage() {
             `/feedbacks/${course.id}`,
           );
           setFeedBacks(feedBackRes.data);
-
-          // check if student then get is study or like this course
-          if (localStorage.studyFiles_user_role === 'student') {
-            for (var myCourse of store.myCourses) {
-              if (myCourse.id === course.id) {
-                setStudy({
-                  ...study,
-                  is: true,
-                  myCourseId: myCourse.myCourseId,
-                });
-                break;
-              }
-            }
-            for (var watchList of store.watchList) {
-              if (watchList.id === course.id) {
-                setLike({
-                  ...like,
-                  is: true,
-                  watchListId: watchList.watchListId,
-                });
-                break;
-              }
-            }
-          } else if (
-            localStorage.studyFiles_user_role === 'teacher' &&
-            course.teacherId === localStorage.studyFiles_user_id
-          ) {
-            setThisTeacher(true);
-          }
 
           // get best 5 coures of teacherId
           const bestSaleCoursesOfTeacherRes = await axiosGuestInstance.get(
@@ -235,25 +204,90 @@ export default function CourseDetailPage() {
             `/courses/${course.id}/sections?courseId=${course.id}&limit=20`,
           );
           setSections([...sectionsRes.data.results]);
+          if (
+            localStorage.studyFiles_user_role === 'teacher' &&
+            course.teacherId === localStorage.studyFiles_user_id
+          ) {
+            setThisTeacher(true);
+          }
+          setLoading(false);
         } catch {
           setExist(false);
         }
-
-        // TODO Phuc setLoading = false
-
-        const unlisten = history.listen(() => {
-          window.scrollTo(0, 0);
-        });
-
-        return () => {
-          unlisten();
-        };
       }
       loadApp();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store.watchList, store.myCourses, localStorage.studyFiles_user_id, course],
+    [course.id, course.subCategory.id],
   );
+
+  useEffect(
+    function () {
+      loadAppStudy();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [store.myCourses, course],
+  );
+
+  useEffect(
+    function () {
+      loadAppLike();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [store.watchList, course],
+  );
+
+  const loadAppLike = async function () {
+    setLoadingLike(true);
+    setLike({
+      ...like,
+      is: false,
+      watchListId: '',
+    });
+
+    try {
+      await axiosGuestInstance.get(`/courses/${course.id}`);
+      // check if student then get is study or like this course
+      if (localStorage.studyFiles_user_role === 'student') {
+        for (var watchList of store.watchList) {
+          if (watchList.id === course.id) {
+            setLike({
+              ...like,
+              is: true,
+              watchListId: watchList.watchListId,
+            });
+            break;
+          }
+        }
+        setLoadingLike(false);
+      }
+    } catch {
+      setExist(false);
+    }
+  };
+
+  const loadAppStudy = async function () {
+    setLoadingStudy(true);
+    setStudy({ ...study, is: false, myCourseId: '' });
+    try {
+      await axiosGuestInstance.get(`/courses/${course.id}`);
+      if (localStorage.studyFiles_user_role === 'student') {
+        for (var myCourse of store.myCourses) {
+          if (myCourse.id === course.id) {
+            setStudy({
+              ...study,
+              is: true,
+              myCourseId: myCourse.myCourseId,
+            });
+            break;
+          }
+        }
+        setLoadingStudy(false);
+      }
+    } catch {
+      setExist(false);
+    }
+  };
 
   // function logic handle =======================================
   const NavigateToTeacherPage = () => {
@@ -306,7 +340,7 @@ export default function CourseDetailPage() {
                 watchListId: `${like.watchListId}`,
               },
             });
-            setLike({ ...like, is: false, watchListId: '' });
+            // setLike({ ...like, is: false, watchListId: '' });
           } else {
             alert(res.data.message);
           }
@@ -336,7 +370,7 @@ export default function CourseDetailPage() {
                 course: watchList,
               },
             });
-            setLike({ ...like, is: true, watchListId: res.data.id });
+            // setLike({ ...like, is: true, watchListId: res.data.id });
           } else {
             alert(res.data.message);
           }
@@ -376,7 +410,7 @@ export default function CourseDetailPage() {
                 myCourseId: `${study.myCourseId}`,
               },
             });
-            setStudy({ ...study, is: false, myCourseId: '' });
+            // setStudy({ ...study, is: false, myCourseId: '' });
           } else {
             alert(res.data.message);
           }
@@ -406,7 +440,7 @@ export default function CourseDetailPage() {
                 course: myCourse,
               },
             });
-            setStudy({ ...study, is: true, myCourseId: res.data.id });
+            // setStudy({ ...study, is: true, myCourseId: res.data.id });
           } else {
             alert(res.data.message);
           }
@@ -657,10 +691,9 @@ export default function CourseDetailPage() {
   };
 
   const ButtonWatchListWidget = function () {
-    if (like.is) {
+    if (loadingLike) {
       return (
         <Button
-          onClick={WatchListButtonClickHandle}
           variant="contained"
           color="secondary"
           className={classes.button}
@@ -670,36 +703,55 @@ export default function CourseDetailPage() {
             paddingLeft: '8px',
             paddingRight: '8px',
           }}
-          startIcon={<Favorite />}
+          startIcon={<Spin />}
         >
-          LIKED
+          LIKE ?
         </Button>
       );
     } else {
-      return (
-        <Button
-          onClick={WatchListButtonClickHandle}
-          variant="outlined"
-          color="secondary"
-          className={classes.button}
-          style={{
-            border: '1px solid red',
-            marginRight: '20px',
-            display: 'inline-block',
-          }}
-          startIcon={<FavoriteBorder />}
-        >
-          LIKE
-        </Button>
-      );
+      if (like.is) {
+        return (
+          <Button
+            onClick={WatchListButtonClickHandle}
+            variant="contained"
+            color="secondary"
+            className={classes.button}
+            style={{
+              marginRight: '20px',
+              display: 'inline-block',
+              paddingLeft: '8px',
+              paddingRight: '8px',
+            }}
+            startIcon={<Favorite />}
+          >
+            LIKED
+          </Button>
+        );
+      } else {
+        return (
+          <Button
+            onClick={WatchListButtonClickHandle}
+            variant="outlined"
+            color="secondary"
+            className={classes.button}
+            style={{
+              border: '1px solid red',
+              marginRight: '20px',
+              display: 'inline-block',
+            }}
+            startIcon={<FavoriteBorder />}
+          >
+            LIKE
+          </Button>
+        );
+      }
     }
   };
 
   const ButtonAddMyCourseWidget = function () {
-    if (study.is) {
+    if (loadingStudy) {
       return (
         <Button
-          onClick={MyCourseButtonClickHandle}
           variant="contained"
           color="primary"
           className={classes.button}
@@ -711,29 +763,51 @@ export default function CourseDetailPage() {
             paddingLeft: '8px',
             paddingRight: '8px',
           }}
-          startIcon={<ShoppingCart />}
+          startIcon={<Spin />}
         >
-          STUDIED
+          STUDY ?
         </Button>
       );
     } else {
-      return (
-        <Button
-          onClick={MyCourseButtonClickHandle}
-          variant="outlined"
-          color="primary"
-          className={classes.button}
-          style={{
-            border: '1px solid #ffc130',
-            color: '#ffc130',
-            marginRight: '20px',
-            display: 'inline-block',
-          }}
-          startIcon={<AddShoppingCart />}
-        >
-          STUDY
-        </Button>
-      );
+      if (study.is) {
+        return (
+          <Button
+            onClick={MyCourseButtonClickHandle}
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            style={{
+              backgroundColor: '#ffc130',
+              color: 'white',
+              marginRight: '20px',
+              display: 'inline-block',
+              paddingLeft: '8px',
+              paddingRight: '8px',
+            }}
+            startIcon={<ShoppingCart />}
+          >
+            STUDIED
+          </Button>
+        );
+      } else {
+        return (
+          <Button
+            onClick={MyCourseButtonClickHandle}
+            variant="outlined"
+            color="primary"
+            className={classes.button}
+            style={{
+              border: '1px solid #ffc130',
+              color: '#ffc130',
+              marginRight: '20px',
+              display: 'inline-block',
+            }}
+            startIcon={<AddShoppingCart />}
+          >
+            STUDY
+          </Button>
+        );
+      }
     }
   };
 
@@ -1259,6 +1333,7 @@ export default function CourseDetailPage() {
   };
 
   const Top5CourseOfSameTeacher = function () {
+    const courses = [...bestSaleCoursesOfTeacher];
     return (
       <div>
         <Carousel
@@ -1274,7 +1349,7 @@ export default function CourseDetailPage() {
           ]}
           animationSpeed={1000}
         >
-          {bestSaleCoursesOfTeacher.map(item => (
+          {courses.map(item => (
             <CourseCard course={item} key={item.id} />
           ))}
         </Carousel>
@@ -1283,6 +1358,7 @@ export default function CourseDetailPage() {
   };
 
   const TopFiveBestSaleCoursesOfSameSubCategory = function () {
+    const courses = [...bestSaleCoursesSameCategory];
     return (
       <div style={{ marginTop: '50px', width: '95%' }}>
         <div
@@ -1314,7 +1390,7 @@ export default function CourseDetailPage() {
           ]}
           animationSpeed={1000}
         >
-          {bestSaleCoursesSameCategory.map(item => (
+          {courses.map(item => (
             <CourseCard course={item} key={item.id} />
           ))}
         </Carousel>
@@ -1325,8 +1401,19 @@ export default function CourseDetailPage() {
   return (
     <>
       <TopBar initQuery={''} />
-      {/* TODO phuc loading here */}
-      {exist ? (
+      {loading ? (
+        <div
+          style={{
+            width: '100%',
+            minHeight: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Spin />
+        </div>
+      ) : exist ? (
         <>
           {MainInfoWidget()}
           <div
@@ -1351,6 +1438,7 @@ export default function CourseDetailPage() {
       ) : (
         <NotFoundPage />
       )}
+
       <Footer />
     </>
   );

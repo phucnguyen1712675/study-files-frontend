@@ -74,6 +74,7 @@ export function App() {
     latestCourses: [],
     watchList: [],
     myCourses: [],
+    loading: true,
   };
 
   // const testAddSectionsAndLectures = async function () {
@@ -151,7 +152,7 @@ export function App() {
             config,
           );
           for (var item of watchListRes.data) {
-            let course = {};
+            let course = { watchListId: item.id };
             try {
               const coursesRes = await axiosGuestInstance.get(
                 `/courses/${item.courseId}`,
@@ -168,7 +169,7 @@ export function App() {
           );
           // eslint-disable-next-line
           for (var item of myCoursesRes.data) {
-            let course = {};
+            let course = { myCourseId: item.id };
             try {
               const coursesRes = await axiosGuestInstance.get(
                 `/courses/${item.courseId}`,
@@ -188,6 +189,7 @@ export function App() {
             latestCourses: latestCourses,
             watchList: watchList,
             myCourses: myCourses,
+            loading: false,
           },
         });
       }
