@@ -20,34 +20,25 @@ import { App } from 'app';
 
 import { HelmetProvider } from 'react-helmet-async';
 
-// import { configureAppStore } from 'store/configureStore';
-
 import reportWebVitals from 'reportWebVitals';
+
 // Initialize languages
 import './locales/i18n';
 
 import './index.css';
 
 import { store } from './app/store';
-// import { PersistGate } from 'redux-persist/integration/react';
-// import { persistStore } from 'redux-persist';
 import * as serviceWorker from './serviceWorker';
 
-// const store = configureAppStore();
-// const store = createStore(rootReducer, compose(applyMiddleware(thunk)));
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
-
-// let persistor = persistStore(store);
 
 ReactDOM.render(
   <Provider store={store}>
-    {/* <PersistGate loading={null} persistor={persistor}> */}
     <HelmetProvider>
       <React.StrictMode>
         <App />
       </React.StrictMode>
     </HelmetProvider>
-    {/* </PersistGate> */}
   </Provider>,
   MOUNT_NODE,
 );
