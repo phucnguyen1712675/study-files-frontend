@@ -1,5 +1,6 @@
-import { Space } from 'antd';
-import ContentTitle from '../content_title';
+import { Space, Typography, Divider } from 'antd';
+
+const { Title } = Typography;
 
 type Component = {
   title: string;
@@ -20,7 +21,12 @@ export default function HeaderSiderContentLayout({ components }: Props) {
           direction="vertical"
           style={{ width: '100%' }}
         >
-          <ContentTitle title={component.title} />
+          <Title level={3} style={{ fontWeight: 'lighter' }}>
+            {component.title}
+          </Title>
+
+          <Divider style={{ margin: '0px' }} />
+
           {component.children}
         </Space>
       ))}

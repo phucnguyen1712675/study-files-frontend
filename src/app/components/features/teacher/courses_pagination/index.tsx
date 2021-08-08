@@ -1,16 +1,14 @@
 import React from 'react';
 import { Row, Col, Pagination, Typography, List } from 'antd';
+import { ListGridType } from 'antd/lib/list';
 
 import CourseCard from './components/course_card';
 import LoadingCard from './components/loading_card';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import { getCoursesOfTeacherQueryResult } from '../../../../../features/guest/guestThunkAPI';
 import { selectTeacherCourses } from '../../../../../features/guest/guestSlice';
-import { ListGridType } from 'antd/lib/list';
 
 const { Text } = Typography;
-
-const teacherId = localStorage.studyFiles_user_id;
 
 type Props = {
   limit: number;
@@ -23,14 +21,16 @@ export default function CoursesPagination({
   isCardEditable,
   gridType,
 }: Props) {
+  const dispatch = useAppDispatch();
+
   const [page, setPage] = React.useState<number>(1);
 
-  const dispatch = useAppDispatch();
+  const teacherId = localStorage.studyFiles_user_id;
 
   React.useEffect(() => {
     const query = `teacherId=${teacherId}&page=${page}&limit=${limit}`;
     dispatch(getCoursesOfTeacherQueryResult(query));
-  }, [dispatch, limit, page]);
+  }, [dispatch, limit, page, teacherId]);
 
   const { data, isLoading } = useAppSelector(selectTeacherCourses);
 

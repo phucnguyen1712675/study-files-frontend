@@ -35,8 +35,6 @@ const schema = yup.object().shape({
 });
 
 export default function AccountSecurityContent() {
-  const teacherId = localStorage.studyFiles_user_id;
-
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const methods = useForm<FormValues>({
@@ -55,6 +53,8 @@ export default function AccountSecurityContent() {
     setLoading(true);
 
     const { confirmNewPassword, ...dataToSend } = values;
+
+    const teacherId = localStorage.studyFiles_user_id;
 
     const response = await updatePassword(teacherId, dataToSend);
 

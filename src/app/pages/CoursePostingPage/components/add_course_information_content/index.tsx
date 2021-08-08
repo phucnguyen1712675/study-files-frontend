@@ -38,8 +38,6 @@ import { PLACEHOLDER_IMAGE_URL } from '../../../../../constants/images';
 
 const { Text } = Typography;
 
-const teacherId = localStorage.studyFiles_user_id;
-
 type FormValues = {
   name: string;
   shortDescription: string;
@@ -138,6 +136,8 @@ export default function AddCourseInformationContent() {
     const { hasPromotion, ...data } = values;
 
     var payload: object;
+
+    const teacherId = localStorage.studyFiles_user_id;
 
     if (!hasPromotion) {
       const { promotionStart, promotionEnd, ...rest } = data;
