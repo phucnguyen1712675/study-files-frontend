@@ -170,7 +170,6 @@ export default function CourseDetailPage() {
     function () {
       // chạy lại mỗi khi userId, store.mycourses và store.watchList thay đổi
       async function loadApp() {
-        // TODO phuc setLoading = true
         setStudy({ ...study, is: false, myCourseId: '' });
         setLike({
           ...like,
@@ -238,8 +237,6 @@ export default function CourseDetailPage() {
         } catch {
           setExist(false);
         }
-
-        // TODO Phuc setLoading = false
 
         const unlisten = history.listen(() => {
           window.scrollTo(0, 0);
@@ -1325,7 +1322,6 @@ export default function CourseDetailPage() {
   return (
     <>
       <TopBar initQuery={''} />
-      {/* TODO phuc loading here */}
       {exist ? (
         <>
           {MainInfoWidget()}
