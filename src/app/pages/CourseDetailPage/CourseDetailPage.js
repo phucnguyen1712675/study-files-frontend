@@ -259,11 +259,11 @@ export default function CourseDetailPage() {
             break;
           }
         }
-        setLoadingLike(false);
       }
     } catch {
       setExist(false);
     }
+    setLoadingLike(false);
   };
 
   const loadAppStudy = async function () {
@@ -282,11 +282,11 @@ export default function CourseDetailPage() {
             break;
           }
         }
-        setLoadingStudy(false);
       }
     } catch {
       setExist(false);
     }
+    setLoadingStudy(false);
   };
 
   // function logic handle =======================================
@@ -1338,7 +1338,7 @@ export default function CourseDetailPage() {
       <div>
         <Carousel
           plugins={[
-            'infinite',
+            // 'infinite',
             'arrows',
             {
               resolve: slidesToShowPlugin,
@@ -1379,7 +1379,7 @@ export default function CourseDetailPage() {
         </div>
         <Carousel
           plugins={[
-            'infinite',
+            // 'infinite',
             'arrows',
             {
               resolve: slidesToShowPlugin,

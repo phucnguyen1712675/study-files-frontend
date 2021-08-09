@@ -11,6 +11,8 @@ import {
   Col,
   Typography,
   message,
+  Modal,
+  Image,
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { updatedDiff } from 'deep-object-diff';
@@ -89,6 +91,7 @@ export default function ProfileContent() {
     setVisible(false);
 
     showLoadingSwal();
+    console.log(values);
 
     const dataToSend = {
       avatar: values.image,
@@ -138,6 +141,8 @@ export default function ProfileContent() {
       message.success('Processing complete!');
     }
   });
+
+  // const watchImage = null;
 
   return (
     <>
@@ -224,6 +229,43 @@ export default function ProfileContent() {
         title="Change profile picture"
         label="Choose a picture"
       />
+      {/* <Modal
+        visible={visible}
+        title={'Change profile picture'}
+        okText="Edit"
+        cancelText="Cancel"
+        onCancel={onCancel}
+        onOk={() => onCreate}
+        okButtonProps={{ disabled: !watchImage }}
+      >
+        <FormProvider {...methods}>
+          <Form layout="vertical" name="form_in_modal">
+            <FormFileBase64
+              name="image"
+              label={'Choose a picture'}
+              desiredFileType="image"
+            />
+          </Form>
+        </FormProvider>
+        {watchImage && (
+          <Row justify="center">
+            <Image
+              src={watchImage}
+              alt="chosen"
+              style={{ height: '300px' }}
+              className="mb-3"
+              placeholder={
+                <Image
+                  preview={false}
+                  className="mb-3"
+                  style={{ height: '300px' }}
+                  src={PLACEHOLDER_IMAGE_URL}
+                />
+              }
+            />
+          </Row>
+        )}
+      </Modal> */}
     </>
   );
 }

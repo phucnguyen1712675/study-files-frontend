@@ -41,7 +41,7 @@ export default function HomePage() {
         ) : (
           <Carousel
             plugins={[
-              'infinite',
+              // 'infinite',
               'arrows',
               {
                 resolve: slidesToShowPlugin,
@@ -49,12 +49,12 @@ export default function HomePage() {
                   numberOfSlides: 4,
                 },
               },
-              {
-                resolve: autoplayPlugin,
-                options: {
-                  interval: 2000,
-                },
-              },
+              // {
+              //   resolve: autoplayPlugin,
+              //   options: {
+              //     interval: 2000,
+              //   },
+              // },
             ]}
             animationSpeed={1000}
           >

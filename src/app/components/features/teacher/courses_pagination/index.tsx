@@ -10,8 +10,6 @@ import { ListGridType } from 'antd/lib/list';
 
 const { Text } = Typography;
 
-const teacherId = localStorage.studyFiles_user_id;
-
 type Props = {
   limit: number;
   isCardEditable: boolean;
@@ -23,14 +21,16 @@ export default function CoursesPagination({
   isCardEditable,
   gridType,
 }: Props) {
+  const dispatch = useAppDispatch();
+
   const [page, setPage] = React.useState<number>(1);
 
-  const dispatch = useAppDispatch();
+  const teacherId = localStorage.studyFiles_user_id;
 
   React.useEffect(() => {
     const query = `teacherId=${teacherId}&page=${page}&limit=${limit}`;
     dispatch(getCoursesOfTeacherQueryResult(query));
-  }, [dispatch, limit, page]);
+  }, [dispatch, limit, page, teacherId]);
 
   const { data, isLoading } = useAppSelector(selectTeacherCourses);
 

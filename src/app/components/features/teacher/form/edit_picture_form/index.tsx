@@ -31,12 +31,12 @@ export default function EditPictureForm({
     mode: 'onBlur',
   });
 
-  const { watch, getValues, reset } = methods;
+  const { watch, reset } = methods;
 
   const watchImage = watch('image');
 
   const handleOk = async () => {
-    await onCreate(getValues());
+    await onCreate({ image: watchImage });
 
     reset();
   };

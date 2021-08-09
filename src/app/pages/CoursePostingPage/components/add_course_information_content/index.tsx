@@ -4,7 +4,6 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button, message, Image, Typography } from 'antd';
 import moment from 'moment';
-
 import CustomContent from '../custom_content';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
@@ -37,8 +36,6 @@ import { addCourse } from '../../../../../features/teacher/teacherAPI';
 import { PLACEHOLDER_IMAGE_URL } from '../../../../../constants/images';
 
 const { Text } = Typography;
-
-const teacherId = localStorage.studyFiles_user_id;
 
 type FormValues = {
   name: string;
@@ -110,6 +107,7 @@ export default function AddCourseInformationContent() {
 
   React.useEffect(() => {
     dispatch(getCategoriesDetails());
+    console.log(1);
   }, [dispatch]);
 
   const categoriesDetails = useAppSelector(selectCategoryDetails);
@@ -124,20 +122,21 @@ export default function AddCourseInformationContent() {
     resolver: yupResolver(schema),
   });
 
-  const { handleSubmit, watch } = methods;
+  const { handleSubmit, watch, getValues } = methods;
 
   const watchOriginalFee = watch('originalFee');
 
   const watchHasPromotion = watch('hasPromotion');
 
-  const watchImage = watch('image');
-
   const onFinish = handleSubmit(async (values: FormValues) => {
     setLoading(true);
+    console.log(values);
 
     const { hasPromotion, ...data } = values;
 
     var payload: object;
+
+    const teacherId = localStorage.studyFiles_user_id;
 
     if (!hasPromotion) {
       const { promotionStart, promotionEnd, ...rest } = data;
@@ -176,94 +175,84 @@ export default function AddCourseInformationContent() {
         step={0}
         shouldShowNextButton={shouldShowNextButton}
         children={
-          <FormProvider {...methods}>
-            <Form layout="vertical" onFinish={onFinish}>
-              <FormInput name="name" label="Name" placeholder="Enter name" />
-              <FormTextArea
-                name="shortDescription"
-                label="Short description"
-                placeholder="Enter short description"
-                autoSize={true}
-              />
-              <FormEditor name="detailDescription" label="Detail description" />
-              <FormSubCategoryOptGroupSelect
-                name="subCategoryId"
-                label="Sub category"
-                categories={categoriesDetails.data}
-              />
-              <FormCheckbox
-                name="status"
-                label="This course is completed"
-                defaultChecked={false}
-              />
-              <FormNumberInput
-                name="originalFee"
-                label="Original Fee"
-                defaultValue={0}
-                min={COURSE_ORIGINAL_FEE_MIN_VALUE}
-                max={COURSE_ORIGINAL_FEE_MAX_VALUE}
-                note={
-                  <Text type="warning">{`Value <= ${COURSE_ORIGINAL_FEE_MAX_VALUE} $`}</Text>
-                }
-              />
-              {watchOriginalFee > 0 && (
-                <>
-                  <FormSwitch
-                    name="hasPromotion"
-                    label="Has promotion"
-                    defaultChecked={false}
-                  />
-                  {watchHasPromotion && (
-                    <>
-                      <FormNumberInput
-                        name="fee"
-                        label="Discount Fee"
-                        defaultValue={0}
-                        min={COURSE_FEE_MIN_VALUE}
-                        max={watchOriginalFee - 0.01}
-                        note={
-                          <Text type="warning">{`Value < ${watchOriginalFee} $`}</Text>
-                        }
-                      />
-                      <FormRangePicker
-                        label="Promotion date range"
-                        stateTimeName="promotionStart"
-                        endTimeName="promotionEnd"
-                        disabledDate={disabledDate}
-                      />
-                    </>
-                  )}
-                </>
-              )}
-              <FormFileBase64
-                name="image"
-                label="Image"
-                fileKey={imageKey}
-                desiredFileType="image"
-              />
-              {watchImage && (
-                <Image
-                  src={watchImage}
-                  alt="chosen"
-                  style={{ height: '300px' }}
-                  className="mb-3"
-                  placeholder={
-                    <Image
-                      preview={false}
-                      style={{ height: '300px' }}
-                      className="mb-3"
-                      src={PLACEHOLDER_IMAGE_URL}
-                    />
+          <>
+            <FormProvider {...methods}>
+              <Form layout="vertical" onFinish={onFinish}>
+                <FormInput name="name" label="Name" placeholder="Enter name" />
+                <FormTextArea
+                  name="shortDescription"
+                  label="Short description"
+                  placeholder="Enter short description"
+                  autoSize={true}
+                />
+                <FormEditor
+                  name="detailDescription"
+                  label="Detail description"
+                />
+                <FormSubCategoryOptGroupSelect
+                  name="subCategoryId"
+                  label="Sub category"
+                  categories={categoriesDetails.data}
+                />
+                <FormCheckbox
+                  name="status"
+                  label="This course is completed"
+                  defaultChecked={false}
+                />
+                <FormNumberInput
+                  name="originalFee"
+                  label="Original Fee"
+                  defaultValue={0}
+                  min={COURSE_ORIGINAL_FEE_MIN_VALUE}
+                  max={COURSE_ORIGINAL_FEE_MAX_VALUE}
+                  note={
+                    <Text type="warning">{`Value <= ${COURSE_ORIGINAL_FEE_MAX_VALUE} $`}</Text>
                   }
                 />
-              )}
-              <Form.Item>
-                <Button type="primary" htmlType="submit" loading={loading}>
-                  Submit
-                </Button>
-              </Form.Item>
-            </Form>
-          </FormProvider>
+                {watchOriginalFee > 0 && (
+                  <>
+                    <FormSwitch
+                      name="hasPromotion"
+                      label="Has promotion"
+                      defaultChecked={false}
+                    />
+                    {watchHasPromotion && (
+                      <>
+                        <FormNumberInput
+                          name="fee"
+                          label="Discount Fee"
+                          defaultValue={0}
+                          min={COURSE_FEE_MIN_VALUE}
+                          max={watchOriginalFee - 0.01}
+                          note={
+                            <Text type="warning">{`Value < ${watchOriginalFee} $`}</Text>
+                          }
+                        />
+                        <FormRangePicker
+                          label="Promotion date range"
+                          stateTimeName="promotionStart"
+                          endTimeName="promotionEnd"
+                          disabledDate={disabledDate}
+                        />
+                      </>
+                    )}
+                  </>
+                )}
+                <FormFileBase64
+                  name="image"
+                  label="Image"
+                  fileKey={imageKey}
+                  desiredFileType="image"
+                  isShowImage={true}
+                />
+                <Form.Item>
+                  <Button type="primary" htmlType="submit" loading={loading}>
+                    Submit
+                  </Button>
+                </Form.Item>
+              </Form>
+            </FormProvider>
+          </>
         }
       />
     </>
