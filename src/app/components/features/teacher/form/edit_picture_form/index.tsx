@@ -11,13 +11,13 @@ const schema = yup.object().shape({
   image: yup.string().required('Image is Required'),
 });
 
-interface CollectionCreateFormProps {
+type CollectionCreateFormProps = {
   visible: boolean;
   onCreate: (values: EditPictureFormValues) => Promise<void>;
   onCancel: () => void;
   title: string;
   label: string;
-}
+};
 
 export default function EditPictureForm({
   visible,
@@ -31,12 +31,17 @@ export default function EditPictureForm({
     mode: 'onBlur',
   });
 
-  const { watch, getValues, reset } = methods;
+  const { watch, reset } = methods;
 
   const watchImage = watch('image');
 
   const handleOk = async () => {
-    await onCreate(getValues());
+    // To fix bug
+    const values = {
+      image: watchImage,
+    };
+
+    await onCreate(values);
 
     reset();
   };

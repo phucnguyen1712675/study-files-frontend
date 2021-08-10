@@ -24,11 +24,11 @@ const schema = yup.object().shape({
   promotionEnd: yup.date(),
 });
 
-interface CollectionCreateFormProps {
+type CollectionCreateFormProps = {
   visible: boolean;
   onCreate: (values: UpdateCoursePromotionFormValues) => Promise<void>;
   onCancel: () => void;
-}
+};
 
 export default function UpdateCoursePromotionForm({
   visible,

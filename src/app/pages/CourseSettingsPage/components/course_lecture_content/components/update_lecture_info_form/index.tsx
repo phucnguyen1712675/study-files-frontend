@@ -25,11 +25,11 @@ const schema = yup.object().shape({
   canPreview: yup.boolean(),
 });
 
-interface CollectionCreateFormProps {
+type CollectionCreateFormProps = {
   visible: boolean;
   onCreate: (values: UpdateLectureInfoFormValues) => Promise<void>;
   onCancel: () => void;
-}
+};
 
 export default function UpdateLectureInfoForm({
   visible,

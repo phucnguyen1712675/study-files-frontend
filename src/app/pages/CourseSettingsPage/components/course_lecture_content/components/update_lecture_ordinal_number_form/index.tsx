@@ -17,11 +17,11 @@ const schema = yup.object().shape({
   secondLectureId: yup.string().required('Second Lecture is Required'),
 });
 
-interface CollectionCreateFormProps {
+type CollectionCreateFormProps = {
   visible: boolean;
   onCreate: (values: UpdateLectureOrdinalNumberFormValues) => Promise<void>;
   onCancel: () => void;
-}
+};
 
 export default function UpdateLectureOrdinalNumberForm({
   visible,

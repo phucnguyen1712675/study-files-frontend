@@ -13,11 +13,11 @@ const schema = yup.object().shape({
   secondSectionId: yup.string().required('Second Section is Required'),
 });
 
-interface CollectionCreateFormProps {
+type CollectionCreateFormProps = {
   visible: boolean;
   onCreate: (values: UpdateSectionOrdinalNumberFormValues) => Promise<void>;
   onCancel: () => void;
-}
+};
 
 export default function UpdateSectionOrdinalNumberForm({
   visible,

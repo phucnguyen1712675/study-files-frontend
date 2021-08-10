@@ -14,12 +14,12 @@ const schema = yup.object().shape({
   video: yup.string().required('Video is Required'),
 });
 
-interface CollectionCreateFormProps {
+type CollectionCreateFormProps = {
   visible: boolean;
   onCreate: (values: UploadVideoFormValues) => Promise<void>;
   onCancel: () => void;
   title: string;
-}
+};
 
 export default function UploadVideoForm({
   visible,

@@ -23,11 +23,11 @@ const schema = yup.object().shape({
     .required('Title is Required'),
 });
 
-interface CollectionCreateFormProps {
+type CollectionCreateFormProps = {
   visible: boolean;
   onCreate: (values: UpdateCourseSectionTitleFormValues) => Promise<void>;
   onCancel: () => void;
-}
+};
 
 export default function UpdateCourseSectionTitleForm({
   visible,

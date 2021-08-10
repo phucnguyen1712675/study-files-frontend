@@ -4,6 +4,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Skeleton, Button, Alert, message } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
+import { nanoid } from 'nanoid';
 
 import UpdateLectureInfoForm from './components/update_lecture_info_form';
 import UpdateLectureOrdinalNumberForm from './components/update_lecture_ordinal_number_form';
@@ -58,6 +59,8 @@ const schema = yup.object().shape({
   }),
 });
 
+var videoKey = nanoid();
+
 export default function CourseLectureContent() {
   const dispatch = useAppDispatch();
 
@@ -85,7 +88,9 @@ export default function CourseLectureContent() {
 
   const watchSectionId = watch('sectionId');
 
-  var videoKey = Date.now();
+  const watchTitle = watch('title');
+
+  const watchVideo = watch('video');
 
   const getLectureCount = async (sectionId: string) => {
     const totalResults = await getLecturesTotalResults(sectionId);
@@ -127,7 +132,7 @@ export default function CourseLectureContent() {
 
       await getLectureCount(values.sectionId);
 
-      videoKey = Date.now();
+      videoKey = nanoid();
     }
 
     setLoading(false);
@@ -193,6 +198,111 @@ export default function CourseLectureContent() {
   const onCancelUpdateLectureOrdinalNumberVisible = () =>
     setUpdateLectureOrdinalNumberFormVisible(false);
 
+  const components = [
+    {
+      id: nanoid(),
+      title: "Update lecture's info",
+      children: (
+        <>
+          {courseDetails.data?.sections &&
+          courseDetails.data?.sections.some(
+            section => section.lectures.length > 0,
+          ) ? (
+            <Button
+              icon={<EditOutlined />}
+              onClick={onClickBtnUpdateLectureInfo}
+            >
+              Click to update
+            </Button>
+          ) : (
+            <Alert message="No lecture to update!" type="info" showIcon />
+          )}
+        </>
+      ),
+    },
+    {
+      id: nanoid(),
+      title: "Update lecture's ordinal number",
+      children: (
+        <>
+          {courseDetails.data?.sections &&
+          courseDetails.data?.sections.some(
+            section => section.lectures.length > 1,
+          ) ? (
+            <Button
+              icon={<EditOutlined />}
+              onClick={onClickBtnUpdateLectureOrdinalNumber}
+            >
+              Click to update
+            </Button>
+          ) : (
+            <Alert
+              message="No section have enough lecture to swap ordinal number!"
+              type="info"
+              showIcon
+            />
+          )}
+        </>
+      ),
+    },
+    {
+      id: nanoid(),
+      title: 'New',
+      children: (
+        <>
+          {!watchSectionId && (
+            <Alert
+              message="First choose a section to add lecture"
+              type="info"
+              showIcon
+            />
+          )}
+          <FormProvider {...methods}>
+            <Form layout="vertical" onFinish={onFinish}>
+              <FormSectionSelect
+                name="sectionId"
+                label="Section"
+                sections={courseDetails.data?.sections ?? []}
+                checkDisabledForSection={false}
+                changeHandler={sectionChangeHandler}
+              />
+              {watchSectionId && (
+                <>
+                  <FormInput
+                    name="title"
+                    label={`Title for Lecture ${lectureCount + 1}`}
+                    placeholder="Enter title"
+                  />
+                  <FormCheckbox
+                    name="canPreview"
+                    label="This course is can be previewed"
+                    defaultChecked={false}
+                  />
+                  <FormFileBase64
+                    name="video"
+                    label="Video"
+                    fileKey={videoKey}
+                    desiredFileType="video"
+                  />
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      loading={loading}
+                      disabled={!watchSectionId || !watchTitle || !watchVideo}
+                    >
+                      Submit
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form>
+          </FormProvider>
+        </>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageHelmet title="Lecture" />
@@ -200,112 +310,7 @@ export default function CourseLectureContent() {
         <Skeleton active avatar paragraph={{ rows: 16 }} />
       ) : !courseDetails.data?.status ? (
         <>
-          <HeaderSiderContentLayout
-            components={[
-              {
-                title: "Update lecture's info",
-                children: (
-                  <>
-                    {courseDetails.data?.sections &&
-                    courseDetails.data?.sections.some(
-                      section => section.lectures.length > 0,
-                    ) ? (
-                      <Button
-                        icon={<EditOutlined />}
-                        onClick={onClickBtnUpdateLectureInfo}
-                      >
-                        Click to update
-                      </Button>
-                    ) : (
-                      <Alert
-                        message="No lecture to update!"
-                        type="info"
-                        showIcon
-                      />
-                    )}
-                  </>
-                ),
-              },
-              {
-                title: "Update lecture's ordinal number",
-                children: (
-                  <>
-                    {courseDetails.data?.sections &&
-                    courseDetails.data?.sections.some(
-                      section => section.lectures.length > 1,
-                    ) ? (
-                      <Button
-                        icon={<EditOutlined />}
-                        onClick={onClickBtnUpdateLectureOrdinalNumber}
-                      >
-                        Click to update
-                      </Button>
-                    ) : (
-                      <Alert
-                        message="No section have enough lecture to swap ordinal number!"
-                        type="info"
-                        showIcon
-                      />
-                    )}
-                  </>
-                ),
-              },
-              {
-                title: 'New',
-                children: (
-                  <>
-                    {!watchSectionId && (
-                      <Alert
-                        message="First choose a section to add lecture"
-                        type="info"
-                        showIcon
-                      />
-                    )}
-                    <FormProvider {...methods}>
-                      <Form layout="vertical" onFinish={onFinish}>
-                        <FormSectionSelect
-                          name="sectionId"
-                          label="Section"
-                          sections={courseDetails.data?.sections ?? []}
-                          checkDisabledForSection={false}
-                          changeHandler={sectionChangeHandler}
-                        />
-                        {watchSectionId && (
-                          <>
-                            <FormInput
-                              name="title"
-                              label={`Title for Lecture ${lectureCount + 1}`}
-                              placeholder="Enter title"
-                            />
-                            <FormCheckbox
-                              name="canPreview"
-                              label="This course is can be previewed"
-                              defaultChecked={false}
-                            />
-                            <FormFileBase64
-                              name="video"
-                              label="Video"
-                              fileKey={videoKey}
-                              desiredFileType="video"
-                            />
-                            <Form.Item>
-                              <Button
-                                type="primary"
-                                htmlType="submit"
-                                loading={loading}
-                              >
-                                Submit
-                              </Button>
-                            </Form.Item>
-                          </>
-                        )}
-                      </Form>
-                    </FormProvider>
-                  </>
-                ),
-              },
-            ]}
-          />
+          <HeaderSiderContentLayout components={components} />
           <UpdateLectureInfoForm
             visible={updateLectureInfoFormVisible}
             onCreate={onCreateUpdateLectureInfoForm}
