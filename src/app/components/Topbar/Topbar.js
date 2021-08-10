@@ -9,10 +9,13 @@ import {
 } from '@material-ui/icons';
 import { Grid, InputBase, MenuItem, Menu } from '@material-ui/core';
 import NestedMenuItem from 'material-ui-nested-menu-item';
+import { message } from 'antd';
+
 import './Topbar.css';
 import AppContext from '../../AppContext';
-import { axiosGuestInstance } from 'api/guest';
+import { axiosGuestInstance } from '../../../api/guest';
 import { TEACHER_COURSES_PAGE_PATH } from '../../../constants/routes';
+import { showLoadingSwal, closeSwal } from '../../../utils/sweet_alert_2';
 
 export default function Topbar({ initQuery }) {
   const history = useHistory();
@@ -31,16 +34,22 @@ export default function Topbar({ initQuery }) {
     delete localStorage.studyFiles_user_isVerified;
     const refreshToken = localStorage.studyFiles_user_refreshToken;
     try {
+      showLoadingSwal();
+
       await axiosGuestInstance.post('/auth/logout', {
         refreshToken: refreshToken,
       });
+
+      closeSwal();
     } catch (err) {
+      closeSwal();
+
       if (err.response) {
-        alert(err.response.data.message);
+        message.error(err.response.data.message);
       } else if (err.request) {
-        alert(err.request);
+        message.error(err.request);
       } else {
-        alert(err.message);
+        message.error(err.message);
       }
     }
 
@@ -301,7 +310,7 @@ export default function Topbar({ initQuery }) {
               className="userText"
               style={{ textDecoration: 'none' }}
             >
-              <div>sign in</div>
+              <div>Sign in</div>
             </Link>
           </Grid>
           <Grid>
@@ -315,7 +324,7 @@ export default function Topbar({ initQuery }) {
               className="userText"
               style={{ textDecoration: 'none' }}
             >
-              <div>sign up</div>
+              <div>Sign up</div>
             </Link>
           </Grid>
           <Grid>

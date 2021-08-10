@@ -38,7 +38,7 @@ import Footer from '../../components/Footer/Footer';
 import userAvatar from 'images/user.jpg';
 import { SectionList } from './components/SectionList';
 import { CourseCard, RatingCard } from '../../components/Cards/Cards';
-import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
+import { NotFoundPage } from 'app/pages/NotFoundPage/Loadable';
 import { getTeacherProfilePagePath } from '../../../constants/routes';
 
 const Accordion = withStyles({

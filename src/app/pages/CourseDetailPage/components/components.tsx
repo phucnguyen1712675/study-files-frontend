@@ -60,6 +60,8 @@ export function LectureCard({ lecture }) {
     color: '#fafafa',
     width: '70%',
     height: '80%',
+    marginTop: '-250px',
+    zIndex: 100,
     marginLeft: '-35%',
     // padding: '10px',
   };

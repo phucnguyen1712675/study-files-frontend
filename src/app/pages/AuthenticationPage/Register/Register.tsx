@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import {
   Avatar,
   Button,
@@ -13,10 +14,12 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { axiosAuthInstance } from '../../../../api/auth';
+import { Row, message } from 'antd';
+
+import AppContext from '../../../AppContext';
 import TopBar from '../../../components/Topbar/Topbar';
-import AppContext from 'app/AppContext';
-import { useContext } from 'react';
+import { axiosAuthInstance } from '../../../../api/auth';
+import { showLoadingSwal, closeSwal } from '../../../../utils/sweet_alert_2';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -53,9 +56,14 @@ export default function SignUp() {
     history.push('/login');
   };
 
-  const onSubmit = async function (data) {
+  const onSubmit = async data => {
     try {
+      showLoadingSwal();
+
       const res = await axiosAuthInstance.post('/register', data);
+
+      closeSwal();
+
       if (res.status === 201) {
         localStorage.studyFiles_user_accessToken = res.data.tokens.access.token;
         localStorage.studyFiles_user_accessToken_expires =
@@ -95,12 +103,14 @@ export default function SignUp() {
         alert('Invalid login.');
       }
     } catch (err) {
+      closeSwal();
+
       if (err.response) {
-        alert(err.response.data.message);
+        message.error(err.response.data.message);
       } else if (err.request) {
-        alert(err.request);
+        message.error(err.request);
       } else {
-        alert(err.message);
+        message.error(err.message);
       }
     }
   };
@@ -171,15 +181,13 @@ export default function SignUp() {
             >
               Sign Up
             </Button>
-            <Grid container justify="flex-end">
-              <Grid item>
-                <Link onClick={ToLogin} variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
-            </Grid>
           </form>
         </div>
+        <Row justify="end">
+          <Link onClick={ToLogin} variant="body2">
+            Already have an account? Sign in
+          </Link>
+        </Row>
       </Container>
     </>
   );
