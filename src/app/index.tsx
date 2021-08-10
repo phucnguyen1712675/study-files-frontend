@@ -8,7 +8,12 @@
 
 import { useReducer, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GlobalStyle } from 'styles/global-styles';
 
@@ -42,11 +47,13 @@ import { TeacherSettingsPage } from './pages/TeacherSettingsPage/Loadable';
 import { CourseSettingsPage } from './pages/CourseSettingsPage/Loadable';
 import { CoursePostingPage } from './pages/CoursePostingPage/Loadable';
 
-import { NotFoundPage } from './components/NotFoundPage/Loadable';
+import { NotFoundPage } from './pages/NotFoundPage/Loadable';
 
 import reducer from './pages/HomePage/components/homePageReducer';
 import AppContext from './AppContext';
 import {
+  SIGN_IN_PAGE_PATH,
+  SIGN_UP_PAGE_PATH,
   TEACHER_PROFILE_PAGE_PATH,
   TEACHER_COURSES_PAGE_PATH,
   TEACHER_SETTINGS_PAGE_PATH,
@@ -197,7 +204,7 @@ export function App() {
   );
 
   return (
-    <BrowserRouter>
+    <Router>
       <Helmet
         titleTemplate="%s - Study-files"
         defaultTitle="Study-files"
@@ -207,7 +214,11 @@ export function App() {
       </Helmet>
       <AppContext.Provider value={{ store, dispatch }}>
         <Switch>
-          <Route exact path="/" component={HomePage} />
+          <Route
+            exact
+            path={process.env.PUBLIC_URL + '/'}
+            component={HomePage}
+          />
           <Route exact path="/search" component={SearchPage} />
           <Route
             exact
@@ -218,8 +229,8 @@ export function App() {
           <Route exact path="/course/:name" component={CourseDetailPage} />
           <Route exact path="/studyPage/:name/" component={StudyPage} />
 
-          <Route exact path="/login" component={LoginPage} />
-          <Route exact path="/register" component={RegisterPage} />
+          <Route path={SIGN_IN_PAGE_PATH} component={LoginPage} />
+          <Route path={SIGN_UP_PAGE_PATH} component={RegisterPage} />
           <Route exact path="/verifyEmail" component={EmailVerifiedPage} />
 
           {/* admin routes */}
@@ -270,9 +281,10 @@ export function App() {
         </Switch>
       </AppContext.Provider>
       <GlobalStyle />
-    </BrowserRouter>
+    </Router>
   );
 }
+
 function PrivateRoute({ children, ...rest }) {
   return (
     <Route
