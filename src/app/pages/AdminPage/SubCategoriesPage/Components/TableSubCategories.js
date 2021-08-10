@@ -227,7 +227,7 @@ export default function TableMainCategories() {
           >
             <Col>
               <Typography component="h1" variant="h5" style={{ color: 'gray' }}>
-                Tất cả danh mục chính
+                Tất cả danh mục phụ
               </Typography>
             </Col>
           </Row>

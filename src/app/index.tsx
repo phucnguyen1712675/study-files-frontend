@@ -53,7 +53,7 @@ import {
   COURSE_SETTINGS_PAGE_PATH,
   COURSE_POSTING_PAGE_PATH,
 } from '../constants/routes';
-import { ROLES } from '../constants/roles';
+// import { ROLES } from '../constants/roles';
 import { axiosGuestInstance } from '../api/guest';
 import { AccessToken } from '../api/auth';
 // import {
@@ -225,48 +225,54 @@ export function App() {
           <Route exact path="/verifyEmail" component={EmailVerifiedPage} />
 
           {/* admin routes */}
-          <PrivateRoute exact path="/admin/users">
+          <PrivateRouteAdmin exact path="/admin/users">
             <AdminUsersPage />
-          </PrivateRoute>
-          <PrivateRoute exact path="/admin/courses">
+          </PrivateRouteAdmin>
+          <PrivateRouteAdmin exact path="/admin/courses">
             <AdminCoursesPage />
-          </PrivateRoute>
-          <PrivateRoute exact path="/admin/mainCategories">
+          </PrivateRouteAdmin>
+          <PrivateRouteAdmin exact path="/admin/mainCategories">
             <AdminMainCategoriesPage />
-          </PrivateRoute>
-          <PrivateRoute exact path="/admin/subCategories">
+          </PrivateRouteAdmin>
+          <PrivateRouteAdmin exact path="/admin/subCategories">
             <AdminSubCategoriesPage />
-          </PrivateRoute>
-          <PrivateRoute exact path="/admin/updatePassword">
+          </PrivateRouteAdmin>
+          <PrivateRouteAdmin exact path="/admin/updatePassword">
             <AdminUpdatePasswordPage />
-          </PrivateRoute>
+          </PrivateRouteAdmin>
           {/* end admin routes */}
 
-          <Route exact path="/student" component={StudentPage} />
-          <Route
-            exact
-            path="/student/updatePassword"
-            component={UpdatePasswordPage}
-          />
+          {/* student route */}
+          <PrivateRouteStudent exact path="/student">
+            <StudentPage />
+          </PrivateRouteStudent>
+          <PrivateRouteStudent exact path="/student/updatePassword">
+            <UpdatePasswordPage />
+          </PrivateRouteStudent>
+          {/* end student route */}
+
           <Route
             path={TEACHER_PROFILE_PAGE_PATH}
             component={TeacherProfilePage}
           />
-          <PrivateRoute exact path={TEACHER_COURSES_PAGE_PATH}>
+
+          {/* teacher route */}
+          <PrivateRouteTeacher exact path={TEACHER_COURSES_PAGE_PATH}>
             <TeacherCoursesPage />
-          </PrivateRoute>
+          </PrivateRouteTeacher>
 
-          <PrivateRoute path={TEACHER_SETTINGS_PAGE_PATH}>
+          <PrivateRouteTeacher path={TEACHER_SETTINGS_PAGE_PATH}>
             <TeacherSettingsPage />
-          </PrivateRoute>
+          </PrivateRouteTeacher>
 
-          <PrivateRoute path={COURSE_SETTINGS_PAGE_PATH}>
+          <PrivateRouteTeacher path={COURSE_SETTINGS_PAGE_PATH}>
             <CourseSettingsPage />
-          </PrivateRoute>
+          </PrivateRouteTeacher>
 
-          <PrivateRoute path={COURSE_POSTING_PAGE_PATH}>
+          <PrivateRouteTeacher path={COURSE_POSTING_PAGE_PATH}>
             <CoursePostingPage />
-          </PrivateRoute>
+          </PrivateRouteTeacher>
+          {/* end teacher route */}
 
           <Route component={NotFoundPage} />
         </Switch>
@@ -275,12 +281,51 @@ export function App() {
     </BrowserRouter>
   );
 }
-function PrivateRoute({ children, ...rest }) {
+
+function PrivateRouteAdmin({ children, ...rest }) {
   return (
     <Route
       {...rest}
       render={() =>
-        ROLES.includes(localStorage.studyFiles_user_role) ? (
+        localStorage.studyFiles_user_role === 'admin' ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/login',
+            }}
+          />
+        )
+      }
+    />
+  );
+}
+
+function PrivateRouteTeacher({ children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={() =>
+        localStorage.studyFiles_user_role === 'teacher' ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/login',
+            }}
+          />
+        )
+      }
+    />
+  );
+}
+
+function PrivateRouteStudent({ children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={() =>
+        localStorage.studyFiles_user_role === 'student' ? (
           children
         ) : (
           <Redirect

@@ -80,22 +80,20 @@ export default function TableCourses() {
       item.teacherName = item.teacher.name;
       item.delete = (
         <Button
-          style={{ width: '30px' }}
           onClick={() => handleClickCategoryDelete(item.id)}
           variant="contained"
           color="secondary"
         >
-          <Delete />
+          <Delete style={{ fontSize: 20, padding: '0px' }} />
         </Button>
       );
       item.detail = (
         <Button
-          style={{ width: '30px' }}
           onClick={() => handleClickCourseDetail(item)}
           variant="contained"
           color="primary"
         >
-          <Visibility />
+          <Visibility style={{ fontSize: 20, padding: '0px' }} />
         </Button>
       );
       return item;
@@ -139,12 +137,10 @@ export default function TableCourses() {
       {
         label: 'Del',
         field: 'delete',
-        width: 50,
       },
       {
         label: 'Det',
         field: 'detail',
-        width: 50,
       },
     ];
 

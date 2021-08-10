@@ -6,6 +6,7 @@
   margin-bottom: 10px;
   padding: 8px;
   border: 1px solid #ddd;
+  color: #525252;
   background-color: #ffff;
 }
 
@@ -21,8 +22,8 @@
 }
 
 th {
-  background-color: #76a5ff;
-  color: white;
+  color: #76a5ff;
+  font-size: 10;
 }
 
 tr:nth-child(even) {
