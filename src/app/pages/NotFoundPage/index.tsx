@@ -1,7 +1,12 @@
-import * as React from 'react';
 import styled from 'styled-components/macro';
+import { Typography } from 'antd';
+import { Link } from 'react-router-dom';
+
+import './index.css';
 import { P } from './P';
+import { NavBar } from 'app/components/NavBar';
 import { Helmet } from 'react-helmet-async';
+import { StyleConstants } from 'styles/StyleConstants';
 
 export function NotFoundPage() {
   return (
@@ -10,6 +15,7 @@ export function NotFoundPage() {
         <title>404 Page Not Found</title>
         <meta name="description" content="Page not found" />
       </Helmet>
+      <NavBar />
       <Wrapper>
         <Title>
           4
@@ -19,13 +25,20 @@ export function NotFoundPage() {
           4
         </Title>
         <P>Page not found.</P>
+        <Link
+          to={process.env.PUBLIC_URL + '/'}
+          component={Typography.Link}
+          className="link"
+        >
+          Return to Home Page
+        </Link>
       </Wrapper>
     </>
   );
 }
 
 const Wrapper = styled.div`
-  height: 100vh;
+  height: calc(100vh - ${StyleConstants.NAV_BAR_HEIGHT});
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,9 +49,7 @@ const Wrapper = styled.div`
 const Title = styled.div`
   margin-top: -8vh;
   font-weight: bold;
-  color: black;
   font-size: 3.375rem;
-
   span {
     font-size: 3.125rem;
   }
