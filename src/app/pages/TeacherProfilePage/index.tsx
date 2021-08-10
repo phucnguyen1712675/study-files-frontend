@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Row, Col } from 'antd';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import TeacherAvatarColumnContent from './components/teacher_avatar_column_content';
 import TeacherInfoColumnContent from './components/teacher_info_column_content';
@@ -17,6 +17,7 @@ type LocationState = {
 
 export function TeacherProfilePage() {
   const location = useLocation<LocationState>();
+  const history = useHistory();
 
   const { teacherId } = location.state;
 
@@ -24,6 +25,14 @@ export function TeacherProfilePage() {
 
   React.useEffect(() => {
     dispatch(getTeacherInfo(teacherId));
+    const unlisten = history.listen(() => {
+      window.scrollTo(0, 0);
+    });
+
+    return () => {
+      unlisten();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, teacherId]);
 
   return (

@@ -11,7 +11,7 @@ const { Title } = Typography;
 
 export default function CoursesColumnContent() {
   const history = useHistory();
-  const { data } = useAppSelector(selectTeacherInfo);
+  const { data, isLoading } = useAppSelector(selectTeacherInfo);
 
   const addNewCourseOnClick = () => {
     if (data?.isEmailVerified) {
@@ -39,11 +39,14 @@ export default function CoursesColumnContent() {
           New
         </Button>
       </Row>
-      <CoursesPagination
-        limit={6}
-        isCardEditable={true}
-        gridType={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 }}
-      />
+      {!isLoading && data && (
+        <CoursesPagination
+          teacherId={data!.id}
+          limit={6}
+          isCardEditable={true}
+          gridType={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 }}
+        />
+      )}
     </>
   );
 }

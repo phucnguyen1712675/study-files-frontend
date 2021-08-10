@@ -211,6 +211,13 @@ export default function CourseDetailPage() {
             setThisTeacher(true);
           }
           setLoading(false);
+          const unlisten = history.listen(() => {
+            window.scrollTo(0, 0);
+          });
+
+          return () => {
+            unlisten();
+          };
         } catch {
           setExist(false);
         }

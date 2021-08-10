@@ -32,8 +32,9 @@ export default function TeacherInfoColumnContent() {
     },
     {
       title: `My courses (${teacherTotalCourseAmount})`,
-      content: (
+      content: !teacherInfo.isLoading && teacherInfo.data && (
         <CoursesPagination
+          teacherId={teacherInfo.data!.id}
           limit={10}
           isCardEditable={false}
           gridType={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 2, xxl: 2 }}

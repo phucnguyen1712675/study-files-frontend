@@ -14,18 +14,18 @@ type Props = {
   limit: number;
   isCardEditable: boolean;
   gridType: ListGridType;
+  teacherId: string;
 };
 
 export default function CoursesPagination({
   limit,
   isCardEditable,
   gridType,
+  teacherId,
 }: Props) {
   const dispatch = useAppDispatch();
 
   const [page, setPage] = React.useState<number>(1);
-
-  const teacherId = localStorage.studyFiles_user_id;
 
   React.useEffect(() => {
     const query = `teacherId=${teacherId}&page=${page}&limit=${limit}`;
