@@ -80,7 +80,7 @@ export default function AddSubCategory() {
             required
             fullWidth
             id="name"
-            label="main category name"
+            label="Sub category name"
             autoComplete="name"
             autoFocus
             {...register('name', { required: true })}

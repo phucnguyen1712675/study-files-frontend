@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
+import { Spin } from 'antd';
 import AppContext from '../../../AppContext';
 import { axiosGuestInstance } from '../../../../api/guest';
 import { withStyles } from '@material-ui/core/styles';
@@ -63,6 +64,7 @@ export default function SearchPage() {
   const location = useLocation();
   const history = useHistory();
   const query = location.state.query;
+  const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [smallExpanded, setSmallExpanded] = useState(false);
   const [sort, setSort] = useState('');
@@ -89,12 +91,13 @@ export default function SearchPage() {
   useEffect(
     function () {
       async function LoadApp() {
+        setLoading(true);
         const requestStr = UrlRequestAPI(limit, page, sort, category);
         const coursesRes = await axiosGuestInstance.get(requestStr);
         setTotalCourses(coursesRes.data.totalResults);
         setTotalPages(coursesRes.data.totalPages);
         setCourses(coursesRes.data.results);
-
+        setLoading(false);
         const unlisten = history.listen(() => {
           window.scrollTo(0, 0);
         });
@@ -253,14 +256,27 @@ export default function SearchPage() {
   };
 
   const ResultAndSortAndFilterWidget = function () {
-    if (courses.length > 0) {
-      return (
-        <div>
-          <Grid container style={{ padding: '20px 40px 40px 40px' }}>
-            <Grid item xs={3}>
-              {SortFilterWidget()}
-            </Grid>
-            <Grid item xs={9}>
+    // if (courses.length > 0) {
+    return (
+      <div>
+        <Grid container style={{ padding: '20px 40px 40px 40px' }}>
+          <Grid item xs={3}>
+            {SortFilterWidget()}
+          </Grid>
+          <Grid item xs={9}>
+            {loading ? (
+              <div
+                style={{
+                  width: '100%',
+                  minHeight: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Spin />
+              </div>
+            ) : courses.length > 0 ? (
               <Grid container spacing={1}>
                 {courses.map(course => (
                   <Grid item justifyContent="center" xs={4}>
@@ -272,82 +288,100 @@ export default function SearchPage() {
                   </Grid>
                 ))}
               </Grid>
-            </Grid>
+            ) : (
+              <div
+                style={{
+                  width: '100%',
+                  minHeight: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}
+              >
+                <img src={searchingImage} alt="icon" width="25%" />
+                <h1>Ops!... no results found</h1>
+                <div style={{ color: '#525252', fontWeight: 'lighter' }}>
+                  Please try another search
+                </div>
+              </div>
+            )}
           </Grid>
-          <div
-            style={{
-              marginRight: '30px',
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'row-reverse',
-            }}
-          >
-            <Pagination
-              count={totalPages}
-              page={page}
-              color="primary"
-              variant="outlined"
-              shape="rounded"
-              onChange={handlePageChange}
-            />
-            <div
-              style={{
-                marginRight: '70px',
-                marginLeft: '30px',
-                color: '#525252',
-              }}
-            >
-              Items in page
-            </div>
-            <Select
-              style={{ padding: '0px 20px' }}
-              labelId="demo-simple-select-outlined-label"
-              id="limit"
-              value={limit}
-              onChange={handleLimitChange}
-              required
-            >
-              <option
-                value={6}
-                style={{ marginBottom: '10px', margin: '10px 30px' }}
-              >
-                6
-              </option>
-              <option
-                value="9"
-                style={{ marginBottom: '10px', margin: '10px 30px' }}
-              >
-                9
-              </option>
-              <option
-                value="12"
-                style={{ marginBottom: '10px', margin: '10px 30px' }}
-              >
-                12
-              </option>
-            </Select>
-          </div>
-        </div>
-      );
-    } else {
-      return (
+        </Grid>
         <div
           style={{
+            marginRight: '30px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            marginBottom: '30px',
+            flexDirection: 'row-reverse',
           }}
         >
-          <img src={searchingImage} alt="icon" width="25%" />
-          <h1>Ops!... no results found</h1>
-          <div style={{ color: '#525252', fontWeight: 'lighter' }}>
-            Please try another search
+          <Pagination
+            count={totalPages}
+            page={page}
+            color="primary"
+            variant="outlined"
+            shape="rounded"
+            onChange={handlePageChange}
+          />
+          <div
+            style={{
+              marginRight: '70px',
+              marginLeft: '30px',
+              color: '#525252',
+            }}
+          >
+            Items in page
           </div>
+          <Select
+            style={{ padding: '0px 20px' }}
+            labelId="demo-simple-select-outlined-label"
+            id="limit"
+            value={limit}
+            onChange={handleLimitChange}
+            required
+          >
+            <option
+              value={6}
+              style={{ marginBottom: '10px', margin: '10px 30px' }}
+            >
+              6
+            </option>
+            <option
+              value="9"
+              style={{ marginBottom: '10px', margin: '10px 30px' }}
+            >
+              9
+            </option>
+            <option
+              value="12"
+              style={{ marginBottom: '10px', margin: '10px 30px' }}
+            >
+              12
+            </option>
+          </Select>
         </div>
-      );
-    }
+      </div>
+    );
+    // } else {
+    //   return (
+    //     <div
+    //       style={{
+    //         display: 'flex',
+    //         alignItems: 'center',
+    //         justifyContent: 'center',
+    //         flexDirection: 'column',
+    //         marginBottom: '30px',
+    //       }}
+    //     >
+    //       <img src={searchingImage} alt="icon" width="25%" />
+    //       <h1>Ops!... no results found</h1>
+    //       <div style={{ color: '#525252', fontWeight: 'lighter' }}>
+    //         Please try another search
+    //       </div>
+    //     </div>
+    //   );
+    // }
   };
 
   return (

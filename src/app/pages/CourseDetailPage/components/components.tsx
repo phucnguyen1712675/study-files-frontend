@@ -63,7 +63,6 @@ export function LectureCard({ lecture }) {
     marginTop: '-250px',
     zIndex: 100,
     marginLeft: '-35%',
-    // padding: '10px',
   };
 
   return (
@@ -111,7 +110,6 @@ export function LectureCard({ lecture }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                flexDirection: 'column',
               }}
             >
               <Player

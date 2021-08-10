@@ -97,24 +97,33 @@ export default function SubCategoryTabs({ subCategory, isNavigate }) {
 
   const { store, dispatch } = useContext(AppContext);
   const [value, setValue] = useState('two');
+  const [haveCourses, setHaveCourses] = useState(false);
   const [bestSellerCourses, setBestSellerCourses] = useState([]);
   const [mostViewCourses, setMostViewCourses] = useState([]);
 
   useEffect(
     function () {
       async function loadApp() {
-        const mostViewCoursesRes = await axiosGuestInstance.get(
-          `/courses?sortBy=view:desc&limit=10&subCategoryId=${subCategory.id}`,
+        const courses = Array.from(
+          store.latestCourses.filter(
+            course => course.subCategoryId === subCategory.id,
+          ),
         );
-        const bestSellerCoursesRes = await axiosGuestInstance.get(
-          `/courses?sortBy=subscriberNumber:desc&limit=10&subCategoryId=${subCategory.id}`,
-        );
-        setMostViewCourses(mostViewCoursesRes.data.results);
-        setBestSellerCourses(bestSellerCoursesRes.data.results);
+        if (courses.length > 0) {
+          setHaveCourses(true);
+          const mostViewCoursesRes = await axiosGuestInstance.get(
+            `/courses?sortBy=view:desc&limit=10&subCategoryId=${subCategory.id}`,
+          );
+          const bestSellerCoursesRes = await axiosGuestInstance.get(
+            `/courses?sortBy=subscriberNumber:desc&limit=10&subCategoryId=${subCategory.id}`,
+          );
+          setMostViewCourses(mostViewCoursesRes.data.results);
+          setBestSellerCourses(bestSellerCoursesRes.data.results);
+        }
       }
       loadApp();
     },
-    [subCategory.id],
+    [store.latestCourses, subCategory.id],
   );
 
   const handleChange = (event, newValue) => {
@@ -201,44 +210,48 @@ export default function SubCategoryTabs({ subCategory, isNavigate }) {
 
   return (
     <>
-      <div>
-        <h2
-          onClick={handleClick}
-          style={{
-            margin: '20px 20px 5px',
-            color: '#525252',
-            cursor: 'pointer',
-          }}
-        >
-          {subCategory.name}
-        </h2>
-        <div className={classes.root}>
-          <AntTabs
-            value={value}
-            onChange={handleChange}
-            aria-label="wrapped label tabs example"
+      {haveCourses ? (
+        <div>
+          <h2
+            onClick={handleClick}
+            style={{
+              margin: '20px 20px 5px',
+              color: '#525252',
+              cursor: 'pointer',
+            }}
           >
-            <AntTab
-              value="one"
-              label="Best seller"
-              wrapped
-              {...a11yProps('one')}
-            />
-            <AntTab value="two" label="Latest" {...a11yProps('two')} />
-            <AntTab value="three" label="Most view" {...a11yProps('three')} />
-          </AntTabs>
+            {subCategory.name}
+          </h2>
+          <div className={classes.root}>
+            <AntTabs
+              value={value}
+              onChange={handleChange}
+              aria-label="wrapped label tabs example"
+            >
+              <AntTab
+                value="one"
+                label="Best seller"
+                wrapped
+                {...a11yProps('one')}
+              />
+              <AntTab value="two" label="Latest" {...a11yProps('two')} />
+              <AntTab value="three" label="Most view" {...a11yProps('three')} />
+            </AntTabs>
 
-          <TabPanel value={value} index="one">
-            {BestSellerCarousel()}
-          </TabPanel>
-          <TabPanel value={value} index="two">
-            {LatestCousesCarousel()}
-          </TabPanel>
-          <TabPanel value={value} index="three">
-            {MostViewCarousel()}
-          </TabPanel>
+            <TabPanel value={value} index="one">
+              {BestSellerCarousel()}
+            </TabPanel>
+            <TabPanel value={value} index="two">
+              {LatestCousesCarousel()}
+            </TabPanel>
+            <TabPanel value={value} index="three">
+              {MostViewCarousel()}
+            </TabPanel>
+          </div>
         </div>
-      </div>
+      ) : (
+        <></>
+      )}
     </>
   );
 }

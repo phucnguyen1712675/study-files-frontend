@@ -2,7 +2,6 @@
   "name": "study-files-frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://salty-fortress-49217.herokuapp.com",
   "dependencies": {
     "@ant-design/icons": "4.6.2",
     "@brainhubeu/react-carousel": "2.0.4",
@@ -60,7 +59,7 @@
     "mdbreact": "5.0.2",
     "moment": "2.29.1",
     "nanoid": "3.1.23",
-    "netlify-cli": "5.2.11",
+    "netlify-cli": "6.0.8",
     "node-plop": "0.26.2",
     "plop": "2.7.4",
     "prettier": "2.1.1",

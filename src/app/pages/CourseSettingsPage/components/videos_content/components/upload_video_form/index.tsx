@@ -41,7 +41,8 @@ export default function UploadVideoForm({
   const watchVideo = watch('video');
 
   const handleOk = async () => {
-    await onCreate(getValues());
+    const values = getValues();
+    await onCreate({ ...values, video: watchVideo });
 
     reset();
   };
