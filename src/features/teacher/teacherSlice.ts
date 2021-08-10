@@ -14,36 +14,33 @@ type TeacherState = {
   courseDetails: {
     data?: CourseDetails;
     isLoading: boolean;
-    error: any;
+    error?: any;
   };
   categoriesDetails: {
     data: CategoryDetails[];
     isLoading: boolean;
-    error: any;
+    error?: any;
   };
   coursePostingStep: number;
   newCourseId?: string;
   newCourseSections: {
     data: Section[];
     isLoading: boolean;
-    error: any;
+    error?: any;
   };
 };
 
 const initialState: TeacherState = {
   courseDetails: {
     isLoading: false,
-    error: {},
   },
   categoriesDetails: {
     data: [],
     isLoading: false,
-    error: {},
   },
   newCourseSections: {
     data: [],
     isLoading: false,
-    error: {},
   },
   coursePostingStep: 0,
 };

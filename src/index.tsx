@@ -26,7 +26,6 @@ import reportWebVitals from 'reportWebVitals';
 import './locales/i18n';
 
 import './index.css';
-
 import { store } from './app/store';
 import * as serviceWorker from './serviceWorker';
 
