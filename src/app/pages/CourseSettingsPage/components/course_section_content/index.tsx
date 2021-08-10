@@ -13,6 +13,7 @@ import {
   Alert,
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
+import { nanoid } from 'nanoid';
 
 import UpdateCourseSectionTitleForm from './components/update_course_section_title_form';
 import UpdateSectionOrdinalNumberForm from './components/update_section_ordinal_number_form';
@@ -75,7 +76,9 @@ export default function CourseSectionContent() {
     resolver: yupResolver(schema),
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, watch } = methods;
+
+  const watchTitle = watch('title');
 
   const onFinish = handleSubmit(async (values: FormValues) => {
     setLoading(true);
@@ -167,6 +170,95 @@ export default function CourseSectionContent() {
     return courseDetails.data?.sections.map(section => section.title);
   };
 
+  const components = [
+    {
+      id: nanoid(),
+      title: "Update section's title",
+      children: (
+        <>
+          {courseDetails.data?.sections &&
+          courseDetails.data?.sections.length > 0 ? (
+            <Button
+              icon={<EditOutlined />}
+              onClick={onClickBtnUpdateSectionTitle}
+            >
+              Click to update
+            </Button>
+          ) : (
+            <Alert message="No section to update!" type="info" showIcon />
+          )}
+        </>
+      ),
+    },
+    {
+      id: nanoid(),
+      title: "Update section's ordinal number",
+      children: (
+        <>
+          {courseDetails.data?.sections &&
+          courseDetails.data?.sections.length > 1 ? (
+            <Button
+              icon={<EditOutlined />}
+              onClick={onClickBtnUpdateSectionOrdinalNumber}
+            >
+              Click to update
+            </Button>
+          ) : (
+            <Alert
+              message="Not enough section to swap ordinal number!"
+              type="info"
+              showIcon
+            />
+          )}
+        </>
+      ),
+    },
+    {
+      id: nanoid(),
+      title: 'New',
+      children: (
+        <>
+          <FormProvider {...methods}>
+            <Form layout="vertical" onFinish={onFinish}>
+              <FormInput
+                name="title"
+                label={`Title for Section ${
+                  courseDetails.data?.sections
+                    ? courseDetails.data?.sections.length + 1
+                    : 0
+                }`}
+                placeholder="Enter title"
+              />
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  disabled={!watchTitle}
+                >
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </FormProvider>
+          {courseDetails.data?.sections &&
+            courseDetails.data?.sections.length > 0 && (
+              <>
+                <Divider orientation="left">Course content</Divider>
+                <Text>{courseDetails.data?.sections.length} sections</Text>
+                <List
+                  size="small"
+                  bordered
+                  dataSource={getSectionsToShow()}
+                  renderItem={item => <List.Item>{item}</List.Item>}
+                />
+              </>
+            )}
+        </>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageHelmet title="Section" />
@@ -174,98 +266,7 @@ export default function CourseSectionContent() {
         <Skeleton active avatar paragraph={{ rows: 16 }} />
       ) : !courseDetails.data?.status ? (
         <>
-          <HeaderSiderContentLayout
-            components={[
-              {
-                title: "Update section's title",
-                children: (
-                  <>
-                    {courseDetails.data?.sections &&
-                    courseDetails.data?.sections.length > 0 ? (
-                      <Button
-                        icon={<EditOutlined />}
-                        onClick={onClickBtnUpdateSectionTitle}
-                      >
-                        Click to update
-                      </Button>
-                    ) : (
-                      <Alert
-                        message="No section to update!"
-                        type="info"
-                        showIcon
-                      />
-                    )}
-                  </>
-                ),
-              },
-              {
-                title: "Update section's ordinal number",
-                children: (
-                  <>
-                    {courseDetails.data?.sections &&
-                    courseDetails.data?.sections.length > 1 ? (
-                      <Button
-                        icon={<EditOutlined />}
-                        onClick={onClickBtnUpdateSectionOrdinalNumber}
-                      >
-                        Click to update
-                      </Button>
-                    ) : (
-                      <Alert
-                        message="Not enough section to swap ordinal number!"
-                        type="info"
-                        showIcon
-                      />
-                    )}
-                  </>
-                ),
-              },
-              {
-                title: 'New',
-                children: (
-                  <>
-                    <FormProvider {...methods}>
-                      <Form layout="vertical" onFinish={onFinish}>
-                        <FormInput
-                          name="title"
-                          label={`Title for Section ${
-                            courseDetails.data?.sections
-                              ? courseDetails.data?.sections.length + 1
-                              : 0
-                          }`}
-                          placeholder="Enter title"
-                        />
-                        <Form.Item>
-                          <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={loading}
-                          >
-                            Submit
-                          </Button>
-                        </Form.Item>
-                      </Form>
-                    </FormProvider>
-                    {courseDetails.data?.sections &&
-                      courseDetails.data?.sections.length > 0 && (
-                        <>
-                          <Divider orientation="left">Course content</Divider>
-                          <Text>
-                            {courseDetails.data?.sections.length} sections
-                          </Text>
-                          <List
-                            size="small"
-                            bordered
-                            dataSource={getSectionsToShow()}
-                            renderItem={item => <List.Item>{item}</List.Item>}
-                          />
-                        </>
-                      )}
-                  </>
-                ),
-              },
-            ]}
-          />
+          <HeaderSiderContentLayout components={components} />
           <UpdateCourseSectionTitleForm
             visible={updateSectionTitleFormVisible}
             onCreate={onCreateUpdateCourseSectionTitleForm}

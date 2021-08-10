@@ -1,5 +1,6 @@
 import React from 'react';
 import { Alert, Skeleton, Button, Space, Popconfirm, message } from 'antd';
+import { nanoid } from 'nanoid';
 
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
@@ -49,47 +50,48 @@ export default function CourseStatusContent() {
     setConfirmLoading(false);
   };
 
+  const components = [
+    {
+      id: nanoid(),
+      title: 'Status',
+      children: (
+        <Space direction="vertical" size="middle">
+          <Alert
+            message={
+              data?.status
+                ? 'This course is completed.'
+                : 'This course is incompleted!'
+            }
+            type={data?.status ? 'success' : 'warning'}
+            showIcon
+          />
+          <Popconfirm
+            title="Are you sure?"
+            visible={endPromotionPopconfirmVisible}
+            onConfirm={handleOk}
+            okButtonProps={{ loading: confirmLoading }}
+            onCancel={handleCancel}
+          >
+            <Button
+              type={!data?.status ? 'primary' : undefined}
+              danger={data?.status}
+              onClick={showPopconfirm}
+            >
+              {`Mark as ${data?.status ? 'Incompleted' : 'Completed'}`}
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageHelmet title="Status" />
       {courseDetails.isLoading && !courseDetails.data ? (
         <Skeleton active avatar paragraph={{ rows: 4 }} />
       ) : (
-        <HeaderSiderContentLayout
-          components={[
-            {
-              title: 'Status',
-              children: (
-                <Space direction="vertical" size="middle">
-                  <Alert
-                    message={
-                      data?.status
-                        ? 'This course is completed.'
-                        : 'This course is incompleted!'
-                    }
-                    type={data?.status ? 'success' : 'warning'}
-                    showIcon
-                  />
-                  <Popconfirm
-                    title="Are you sure?"
-                    visible={endPromotionPopconfirmVisible}
-                    onConfirm={handleOk}
-                    okButtonProps={{ loading: confirmLoading }}
-                    onCancel={handleCancel}
-                  >
-                    <Button
-                      type={!data?.status ? 'primary' : undefined}
-                      danger={data?.status}
-                      onClick={showPopconfirm}
-                    >
-                      {`Mark as ${data?.status ? 'Incompleted' : 'Completed'}`}
-                    </Button>
-                  </Popconfirm>
-                </Space>
-              ),
-            },
-          ]}
-        />
+        <HeaderSiderContentLayout components={components} />
       )}
     </>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, Skeleton, Button } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import { nanoid } from 'nanoid';
 
 import UploadVideoForm from './components/upload_video_form';
 import { UploadVideoFormValues } from './models/upload_video_form_values';
@@ -32,8 +33,10 @@ export default function VideosContent() {
 
   React.useEffect(() => {
     if (!isLoading && data) {
-      const checkIfEveryLectureHasVideo = data.sections.every(section =>
-        section.lectures.every(lecture => lecture.videoUrl),
+      const checkIfEveryLectureHasVideo = data.sections.every(
+        section =>
+          section.lectures.every(lecture => lecture.videoUrl) &&
+          section.lectures.length > 0,
       );
       setIsEveryLectureHasVideo(checkIfEveryLectureHasVideo);
     }
@@ -65,45 +68,43 @@ export default function VideosContent() {
 
   const onCancel = () => setVisible(false);
 
+  const components = [
+    {
+      id: nanoid(),
+      title: 'Upload video',
+      children: (
+        <>
+          {data?.status ? (
+            <Alert
+              message="This is a completed course"
+              description="Once the course is completed, new videos cannot be added."
+              type="info"
+              showIcon
+            />
+          ) : isEveryLectureHasVideo ? (
+            <Alert
+              message="Enough videos already"
+              description="Every section of the course already has enough videos."
+              type="info"
+              showIcon
+            />
+          ) : (
+            <Button icon={<UploadOutlined />} onClick={onClickBtnUpload}>
+              Upload video
+            </Button>
+          )}
+        </>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageHelmet title="Upload video" />
       {courseDetails.isLoading && !courseDetails.data ? (
         <Skeleton active avatar paragraph={{ rows: 4 }} />
       ) : (
-        <HeaderSiderContentLayout
-          components={[
-            {
-              title: 'Upload video',
-              children: (
-                <>
-                  {data?.status ? (
-                    <Alert
-                      message="This is a completed course"
-                      description="Once the course is completed, new videos cannot be added."
-                      type="info"
-                      showIcon
-                    />
-                  ) : isEveryLectureHasVideo ? (
-                    <Alert
-                      message="Enough videos already"
-                      description="Every section of the course already has enough videos."
-                      type="info"
-                      showIcon
-                    />
-                  ) : (
-                    <Button
-                      icon={<UploadOutlined />}
-                      onClick={onClickBtnUpload}
-                    >
-                      Upload video
-                    </Button>
-                  )}
-                </>
-              ),
-            },
-          ]}
-        />
+        <HeaderSiderContentLayout components={components} />
       )}
       <UploadVideoForm
         visible={visible}

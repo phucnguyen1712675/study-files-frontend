@@ -39,9 +39,9 @@ export function CoursePostingPage() {
           <Row>
             <Col span={6}>
               <Steps direction="vertical" size="small" current={current}>
-                {STEP_ITEMS.map((item, idx) => (
+                {STEP_ITEMS.map(item => (
                   <Step
-                    key={idx}
+                    key={item.id}
                     title={
                       <Text style={{ fontSize: '16px' }}>{item.title}</Text>
                     }
@@ -68,7 +68,7 @@ export function CoursePostingPage() {
 
                 {STEP_ITEMS.map(item => (
                   <Route
-                    key={item.path}
+                    key={item.id}
                     path={`${path}/${item.path}`}
                     component={item.component}
                   />

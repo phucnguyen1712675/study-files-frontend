@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Skeleton, Space, Button, Form, message } from 'antd';
 import { updatedDiff } from 'deep-object-diff';
+import { nanoid } from 'nanoid';
 
 import { FORM_ITEM_LAYOUT } from '../../constants';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
@@ -126,60 +127,57 @@ export default function EmailContent() {
     }
   });
 
+  const components = [
+    {
+      id: nanoid(),
+      title: 'Email',
+      children: (
+        <>
+          <FormProvider {...methods}>
+            <Form {...FORM_ITEM_LAYOUT} layout="vertical" onFinish={onSubmit}>
+              <FormInput name="email" label="Email" />
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  disabled={!watchEmail || watchEmail === data?.email}
+                >
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </FormProvider>
+          <Alert
+            message={
+              data?.isEmailVerified
+                ? 'Your email has been verified.'
+                : 'Please verify your email!'
+            }
+            type={data?.isEmailVerified ? 'success' : 'warning'}
+            showIcon
+            action={
+              !data?.isEmailVerified && (
+                <Space>
+                  <Button size="small" type="ghost" onClick={sendOTP}>
+                    Send OTP
+                  </Button>
+                </Space>
+              )
+            }
+          />
+        </>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageHelmet title="Email settings" />
       {isLoading ? (
         <Skeleton />
       ) : (
-        <HeaderSiderContentLayout
-          components={[
-            {
-              title: 'Email',
-              children: (
-                <>
-                  <FormProvider {...methods}>
-                    <Form
-                      {...FORM_ITEM_LAYOUT}
-                      layout="vertical"
-                      onFinish={onSubmit}
-                    >
-                      <FormInput name="email" label="Email" />
-                      <Form.Item>
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          loading={loading}
-                          disabled={!watchEmail || watchEmail === data?.email}
-                        >
-                          Submit
-                        </Button>
-                      </Form.Item>
-                    </Form>
-                  </FormProvider>
-                  <Alert
-                    message={
-                      data?.isEmailVerified
-                        ? 'Your email has been verified.'
-                        : 'Please verify your email!'
-                    }
-                    type={data?.isEmailVerified ? 'success' : 'warning'}
-                    showIcon
-                    action={
-                      !data?.isEmailVerified && (
-                        <Space>
-                          <Button size="small" type="ghost" onClick={sendOTP}>
-                            Send OTP
-                          </Button>
-                        </Space>
-                      )
-                    }
-                  />
-                </>
-              ),
-            },
-          ]}
-        />
+        <HeaderSiderContentLayout components={components} />
       )}
     </>
   );

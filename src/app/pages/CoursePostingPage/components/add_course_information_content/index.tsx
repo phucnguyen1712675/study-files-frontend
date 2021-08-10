@@ -4,6 +4,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button, message, Image, Typography } from 'antd';
 import moment from 'moment';
+import { nanoid } from 'nanoid';
 
 import CustomContent from '../custom_content';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
@@ -103,6 +104,8 @@ const disabledDate = current => {
   return current && current < moment().endOf('day');
 };
 
+var imageKey = nanoid();
+
 export default function AddCourseInformationContent() {
   const dispatch = useAppDispatch();
 
@@ -162,12 +165,12 @@ export default function AddCourseInformationContent() {
       dispatch(setNewCourseId(id));
 
       setShouldShowNextButton(true);
+
+      imageKey = nanoid();
     }
 
     setLoading(false);
   });
-
-  var imageKey = Date.now();
 
   return (
     <>

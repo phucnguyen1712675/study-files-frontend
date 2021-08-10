@@ -3,6 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button, message } from 'antd';
+import { nanoid } from 'nanoid';
 
 import { FORM_ITEM_LAYOUT } from '../../constants';
 import FormPassword from '../../../../components/features/teacher/form/form_password';
@@ -69,47 +70,43 @@ export default function AccountSecurityContent() {
     setLoading(false);
   });
 
+  const components = [
+    {
+      id: nanoid(),
+      title: 'Change password',
+      children: (
+        <FormProvider {...methods}>
+          <Form {...FORM_ITEM_LAYOUT} layout="vertical" onFinish={onSubmit}>
+            <FormPassword name="oldPassword" label="Old password" />
+            <FormPassword name="newPassword" label="New password" />
+            <FormPassword
+              name="confirmNewPassword"
+              label="Confirm new password"
+            />
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                disabled={
+                  !watchOldPassword ||
+                  !watchNewPassword ||
+                  !watchConfirmNewPassword
+                }
+              >
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </FormProvider>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageHelmet title="Account security" />
-      <HeaderSiderContentLayout
-        components={[
-          {
-            title: 'Change password',
-            children: (
-              <FormProvider {...methods}>
-                <Form
-                  {...FORM_ITEM_LAYOUT}
-                  layout="vertical"
-                  onFinish={onSubmit}
-                >
-                  <FormPassword name="oldPassword" label="Old password" />
-                  <FormPassword name="newPassword" label="New password" />
-                  <FormPassword
-                    name="confirmNewPassword"
-                    label="Confirm new password"
-                  />
-                  <Form.Item>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      loading={loading}
-                      disabled={
-                        !watchOldPassword ||
-                        !watchNewPassword ||
-                        !watchConfirmNewPassword ||
-                        watchOldPassword === watchNewPassword
-                      }
-                    >
-                      Submit
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </FormProvider>
-            ),
-          },
-        ]}
-      />
+      <HeaderSiderContentLayout components={components} />
     </>
   );
 }

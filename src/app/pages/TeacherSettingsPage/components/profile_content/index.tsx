@@ -14,6 +14,7 @@ import {
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { updatedDiff } from 'deep-object-diff';
+import { nanoid } from 'nanoid';
 
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
@@ -139,91 +140,92 @@ export default function ProfileContent() {
     }
   });
 
+  const components = [
+    {
+      id: nanoid(),
+      title: 'Public profile',
+      children: (
+        <Row>
+          <Col span={16} style={{ padding: '0px 20px' }}>
+            <FormProvider {...methods}>
+              <Form layout="vertical" onFinish={onSubmit}>
+                <FormInput name="name" label="Name" />
+                <FormTextArea
+                  name="shortDescription"
+                  label="Short description"
+                  autoSize={false}
+                />
+                <FormTextArea
+                  name="detailDescription"
+                  label="Detail description"
+                  autoSize={true}
+                />
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={loading}
+                    disabled={
+                      !watchName ||
+                      !watchShortDescription ||
+                      !watchDetailDescription ||
+                      (watchName === data?.name &&
+                        watchShortDescription === data?.shortDescription &&
+                        watchDetailDescription === data.detailDescription)
+                    }
+                  >
+                    Submit
+                  </Button>
+                </Form.Item>
+              </Form>
+            </FormProvider>
+          </Col>
+          <Col span={8} style={{ padding: '0px 20px' }}>
+            <Space
+              size="middle"
+              direction="vertical"
+              style={{ width: '100%' }}
+              align="center"
+            >
+              <Text>Profile picture</Text>
+              <TeacherAvatar
+                imageUrl={data?.avatar}
+                size={{
+                  xs: 24,
+                  sm: 32,
+                  md: 40,
+                  lg: 64,
+                  xl: 160,
+                  xxl: 180,
+                }}
+              />
+              <Button icon={<EditOutlined />} onClick={onClickBtnEdit}>
+                Edit
+              </Button>
+            </Space>
+          </Col>
+        </Row>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageHelmet title="Your profile" />
       {isLoading ? (
         <Skeleton active avatar paragraph={{ rows: 4 }} />
       ) : (
-        <HeaderSiderContentLayout
-          components={[
-            {
-              title: 'Public profile',
-              children: (
-                <Row>
-                  <Col span={16} style={{ padding: '0px 20px' }}>
-                    <FormProvider {...methods}>
-                      <Form layout="vertical" onFinish={onSubmit}>
-                        <FormInput name="name" label="Name" />
-                        <FormTextArea
-                          name="shortDescription"
-                          label="Short description"
-                          autoSize={false}
-                        />
-                        <FormTextArea
-                          name="detailDescription"
-                          label="Detail description"
-                          autoSize={true}
-                        />
-                        <Form.Item>
-                          <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={loading}
-                            disabled={
-                              !watchName ||
-                              !watchShortDescription ||
-                              !watchDetailDescription ||
-                              (watchName === data?.name &&
-                                watchShortDescription ===
-                                  data?.shortDescription &&
-                                watchDetailDescription ===
-                                  data.detailDescription)
-                            }
-                          >
-                            Submit
-                          </Button>
-                        </Form.Item>
-                      </Form>
-                    </FormProvider>
-                  </Col>
-                  <Col span={8} style={{ padding: '0px 20px' }}>
-                    <Space
-                      size="middle"
-                      direction="vertical"
-                      style={{ width: '100%' }}
-                      align="center"
-                    >
-                      <Text>Profile picture</Text>
-                      <TeacherAvatar
-                        imageUrl={data?.avatar}
-                        size={{
-                          xs: 24,
-                          sm: 32,
-                          md: 40,
-                          lg: 64,
-                          xl: 160,
-                          xxl: 180,
-                        }}
-                      />
-                      <Button icon={<EditOutlined />} onClick={onClickBtnEdit}>
-                        Edit
-                      </Button>
-                    </Space>
-                  </Col>
-                </Row>
-              ),
-            },
-          ]}
-        />
+        <>
+          <HeaderSiderContentLayout components={components} />
+          <EditPictureForm
+            visible={visible}
+            onCreate={onCreate}
+            onCancel={onCancel}
+            title="Change profile picture"
+            label="Choose a picture"
+          />
+        </>
       )}
-      <EditPictureForm
-        visible={visible}
-        onCreate={onCreate}
-        onCancel={onCancel}
-        title="Change profile picture"
-        label="Choose a picture"
-      />
     </>
   );
 }

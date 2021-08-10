@@ -3,6 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button, Alert, message } from 'antd';
+import { nanoid } from 'nanoid';
 
 import CustomContent from '../custom_content';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
@@ -52,6 +53,8 @@ const schema = yup.object().shape({
   }),
 });
 
+var videoKey = nanoid();
+
 export default function AddLecturesContent() {
   const newCourseId = useAppSelector(selectNewCourseId);
 
@@ -98,8 +101,6 @@ export default function AddLecturesContent() {
     closeSwal();
   };
 
-  var videoKey = Date.now();
-
   const checkIfDone = async () => {
     const sectionDetailsResults: Section[] = await getSectionsDetailsResults(
       newCourseId!,
@@ -143,7 +144,7 @@ export default function AddLecturesContent() {
 
       isDone && setIsEachSectionHadAtLeastOneLecture(true);
 
-      videoKey = Date.now();
+      videoKey = nanoid();
     }
 
     setLoading(false);

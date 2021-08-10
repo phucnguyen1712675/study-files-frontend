@@ -3,6 +3,7 @@ import { Space, Typography, Divider } from 'antd';
 const { Title } = Typography;
 
 type Component = {
+  id: string;
   title: string;
   children: React.ReactNode;
 };
@@ -14,9 +15,9 @@ type Props = {
 export default function HeaderSiderContentLayout({ components }: Props) {
   return (
     <Space size="large" direction="vertical" style={{ width: '100%' }}>
-      {components.map((component, idx) => (
+      {components.map(component => (
         <Space
-          key={idx}
+          key={component.id}
           size="middle"
           direction="vertical"
           style={{ width: '100%' }}

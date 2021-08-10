@@ -1,4 +1,5 @@
 import { Typography, Col, Space, Skeleton } from 'antd';
+import { nanoid } from 'nanoid';
 
 import Section from './components/section';
 import CoursesPagination from '../../../../components/features/teacher/courses_pagination';
@@ -23,6 +24,7 @@ export default function TeacherInfoColumnContent() {
 
   const sectionArray = [
     {
+      id: nanoid(),
       title: 'About me',
       content: (
         <Paragraph style={{ fontSize: '16px' }}>
@@ -31,6 +33,7 @@ export default function TeacherInfoColumnContent() {
       ),
     },
     {
+      id: nanoid(),
       title: `My courses (${teacherTotalCourseAmount})`,
       content: (
         <CoursesPagination
@@ -58,9 +61,9 @@ export default function TeacherInfoColumnContent() {
         </Skeleton>
         <Col>
           <Space direction="vertical" size="middle">
-            {sectionArray.map((section, idx) => (
+            {sectionArray.map(section => (
               <Section
-                key={idx}
+                key={section.id}
                 title={section.title}
                 content={section.content}
               />

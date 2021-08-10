@@ -1,16 +1,17 @@
 import React from 'react';
 import { Button, message } from 'antd';
 import { useHistory } from 'react-router-dom';
+import { nanoid } from 'nanoid';
 
 import { STEP_ITEMS } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../../../hooks';
+import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
 import { COURSE_POSTING_PAGE_PATH } from '../../../../../constants/routes';
 import {
   coursePostingNextStep,
   setCoursePostingStep,
   selectCoursePostingStep,
 } from '../../../../../features/teacher/teacherSlice';
-import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
 
 type Props = {
   step: number;
@@ -46,26 +47,23 @@ export default function CustomContent({
     }
   };
 
-  return (
-    <>
-      <HeaderSiderContentLayout
-        components={[
-          {
-            title: `Step ${step + 1}`,
-            children: (
-              <>
-                {shouldShowNextButton ? (
-                  <Button type="primary" onClick={() => next()}>
-                    {step !== STEP_ITEMS.length - 1 ? 'Next step' : 'Done'}
-                  </Button>
-                ) : (
-                  children
-                )}
-              </>
-            ),
-          },
-        ]}
-      />
-    </>
-  );
+  const components = [
+    {
+      id: nanoid(),
+      title: `Step ${step + 1}`,
+      children: (
+        <>
+          {shouldShowNextButton ? (
+            <Button type="primary" onClick={() => next()}>
+              {step !== STEP_ITEMS.length - 1 ? 'Next step' : 'Done'}
+            </Button>
+          ) : (
+            children
+          )}
+        </>
+      ),
+    },
+  ];
+
+  return <HeaderSiderContentLayout components={components} />;
 }

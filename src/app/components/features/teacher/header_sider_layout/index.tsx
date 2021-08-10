@@ -37,11 +37,11 @@ export default function HeaderSiderLayout({
   const [selectedKey, setSelectedKey] = React.useState<string | undefined>(
     siderItems.find(_item =>
       location.pathname.startsWith(`${url}/${_item.path}`),
-    )?.path,
+    )?.id,
   );
 
   const onClickMenu = item => {
-    const clicked = siderItems.find(_item => _item.path === item.key);
+    const clicked = siderItems.find(_item => _item.id === item.key);
     history.push(`${url}/${clicked?.path}` ?? siderItems[0].path);
   };
 
@@ -49,7 +49,7 @@ export default function HeaderSiderLayout({
     setSelectedKey(
       siderItems.find(_item =>
         location.pathname.startsWith(`${url}/${_item.path}`),
-      )?.path,
+      )?.id,
     );
   }, [location, siderItems, url]);
 
@@ -65,7 +65,7 @@ export default function HeaderSiderLayout({
             <Sider className="site-layout-background" width="20%">
               <Menu
                 mode="inline"
-                selectedKeys={[selectedKey ?? siderItems[0].path]}
+                selectedKeys={[selectedKey ?? siderItems[0].id]}
                 onClick={onClickMenu}
               >
                 <Menu.Item key="header" disabled>
@@ -73,7 +73,7 @@ export default function HeaderSiderLayout({
                 </Menu.Item>
 
                 {siderItems.map(item => (
-                  <Menu.Item key={item.path}>
+                  <Menu.Item key={item.id}>
                     <Link to={`${url}/${item.path}`}>{item.title}</Link>
                   </Menu.Item>
                 ))}
@@ -88,7 +88,7 @@ export default function HeaderSiderLayout({
 
               {siderItems.map(item => (
                 <Route
-                  key={item.path}
+                  key={item.id}
                   path={`${url}/${item.path}`}
                   component={item.component}
                 />
