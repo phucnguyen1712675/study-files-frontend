@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import SubCategoryTabs from './SubCategoryTabs';
 import AppContext from '../../../AppContext';
-import { LensTwoTone } from '@material-ui/icons';
 
 export default function CategoryTabs({ category }) {
   const { store } = useContext(AppContext);
@@ -16,6 +15,7 @@ export default function CategoryTabs({ category }) {
       for (var subCategory of subCategories) {
         const courses = Array.from(
           store.latestCourses.filter(
+            // eslint-disable-next-line no-loop-func
             course => course.subCategoryId === subCategory.id,
           ),
         );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Form, Typography, message, Image } from 'antd';
 import FileBase from 'react-file-base64';

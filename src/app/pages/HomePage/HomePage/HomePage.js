@@ -1,8 +1,5 @@
 import React, { useContext } from 'react';
-import Carousel, {
-  slidesToShowPlugin,
-  autoplayPlugin,
-} from '@brainhubeu/react-carousel';
+import Carousel, { slidesToShowPlugin } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import { Spin } from 'antd';
 

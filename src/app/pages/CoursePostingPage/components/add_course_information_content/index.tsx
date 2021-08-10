@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Form, Button, message, Image, Typography } from 'antd';
+import { Form, Button, message, Typography } from 'antd';
 import moment from 'moment';
 import CustomContent from '../custom_content';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
@@ -33,7 +33,6 @@ import {
 } from '../../../../../features/teacher/teacherSlice';
 import { getCategoriesDetails } from '../../../../../features/teacher/teacherThunkAPI';
 import { addCourse } from '../../../../../features/teacher/teacherAPI';
-import { PLACEHOLDER_IMAGE_URL } from '../../../../../constants/images';
 
 const { Text } = Typography;
 

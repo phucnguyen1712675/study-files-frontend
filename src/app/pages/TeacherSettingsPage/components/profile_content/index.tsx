@@ -11,8 +11,6 @@ import {
   Col,
   Typography,
   message,
-  Modal,
-  Image,
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { updatedDiff } from 'deep-object-diff';
