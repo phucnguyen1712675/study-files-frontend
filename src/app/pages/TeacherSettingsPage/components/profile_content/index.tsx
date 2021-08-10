@@ -91,7 +91,6 @@ export default function ProfileContent() {
     setVisible(false);
 
     showLoadingSwal();
-    console.log(values);
 
     const dataToSend = {
       avatar: values.image,

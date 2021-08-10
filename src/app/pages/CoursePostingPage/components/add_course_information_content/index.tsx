@@ -37,6 +37,8 @@ import { PLACEHOLDER_IMAGE_URL } from '../../../../../constants/images';
 
 const { Text } = Typography;
 
+// var imageKey = Date.now();
+
 type FormValues = {
   name: string;
   shortDescription: string;
@@ -97,6 +99,36 @@ const schema = yup.object().shape({
   image: yup.string().required('Image is Required'),
 });
 
+// const schema = yup.object().shape({
+//   name: yup.string().required('Name is Required'),
+//   shortDescription: yup.string(),
+//   detailDescription: yup.string(),
+//   subCategoryId: yup.string(),
+//   status: yup.boolean(),
+//   originalFee: yup.number(),
+//   hasPromotion: yup.boolean(),
+//   fee: yup.number(),
+//   promotionStart: yup
+//     .date()
+//     .when('hasPromotion', (hasPromotion: boolean, schema) => {
+//       return hasPromotion
+//         ? schema.required(
+//             'Promotion Start Date is required when Has promotion is true',
+//           )
+//         : undefined;
+//     }),
+//   promotionEnd: yup
+//     .date()
+//     .when('promotionStart', (promotionStart: Date, schema) => {
+//       return promotionStart
+//         ? schema.required(
+//             'Promotion End Date is required when has Promotion Start Date',
+//           )
+//         : undefined;
+//     }),
+//   image: yup.string().required('image required'),
+// });
+
 const disabledDate = current => {
   // Can not select days before today and today
   return current && current < moment().endOf('day');
@@ -107,7 +139,6 @@ export default function AddCourseInformationContent() {
 
   React.useEffect(() => {
     dispatch(getCategoriesDetails());
-    console.log(1);
   }, [dispatch]);
 
   const categoriesDetails = useAppSelector(selectCategoryDetails);
@@ -122,7 +153,7 @@ export default function AddCourseInformationContent() {
     resolver: yupResolver(schema),
   });
 
-  const { handleSubmit, watch, getValues } = methods;
+  const { handleSubmit, watch } = methods;
 
   const watchOriginalFee = watch('originalFee');
 
@@ -130,7 +161,6 @@ export default function AddCourseInformationContent() {
 
   const onFinish = handleSubmit(async (values: FormValues) => {
     setLoading(true);
-    console.log(values);
 
     const { hasPromotion, ...data } = values;
 

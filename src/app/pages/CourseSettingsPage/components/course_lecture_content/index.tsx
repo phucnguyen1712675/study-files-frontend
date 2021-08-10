@@ -105,7 +105,6 @@ export default function CourseLectureContent() {
     setLoading(true);
 
     var payload: object;
-    console.log(values);
 
     if (values.video) {
       payload = values;

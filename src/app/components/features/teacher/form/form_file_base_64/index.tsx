@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Form, Typography, message, Image } from 'antd';
 import FileBase from 'react-file-base64';
@@ -46,9 +46,11 @@ export default function FormFileBase64({
         setSrc(base64);
         setValue(name, base64);
       } catch (err) {
+        setSrc('');
         console.log(err);
       }
     } else {
+      setSrc('');
       setValue(name, '');
 
       message.warning(`Please select File with ${desiredFileType} type `);

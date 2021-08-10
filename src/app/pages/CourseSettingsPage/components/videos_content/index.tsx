@@ -32,8 +32,10 @@ export default function VideosContent() {
 
   React.useEffect(() => {
     if (!isLoading && data) {
-      const checkIfEveryLectureHasVideo = data.sections.every(section =>
-        section.lectures.every(lecture => lecture.videoUrl),
+      const checkIfEveryLectureHasVideo = data.sections.every(
+        section =>
+          section.lectures.every(lecture => lecture.videoUrl) &&
+          section.lectures.length > 0,
       );
       setIsEveryLectureHasVideo(checkIfEveryLectureHasVideo);
     }

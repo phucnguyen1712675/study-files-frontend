@@ -115,10 +115,7 @@ export default function GeneralInformationContent() {
   );
 
   React.useEffect(() => {
-    console.log('run 1');
     if (!courseDetails.isLoading && courseDetails.data) {
-      console.log('run 2');
-      console.log(courseDetails.data?.name ?? '');
       setValue('name', courseDetails.data?.name ?? '');
       setValue('shortDescription', courseDetails.data?.shortDescription ?? '');
       setValue('subCategoryId', courseDetails.data?.subCategoryId ?? '');

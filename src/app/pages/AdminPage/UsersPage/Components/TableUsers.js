@@ -58,6 +58,7 @@ export default function TableUsers() {
   const [open, setOpen] = React.useState(false);
 
   const handleClose = async function (bool) {
+    setOpen(false);
     if (bool) {
       await AccessToken();
       const config = {
@@ -65,22 +66,31 @@ export default function TableUsers() {
           Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
         },
       };
-      const res = await axiosAdminInstance.delete(
-        `/users/${selectedId}`,
-        config,
-      );
-      if (res.status === 204) {
-        dispatch({
-          type: 'delete_task',
-          payload: {
-            userId: selectedId,
-          },
-        });
-      } else {
-        alert('Đã xảy ra lỗi ');
+      try {
+        const res = await axiosAdminInstance.delete(
+          `/users/${selectedId}`,
+          config,
+        );
+        if (res.status === 204) {
+          dispatch({
+            type: 'delete_task',
+            payload: {
+              userId: selectedId,
+            },
+          });
+        } else {
+          alert('Đã xảy ra lỗi ');
+        }
+      } catch (err) {
+        if (err.response) {
+          alert(err.response.data.message);
+        } else if (err.request) {
+          alert(err.request);
+        } else {
+          alert(err.message);
+        }
       }
     }
-    setOpen(false);
   };
 
   const handleClickUsersDelete = function (id) {
