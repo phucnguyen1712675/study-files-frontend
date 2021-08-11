@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Skeleton, Space, Button, Form, message } from 'antd';
-import { updatedDiff } from 'deep-object-diff';
 import { nanoid } from 'nanoid';
 
 import { FORM_ITEM_LAYOUT } from '../../constants';
@@ -39,11 +38,6 @@ export default function EmailContent() {
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
-    defaultValues: React.useMemo(() => {
-      return {
-        email: data?.email,
-      };
-    }, [data]),
   });
 
   const { handleSubmit, setValue, watch } = methods;
@@ -80,51 +74,41 @@ export default function EmailContent() {
         message.error('Something wrong?');
       }
     } catch (err) {
+      closeSwal();
+
       if (err.response) {
-        alert(err.response.data.message);
+        message.error(err.response.data.message);
       } else if (err.request) {
-        alert(err.request);
+        message.error(err.request);
       } else {
-        alert(err.message);
+        message.error(err.message);
       }
     }
   };
 
   const onSubmit = handleSubmit(async (values: FormValues) => {
-    const teacherData = data!;
+    setLoading(true);
 
-    const differenceToUpdate = updatedDiff(teacherData, values);
+    const dataToSend = {
+      ...values,
+      name: data?.name,
+    };
 
-    if (
-      !differenceToUpdate ||
-      Object.keys(differenceToUpdate).length !== 0 ||
-      differenceToUpdate.constructor !== Object
-    ) {
-      setLoading(true);
+    const response = await updateTeacherInfo(teacherId, dataToSend);
 
-      const dataToSend = {
-        email: values.email,
-        name: data?.name,
-      };
-
-      const response = await updateTeacherInfo(teacherId, dataToSend);
-
-      if (!response || response.status !== 200) {
-        message.error(`Error: ${response}`);
-      } else {
-        message.success('Processing complete!');
-
-        localStorage.studyFiles_user_email = values.email;
-
-        localStorage.studyFiles_user_isVerified = response.data.isEmailVerified;
-
-        dispatch(getTeacherInfo(data!.id));
-      }
-
-      setLoading(false);
+    if (!response || response.status !== 200) {
+      message.error(`Error: ${response}`);
     } else {
       message.success('Processing complete!');
+
+      localStorage.studyFiles_user_email = values.email;
+
+      localStorage.studyFiles_user_isVerified = response.data.isEmailVerified;
+
+      dispatch(getTeacherInfo(data!.id));
     }
+
+    setLoading(false);
   });
 
   const components = [
