@@ -1,3 +1,23 @@
 import { RootState } from './RootState';
+import { User } from './user';
+import { Teacher } from './teacher';
+import { Category } from './category';
+import { SubCategory } from './subCategory';
+import { Section } from './section';
+import { Lecture } from './lecture';
+import { Course } from './course';
+import { CourseDetails } from './course_details';
+import { CategoryDetails } from './category_details';
+import { EditPictureFormValues } from './edit_picture_form_values';
 
 export type { RootState };
+export type { User };
+export type { Teacher };
+export type { Category };
+export type { SubCategory };
+export type { Section };
+export type { Lecture };
+export type { Course };
+export type { CourseDetails };
+export type { CategoryDetails };
+export type { EditPictureFormValues };

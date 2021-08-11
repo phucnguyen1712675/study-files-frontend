@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { nanoid } from 'nanoid';
 
 import { useAppSelector } from '../../../../../../hooks';
-import { Course } from '../../../../../../../model/course';
+import { Course } from '../../../../../../../types';
 import {
   getCourseDetailsPagePath,
   getCourseSettingsPagePath,

@@ -23,6 +23,7 @@ import FormInput from '../../../../components/features/teacher/form/form_input';
 import FormTextArea from '../../../../components/features/teacher/form/form_text_area';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
+import { EditPictureFormValues } from '../../../../../types';
 import {
   showLoadingSwal,
   closeSwal,
@@ -32,7 +33,6 @@ import {
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 import { updateTeacherInfo } from '../../../../../features/teacher/teacherAPI';
 import { getTeacherInfo } from '../../../../../features/guest/guestThunkAPI';
-import { EditPictureFormValues } from '../../../../../model/edit_picture_form_values';
 
 const { Text } = Typography;
 
@@ -61,13 +61,6 @@ export default function ProfileContent() {
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
-    defaultValues: React.useMemo(() => {
-      return {
-        name: data?.name,
-        shortDescription: data?.shortDescription,
-        detailDescription: data?.detailDescription,
-      };
-    }, [data]),
   });
 
   const { handleSubmit, setValue, watch } = methods;

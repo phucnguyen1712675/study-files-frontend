@@ -3,8 +3,8 @@ import { Alert, Skeleton, Button } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { nanoid } from 'nanoid';
 
+import { UploadVideoFormValues } from './types';
 import UploadVideoForm from './components/upload_video_form';
-import { UploadVideoFormValues } from './models/upload_video_form_values';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';

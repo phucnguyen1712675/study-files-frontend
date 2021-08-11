@@ -23,7 +23,7 @@ import {
   clearNewCourseId,
 } from '../../../../../features/teacher/teacherSlice';
 import { showLoadingSwal, closeSwal } from '../../../../../utils/sweet_alert_2';
-import { Section } from '../../../../../model/section';
+import { Section } from '../../../../../types';
 import {
   addLecture,
   getLecturesTotalResults,

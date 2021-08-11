@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import FormFileBase64 from '../form_file_base_64';
-import { EditPictureFormValues } from '../../../../../../model/edit_picture_form_values';
+import { EditPictureFormValues } from '../../../../../../types';
 import { PLACEHOLDER_IMAGE_URL } from '../../../../../../constants/images';
 
 const schema = yup.object().shape({

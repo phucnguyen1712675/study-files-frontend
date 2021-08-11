@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Modal } from 'antd';
 
-import { UpdateSectionOrdinalNumberFormValues } from '../../models/update_section_ordinal_number_form_values';
+import { UpdateSectionOrdinalNumberFormValues } from '../../types';
 import { useAppSelector } from '../../../../../../hooks';
 import FormSectionSelect from '../../../../../../components/features/teacher/form/form_section_select';
 import { selectCourseDetails } from '../../../../../../../features/teacher/teacherSlice';

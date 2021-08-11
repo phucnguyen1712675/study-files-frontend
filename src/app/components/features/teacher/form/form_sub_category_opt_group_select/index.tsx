@@ -1,7 +1,7 @@
 import { useFormContext, Controller } from 'react-hook-form';
 import { Form, Select, Typography } from 'antd';
 
-import { CategoryDetails } from '../../../../../../model/category_details';
+import { CategoryDetails } from '../../../../../../types';
 
 const { Option, OptGroup } = Select;
 const { Text } = Typography;

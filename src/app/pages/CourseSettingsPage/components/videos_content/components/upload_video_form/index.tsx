@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import FormLectureOptGroupSelect from '../../../form_lecture_opt_group_select';
-import { UploadVideoFormValues } from '../../models/upload_video_form_values';
+import { UploadVideoFormValues } from '../../types';
 import { useAppSelector } from '../../../../../../hooks';
 import { selectCourseDetails } from '../../../../../../../features/teacher/teacherSlice';
 import FormFileBase64 from '../../../../../../components/features/teacher/form/form_file_base_64';

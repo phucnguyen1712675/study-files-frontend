@@ -6,10 +6,12 @@ import { Form, Skeleton, Button, Alert, message } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { nanoid } from 'nanoid';
 
+import {
+  UpdateLectureInfoFormValues,
+  UpdateLectureOrdinalNumberFormValues,
+} from './types';
 import UpdateLectureInfoForm from './components/update_lecture_info_form';
 import UpdateLectureOrdinalNumberForm from './components/update_lecture_ordinal_number_form';
-import { UpdateLectureInfoFormValues } from './models/update_lecture_info_form_values';
-import { UpdateLectureOrdinalNumberFormValues } from './models/update_lecture_ordinal_number_form_values';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import FormSectionSelect from '../../../../components/features/teacher/form/form_section_select';

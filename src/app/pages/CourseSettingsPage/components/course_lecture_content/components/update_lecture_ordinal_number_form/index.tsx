@@ -5,10 +5,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Modal } from 'antd';
 
 import FormLectureSelect from './components/form_lecture_select';
-import { UpdateLectureOrdinalNumberFormValues } from '../../models/update_lecture_ordinal_number_form_values';
+import { UpdateLectureOrdinalNumberFormValues } from '../../types';
 import { useAppSelector } from '../../../../../../hooks';
 import FormSectionSelect from '../../../../../../components/features/teacher/form/form_section_select';
-import { Lecture } from '../../../../../../../model/lecture';
+import { Lecture } from '../../../../../../../types';
 import { selectCourseDetails } from '../../../../../../../features/teacher/teacherSlice';
 
 const schema = yup.object().shape({

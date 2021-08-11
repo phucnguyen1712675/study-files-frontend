@@ -19,9 +19,9 @@ import moment from 'moment';
 import { updatedDiff } from 'deep-object-diff';
 import { nanoid } from 'nanoid';
 
+import { UpdateCoursePromotionFormValues } from './types';
 import UpdateCoursePromotionForm from './components/update_course_promotion_form';
 import { checkIfCourseHasPromotion } from '../../utils';
-import { UpdateCoursePromotionFormValues } from './models/promotion';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import FormNumberInput from '../../../../components/features/teacher/form/form_number_input';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';

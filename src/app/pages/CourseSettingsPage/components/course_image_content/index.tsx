@@ -8,7 +8,7 @@ import EditPictureForm from '../../../../components/features/teacher/form/edit_p
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
 import { selectCourseDetails } from '../../../../../features/teacher/teacherSlice';
-import { EditPictureFormValues } from '../../../../../model/edit_picture_form_values';
+import { EditPictureFormValues } from '../../../../../types';
 import { getCourseDetails } from '../../../../../features/teacher/teacherThunkAPI';
 import { updateCourse } from '../../../../../features/teacher/teacherAPI';
 import { PLACEHOLDER_IMAGE_URL } from '../../../../../constants/images';

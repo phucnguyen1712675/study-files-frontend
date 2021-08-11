@@ -15,10 +15,12 @@ import {
 import { EditOutlined } from '@ant-design/icons';
 import { nanoid } from 'nanoid';
 
+import {
+  UpdateCourseSectionTitleFormValues,
+  UpdateSectionOrdinalNumberFormValues,
+} from './types';
 import UpdateCourseSectionTitleForm from './components/update_course_section_title_form';
 import UpdateSectionOrdinalNumberForm from './components/update_section_ordinal_number_form';
-import { UpdateCourseSectionTitleFormValues } from './models/update_course_section_title_form_values';
-import { UpdateSectionOrdinalNumberFormValues } from './models/update_section_ordinal_number_form_values';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import FormInput from '../../../../components/features/teacher/form/form_input';

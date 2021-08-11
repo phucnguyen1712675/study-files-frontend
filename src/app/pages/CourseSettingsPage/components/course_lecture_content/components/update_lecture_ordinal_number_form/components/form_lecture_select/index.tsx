@@ -1,7 +1,7 @@
 import { useFormContext, Controller } from 'react-hook-form';
 import { Form, Select, Typography } from 'antd';
 
-import { Lecture } from '../../../../../../../../../model/lecture';
+import { Lecture } from '../../../../../../../../../types';
 
 const { Option } = Select;
 const { Text } = Typography;

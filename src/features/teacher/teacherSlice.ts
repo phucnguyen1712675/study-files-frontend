@@ -6,9 +6,7 @@ import {
   getSectionsResults,
 } from './teacherThunkAPI';
 import { RootState } from '../../app/store';
-import { CourseDetails } from '../../model/course_details';
-import { CategoryDetails } from '../../model/category_details';
-import { Section } from '../../model/section';
+import { CourseDetails, Section, CategoryDetails } from '../../types';
 
 type TeacherState = {
   courseDetails: {
