@@ -1,39 +1,24 @@
+import { useContext } from 'react';
 import {
   Avatar,
   Button,
-  CssBaseline,
   TextField,
   FormControlLabel,
   Checkbox,
   Link,
-  Grid,
-  Box,
   Typography,
   Container,
 } from '@material-ui/core';
-
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
-import { axiosAuthInstance } from '../../../../api/auth';
-import TopBar from '../../../components/Topbar/Topbar';
-import AppContext from 'app/AppContext';
-import { useContext } from 'react';
+import { Row, message } from 'antd';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import AppContext from '../../../AppContext';
+import TopBar from '../../../components/Topbar/Topbar';
+import { axiosAuthInstance } from '../../../../api/auth';
+import { showLoadingSwal, closeSwal } from '../../../../utils/sweet_alert_2';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -69,9 +54,14 @@ export default function LoginPage() {
     history.push('/register');
   };
 
-  const onSubmit = async function (data) {
+  const onSubmit = async data => {
     try {
+      showLoadingSwal();
+
       const res = await axiosAuthInstance.post('/login', data);
+
+      closeSwal();
+
       if (res.status === 200) {
         localStorage.studyFiles_user_accessToken = res.data.tokens.access.token;
         localStorage.studyFiles_user_accessToken_expires =
@@ -100,12 +90,14 @@ export default function LoginPage() {
         alert('Invalid login.');
       }
     } catch (err) {
+      closeSwal();
+
       if (err.response) {
-        alert(err.response.data.message);
+        message.error(err.response.data.message);
       } else if (err.request) {
-        alert(err.request);
+        message.error(err.request);
       } else {
-        alert(err.message);
+        message.error(err.message);
       }
     }
   };
@@ -114,7 +106,6 @@ export default function LoginPage() {
     <>
       <TopBar initQuery={''} />
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
@@ -158,25 +149,15 @@ export default function LoginPage() {
               color="primary"
               className={classes.submit}
             >
-              Log In
+              Sign In
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link variant="body2" onClick={ToRegister}>
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
           </form>
         </div>
-        <Box mt={8}>
-          <Copyright />
-        </Box>
+        <Row justify="end">
+          <Link variant="body2" onClick={ToRegister}>
+            Don't have an account? Sign Up
+          </Link>
+        </Row>
       </Container>
     </>
   );

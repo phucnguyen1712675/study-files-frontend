@@ -1,7 +1,9 @@
-import { Space } from 'antd';
-import ContentTitle from '../content_title';
+import { Space, Typography, Divider } from 'antd';
+
+const { Title } = Typography;
 
 type Component = {
+  id: string;
   title: string;
   children: React.ReactNode;
 };
@@ -13,14 +15,19 @@ type Props = {
 export default function HeaderSiderContentLayout({ components }: Props) {
   return (
     <Space size="large" direction="vertical" style={{ width: '100%' }}>
-      {components.map((component, idx) => (
+      {components.map(component => (
         <Space
-          key={idx}
+          key={component.id}
           size="middle"
           direction="vertical"
           style={{ width: '100%' }}
         >
-          <ContentTitle title={component.title} />
+          <Title level={3} style={{ fontWeight: 'lighter' }}>
+            {component.title}
+          </Title>
+
+          <Divider style={{ margin: '0px' }} />
+
           {component.children}
         </Space>
       ))}

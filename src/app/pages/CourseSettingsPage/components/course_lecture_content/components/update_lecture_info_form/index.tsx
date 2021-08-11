@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Modal, Alert, message } from 'antd';
 
-import { UpdateLectureInfoFormValues } from '../../models/update_lecture_info_form_values';
+import { UpdateLectureInfoFormValues } from '../../types';
 import FormLectureOptGroupSelect from '../../../form_lecture_opt_group_select';
 import { useAppSelector } from '../../../../../../hooks';
 import FormInput from '../../../../../../components/features/teacher/form/form_input';
@@ -25,11 +25,11 @@ const schema = yup.object().shape({
   canPreview: yup.boolean(),
 });
 
-interface CollectionCreateFormProps {
+type CollectionCreateFormProps = {
   visible: boolean;
   onCreate: (values: UpdateLectureInfoFormValues) => Promise<void>;
   onCancel: () => void;
-}
+};
 
 export default function UpdateLectureInfoForm({
   visible,

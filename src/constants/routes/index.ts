@@ -1,3 +1,6 @@
+export const SIGN_IN_PAGE_PATH = '/login';
+export const SIGN_UP_PAGE_PATH = '/register';
+
 export const TEACHER_PROFILE_PAGE_PATH = '/teacher/:name';
 export const TEACHER_COURSES_PAGE_PATH = '/my-courses';
 export const TEACHER_SETTINGS_PAGE_PATH = '/settings';

@@ -14,6 +14,7 @@ import {
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { updatedDiff } from 'deep-object-diff';
+import { nanoid } from 'nanoid';
 
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
@@ -22,6 +23,7 @@ import FormInput from '../../../../components/features/teacher/form/form_input';
 import FormTextArea from '../../../../components/features/teacher/form/form_text_area';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
+import { EditPictureFormValues } from '../../../../../types';
 import {
   showLoadingSwal,
   closeSwal,
@@ -31,7 +33,6 @@ import {
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 import { updateTeacherInfo } from '../../../../../features/teacher/teacherAPI';
 import { getTeacherInfo } from '../../../../../features/guest/guestThunkAPI';
-import { EditPictureFormValues } from '../../../../../model/edit_picture_form_values';
 
 const { Text } = Typography;
 
@@ -60,13 +61,6 @@ export default function ProfileContent() {
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
-    defaultValues: React.useMemo(() => {
-      return {
-        name: data?.name,
-        shortDescription: data?.shortDescription,
-        detailDescription: data?.detailDescription,
-      };
-    }, [data]),
   });
 
   const { handleSubmit, setValue, watch } = methods;
@@ -139,7 +133,74 @@ export default function ProfileContent() {
     }
   });
 
-  // const watchImage = null;
+  const components = [
+    {
+      id: nanoid(),
+      title: 'Public profile',
+      children: (
+        <Row>
+          <Col span={16} style={{ padding: '0px 20px' }}>
+            <FormProvider {...methods}>
+              <Form layout="vertical" onFinish={onSubmit}>
+                <FormInput name="name" label="Name" />
+                <FormTextArea
+                  name="shortDescription"
+                  label="Short description"
+                  autoSize={false}
+                />
+                <FormTextArea
+                  name="detailDescription"
+                  label="Detail description"
+                  autoSize={true}
+                />
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={loading}
+                    disabled={
+                      !watchName ||
+                      !watchShortDescription ||
+                      !watchDetailDescription ||
+                      (watchName === data?.name &&
+                        watchShortDescription === data?.shortDescription &&
+                        watchDetailDescription === data.detailDescription)
+                    }
+                  >
+                    Submit
+                  </Button>
+                </Form.Item>
+              </Form>
+            </FormProvider>
+          </Col>
+          <Col span={8} style={{ padding: '0px 20px' }}>
+            <Space
+              size="middle"
+              direction="vertical"
+              style={{ width: '100%' }}
+              align="center"
+            >
+              <Text>Profile picture</Text>
+              <TeacherAvatar
+                imageUrl={data?.avatar}
+                size={{
+                  xs: 24,
+                  sm: 32,
+                  md: 40,
+                  lg: 64,
+                  xl: 160,
+                  xxl: 180,
+                }}
+              />
+              <Button icon={<EditOutlined />} onClick={onClickBtnEdit}>
+                Edit
+              </Button>
+            </Space>
+          </Col>
+        </Row>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -147,122 +208,17 @@ export default function ProfileContent() {
       {isLoading ? (
         <Skeleton active avatar paragraph={{ rows: 4 }} />
       ) : (
-        <HeaderSiderContentLayout
-          components={[
-            {
-              title: 'Public profile',
-              children: (
-                <Row>
-                  <Col span={16} style={{ padding: '0px 20px' }}>
-                    <FormProvider {...methods}>
-                      <Form layout="vertical" onFinish={onSubmit}>
-                        <FormInput name="name" label="Name" />
-                        <FormTextArea
-                          name="shortDescription"
-                          label="Short description"
-                          autoSize={false}
-                        />
-                        <FormTextArea
-                          name="detailDescription"
-                          label="Detail description"
-                          autoSize={true}
-                        />
-                        <Form.Item>
-                          <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={loading}
-                            disabled={
-                              !watchName ||
-                              !watchShortDescription ||
-                              !watchDetailDescription ||
-                              (watchName === data?.name &&
-                                watchShortDescription ===
-                                  data?.shortDescription &&
-                                watchDetailDescription ===
-                                  data.detailDescription)
-                            }
-                          >
-                            Submit
-                          </Button>
-                        </Form.Item>
-                      </Form>
-                    </FormProvider>
-                  </Col>
-                  <Col span={8} style={{ padding: '0px 20px' }}>
-                    <Space
-                      size="middle"
-                      direction="vertical"
-                      style={{ width: '100%' }}
-                      align="center"
-                    >
-                      <Text>Profile picture</Text>
-                      <TeacherAvatar
-                        imageUrl={data?.avatar}
-                        size={{
-                          xs: 24,
-                          sm: 32,
-                          md: 40,
-                          lg: 64,
-                          xl: 160,
-                          xxl: 180,
-                        }}
-                      />
-                      <Button icon={<EditOutlined />} onClick={onClickBtnEdit}>
-                        Edit
-                      </Button>
-                    </Space>
-                  </Col>
-                </Row>
-              ),
-            },
-          ]}
-        />
+        <>
+          <HeaderSiderContentLayout components={components} />
+          <EditPictureForm
+            visible={visible}
+            onCreate={onCreate}
+            onCancel={onCancel}
+            title="Change profile picture"
+            label="Choose a picture"
+          />
+        </>
       )}
-      <EditPictureForm
-        visible={visible}
-        onCreate={onCreate}
-        onCancel={onCancel}
-        title="Change profile picture"
-        label="Choose a picture"
-      />
-      {/* <Modal
-        visible={visible}
-        title={'Change profile picture'}
-        okText="Edit"
-        cancelText="Cancel"
-        onCancel={onCancel}
-        onOk={() => onCreate}
-        okButtonProps={{ disabled: !watchImage }}
-      >
-        <FormProvider {...methods}>
-          <Form layout="vertical" name="form_in_modal">
-            <FormFileBase64
-              name="image"
-              label={'Choose a picture'}
-              desiredFileType="image"
-            />
-          </Form>
-        </FormProvider>
-        {watchImage && (
-          <Row justify="center">
-            <Image
-              src={watchImage}
-              alt="chosen"
-              style={{ height: '300px' }}
-              className="mb-3"
-              placeholder={
-                <Image
-                  preview={false}
-                  className="mb-3"
-                  style={{ height: '300px' }}
-                  src={PLACEHOLDER_IMAGE_URL}
-                />
-              }
-            />
-          </Row>
-        )}
-      </Modal> */}
     </>
   );
 }

@@ -6,44 +6,39 @@ import {
   getSectionsResults,
 } from './teacherThunkAPI';
 import { RootState } from '../../app/store';
-import { CourseDetails } from '../../model/course_details';
-import { CategoryDetails } from '../../model/category_details';
-import { Section } from '../../model/section';
+import { CourseDetails, Section, CategoryDetails } from '../../types';
 
 type TeacherState = {
   courseDetails: {
     data?: CourseDetails;
     isLoading: boolean;
-    error: any;
+    error?: any;
   };
   categoriesDetails: {
     data: CategoryDetails[];
     isLoading: boolean;
-    error: any;
+    error?: any;
   };
   coursePostingStep: number;
   newCourseId?: string;
   newCourseSections: {
     data: Section[];
     isLoading: boolean;
-    error: any;
+    error?: any;
   };
 };
 
 const initialState: TeacherState = {
   courseDetails: {
     isLoading: false,
-    error: {},
   },
   categoriesDetails: {
     data: [],
     isLoading: false,
-    error: {},
   },
   newCourseSections: {
     data: [],
     isLoading: false,
-    error: {},
   },
   coursePostingStep: 0,
 };

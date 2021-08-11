@@ -17,10 +17,11 @@ import {
 import { CloseOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { updatedDiff } from 'deep-object-diff';
+import { nanoid } from 'nanoid';
 
+import { UpdateCoursePromotionFormValues } from './types';
 import UpdateCoursePromotionForm from './components/update_course_promotion_form';
 import { checkIfCourseHasPromotion } from '../../utils';
-import { UpdateCoursePromotionFormValues } from './models/promotion';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import FormNumberInput from '../../../../components/features/teacher/form/form_number_input';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
@@ -102,11 +103,6 @@ export default function CourseFeeAndPromotionContent() {
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
-    defaultValues: React.useMemo(() => {
-      return {
-        originalFee: data?.originalFee,
-      };
-    }, [data]),
   });
 
   const { handleSubmit, setValue, getValues, watch } = methods;
@@ -222,144 +218,148 @@ export default function CourseFeeAndPromotionContent() {
     </Button>
   );
 
+  const components = [
+    {
+      id: nanoid(),
+      title: 'Fee',
+      children: (
+        <>
+          <FormProvider {...methods}>
+            <Form layout="vertical" onFinish={onSubmit}>
+              <FormNumberInput
+                name="originalFee"
+                label="Fee ($)"
+                disabled={hasPromotion}
+                min={COURSE_ORIGINAL_FEE_MIN_VALUE}
+                max={COURSE_ORIGINAL_FEE_MAX_VALUE}
+                note={
+                  !hasPromotion ? (
+                    <Text type="warning">{`Value <= ${COURSE_ORIGINAL_FEE_MAX_VALUE} $`}</Text>
+                  ) : undefined
+                }
+              />
+              {!hasPromotion && (
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={btnSubmitLoading}
+                    disabled={
+                      !watchOriginalFee ||
+                      watchOriginalFee === data?.originalFee
+                    }
+                  >
+                    Submit
+                  </Button>
+                </Form.Item>
+              )}
+            </Form>
+          </FormProvider>
+          {hasPromotion && (
+            <Alert
+              message="You cannot edit the fee while the course is on promotion"
+              type="info"
+              showIcon
+            />
+          )}
+        </>
+      ),
+    },
+    {
+      id: nanoid(),
+      title: 'Promotion',
+      children: (
+        <>
+          {!hasPromotion ? (
+            toggleUpdatePromotionFormButton
+          ) : isLoading && !data ? (
+            <Skeleton />
+          ) : (
+            <Space direction="vertical" size="middle">
+              <Text>Discount Fee ($)</Text>
+              <InputNumber
+                value={data?.fee}
+                formatter={value =>
+                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                }
+                disabled
+              />
+              <Text>Promotion Date Range</Text>
+              <RangePicker
+                key={`${
+                  data?.fee
+                }${data?.promotionStart!}${data?.promotionEnd!}`}
+                defaultValue={[
+                  moment(
+                    new Date(data?.promotionStart!)
+                      .toISOString()
+                      .slice(0, 10)
+                      .replace(/-/g, ''),
+                    dateFormat,
+                  ),
+                  moment(
+                    new Date(data?.promotionEnd!)
+                      ?.toISOString()
+                      .slice(0, 10)
+                      .replace(/-/g, ''),
+                    dateFormat,
+                  ),
+                ]}
+                disabled
+              />
+              <Alert
+                message={
+                  new Date(data?.promotionStart!) < new Date() &&
+                  new Date(data?.promotionEnd!) > new Date()
+                    ? 'Promotion is going on'
+                    : 'Promotion is coming soon'
+                }
+                type="info"
+                showIcon
+              />
+              <Space size="middle">
+                {toggleUpdatePromotionFormButton}
+                <Popconfirm
+                  title="Are you sure?"
+                  visible={endPromotionPopconfirmVisible}
+                  onConfirm={btnEndPromotionHandleOk}
+                  okButtonProps={{ loading: confirmLoading }}
+                  onCancel={handleCancel}
+                >
+                  <Button
+                    icon={<CloseOutlined />}
+                    danger
+                    onClick={showPopconfirm}
+                  >
+                    End promotion
+                  </Button>
+                </Popconfirm>
+              </Space>
+            </Space>
+          )}
+        </>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageHelmet title="Fee & Promotion" />
       {isLoading && !data ? (
         <Skeleton active avatar paragraph={{ rows: 8 }} />
       ) : (
-        <HeaderSiderContentLayout
-          components={[
-            {
-              title: 'Fee',
-              children: (
-                <>
-                  <FormProvider {...methods}>
-                    <Form layout="vertical" onFinish={onSubmit}>
-                      <FormNumberInput
-                        name="originalFee"
-                        label="Fee ($)"
-                        disabled={hasPromotion}
-                        min={COURSE_ORIGINAL_FEE_MIN_VALUE}
-                        max={COURSE_ORIGINAL_FEE_MAX_VALUE}
-                        note={
-                          !hasPromotion ? (
-                            <Text type="warning">{`Value <= ${COURSE_ORIGINAL_FEE_MAX_VALUE} $`}</Text>
-                          ) : undefined
-                        }
-                      />
-                      {!hasPromotion && (
-                        <Form.Item>
-                          <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={btnSubmitLoading}
-                            disabled={
-                              !watchOriginalFee &&
-                              watchOriginalFee === data?.originalFee
-                            }
-                          >
-                            Submit
-                          </Button>
-                        </Form.Item>
-                      )}
-                    </Form>
-                  </FormProvider>
-                  {hasPromotion && (
-                    <Alert
-                      message="You cannot edit the fee while the course is on promotion"
-                      type="info"
-                      showIcon
-                    />
-                  )}
-                </>
-              ),
-            },
-            {
-              title: 'Promotion',
-              children: (
-                <>
-                  {!hasPromotion ? (
-                    toggleUpdatePromotionFormButton
-                  ) : isLoading && !data ? (
-                    <Skeleton />
-                  ) : (
-                    <Space direction="vertical" size="middle">
-                      <Text>Discount Fee ($)</Text>
-                      <InputNumber
-                        value={data?.fee}
-                        formatter={value =>
-                          `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                        }
-                        disabled
-                      />
-                      <Text>Promotion Date Range</Text>
-                      <RangePicker
-                        key={`${
-                          data?.fee
-                        }${data?.promotionStart!}${data?.promotionEnd!}`}
-                        defaultValue={[
-                          moment(
-                            new Date(data?.promotionStart!)
-                              .toISOString()
-                              .slice(0, 10)
-                              .replace(/-/g, ''),
-                            dateFormat,
-                          ),
-                          moment(
-                            new Date(data?.promotionEnd!)
-                              ?.toISOString()
-                              .slice(0, 10)
-                              .replace(/-/g, ''),
-                            dateFormat,
-                          ),
-                        ]}
-                        disabled
-                      />
-                      <Alert
-                        message={
-                          new Date(data?.promotionStart!) < new Date() &&
-                          new Date(data?.promotionEnd!) > new Date()
-                            ? 'Promotion is going on'
-                            : 'Promotion is coming soon'
-                        }
-                        type="info"
-                        showIcon
-                      />
-                      <Space size="middle">
-                        {toggleUpdatePromotionFormButton}
-                        <Popconfirm
-                          title="Are you sure?"
-                          visible={endPromotionPopconfirmVisible}
-                          onConfirm={btnEndPromotionHandleOk}
-                          okButtonProps={{ loading: confirmLoading }}
-                          onCancel={handleCancel}
-                        >
-                          <Button
-                            icon={<CloseOutlined />}
-                            danger
-                            onClick={showPopconfirm}
-                          >
-                            End promotion
-                          </Button>
-                        </Popconfirm>
-                      </Space>
-                    </Space>
-                  )}
-                </>
-              ),
-            },
-          ]}
-        />
+        <>
+          <HeaderSiderContentLayout components={components} />
+          <UpdateCoursePromotionForm
+            // key={`${data?.fee}${data?.promotionStart!}${data?.promotionEnd!}`}
+            visible={updateCoursePromotionFormVisible}
+            onCreate={onCreatePromotion}
+            onCancel={() => {
+              setUpdateCoursePromotionFormVisible(false);
+            }}
+          />
+        </>
       )}
-      <UpdateCoursePromotionForm
-        key={`${data?.fee}${data?.promotionStart!}${data?.promotionEnd!}`}
-        visible={updateCoursePromotionFormVisible}
-        onCreate={onCreatePromotion}
-        onCancel={() => {
-          setUpdateCoursePromotionFormVisible(false);
-        }}
-      />
     </>
   );
 }

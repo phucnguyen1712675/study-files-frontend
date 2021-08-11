@@ -1,12 +1,12 @@
 import React from 'react';
 import { Row, Col, Pagination, Typography, List } from 'antd';
+import { ListGridType } from 'antd/lib/list';
 
 import CourseCard from './components/course_card';
 import LoadingCard from './components/loading_card';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import { getCoursesOfTeacherQueryResult } from '../../../../../features/guest/guestThunkAPI';
 import { selectTeacherCourses } from '../../../../../features/guest/guestSlice';
-import { ListGridType } from 'antd/lib/list';
 
 const { Text } = Typography;
 

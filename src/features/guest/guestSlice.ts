@@ -5,8 +5,7 @@ import {
   getCoursesOfTeacherQueryResult,
 } from './guestThunkAPI';
 import { RootState } from '../../app/store';
-import { Course } from '../../model/course';
-import { Teacher } from '../../model/teacher';
+import { Course, Teacher } from '../../types';
 
 type CourseQueryResult = {
   results: Course[];
@@ -20,23 +19,21 @@ type GuestState = {
   teacherCourses: {
     data?: CourseQueryResult;
     isLoading: boolean;
-    error: any;
+    error?: any;
   };
   teacherInfo: {
     data?: Teacher;
     isLoading: boolean;
-    error: any;
+    error?: any;
   };
 };
 
 const initialState: GuestState = {
   teacherCourses: {
     isLoading: false,
-    error: {},
   },
   teacherInfo: {
     isLoading: false,
-    error: {},
   },
 };
 
@@ -56,7 +53,9 @@ export const guestSlice = createSlice({
       .addCase(getCoursesOfTeacherQueryResult.rejected, (state, action) => {
         state.teacherCourses.error = action.payload;
         state.teacherCourses.isLoading = false;
-      })
+      });
+
+    builder
       .addCase(getTeacherInfo.pending, state => {
         state.teacherInfo.isLoading = true;
       })

@@ -4,6 +4,8 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button, message, Typography } from 'antd';
 import moment from 'moment';
+import { nanoid } from 'nanoid';
+
 import CustomContent from '../custom_content';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
@@ -35,8 +37,6 @@ import { getCategoriesDetails } from '../../../../../features/teacher/teacherThu
 import { addCourse } from '../../../../../features/teacher/teacherAPI';
 
 const { Text } = Typography;
-
-// var imageKey = Date.now();
 
 type FormValues = {
   name: string;
@@ -98,40 +98,12 @@ const schema = yup.object().shape({
   image: yup.string().required('Image is Required'),
 });
 
-// const schema = yup.object().shape({
-//   name: yup.string().required('Name is Required'),
-//   shortDescription: yup.string(),
-//   detailDescription: yup.string(),
-//   subCategoryId: yup.string(),
-//   status: yup.boolean(),
-//   originalFee: yup.number(),
-//   hasPromotion: yup.boolean(),
-//   fee: yup.number(),
-//   promotionStart: yup
-//     .date()
-//     .when('hasPromotion', (hasPromotion: boolean, schema) => {
-//       return hasPromotion
-//         ? schema.required(
-//             'Promotion Start Date is required when Has promotion is true',
-//           )
-//         : undefined;
-//     }),
-//   promotionEnd: yup
-//     .date()
-//     .when('promotionStart', (promotionStart: Date, schema) => {
-//       return promotionStart
-//         ? schema.required(
-//             'Promotion End Date is required when has Promotion Start Date',
-//           )
-//         : undefined;
-//     }),
-//   image: yup.string().required('image required'),
-// });
-
 const disabledDate = current => {
   // Can not select days before today and today
   return current && current < moment().endOf('day');
 };
+
+var imageKey = nanoid();
 
 export default function AddCourseInformationContent() {
   const dispatch = useAppDispatch();
@@ -190,12 +162,12 @@ export default function AddCourseInformationContent() {
       dispatch(setNewCourseId(id));
 
       setShouldShowNextButton(true);
+
+      imageKey = nanoid();
     }
 
     setLoading(false);
   });
-
-  var imageKey = Date.now();
 
   return (
     <>

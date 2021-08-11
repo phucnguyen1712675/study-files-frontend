@@ -5,8 +5,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Modal, Typography } from 'antd';
 import moment from 'moment';
 
+import { UpdateCoursePromotionFormValues } from '../../types';
 import { checkIfCourseHasPromotion } from '../../../../utils';
-import { UpdateCoursePromotionFormValues } from '../../models/promotion';
 import FormNumberInput from '../../../../../../components/features/teacher/form/form_number_input';
 import FormRangePicker from '../../../../../../components/features/teacher/form/form_range_picker';
 import {
@@ -24,11 +24,11 @@ const schema = yup.object().shape({
   promotionEnd: yup.date(),
 });
 
-interface CollectionCreateFormProps {
+type CollectionCreateFormProps = {
   visible: boolean;
   onCreate: (values: UpdateCoursePromotionFormValues) => Promise<void>;
   onCancel: () => void;
-}
+};
 
 export default function UpdateCoursePromotionForm({
   visible,

@@ -1,13 +1,14 @@
 import React from 'react';
 import { Button, Space, Skeleton, Image } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
+import { nanoid } from 'nanoid';
 
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import EditPictureForm from '../../../../components/features/teacher/form/edit_picture_form';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
 import { selectCourseDetails } from '../../../../../features/teacher/teacherSlice';
-import { EditPictureFormValues } from '../../../../../model/edit_picture_form_values';
+import { EditPictureFormValues } from '../../../../../types';
 import { getCourseDetails } from '../../../../../features/teacher/teacherThunkAPI';
 import { updateCourse } from '../../../../../features/teacher/teacherAPI';
 import { PLACEHOLDER_IMAGE_URL } from '../../../../../constants/images';
@@ -49,45 +50,46 @@ export default function CourseImageContent() {
 
   const onCancel = () => setVisible(false);
 
+  const components = [
+    {
+      id: nanoid(),
+      title: 'Picture',
+      children: (
+        <Space
+          size="middle"
+          direction="vertical"
+          style={{ width: '100%' }}
+          align="center"
+        >
+          <Image
+            src={data?.image}
+            placeholder={<Image preview={false} src={PLACEHOLDER_IMAGE_URL} />}
+          />
+          <Button icon={<EditOutlined />} onClick={onClickBtnEdit}>
+            Edit
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageHelmet title="Course's picture" />
       {isLoading ? (
         <Skeleton active avatar paragraph={{ rows: 4 }} />
       ) : (
-        <HeaderSiderContentLayout
-          components={[
-            {
-              title: 'Picture',
-              children: (
-                <Space
-                  size="middle"
-                  direction="vertical"
-                  style={{ width: '100%' }}
-                  align="center"
-                >
-                  <Image
-                    src={data?.image}
-                    placeholder={
-                      <Image preview={false} src={PLACEHOLDER_IMAGE_URL} />
-                    }
-                  />
-                  <Button icon={<EditOutlined />} onClick={onClickBtnEdit}>
-                    Edit
-                  </Button>
-                </Space>
-              ),
-            },
-          ]}
-        />
+        <>
+          <HeaderSiderContentLayout components={components} />
+          <EditPictureForm
+            visible={visible}
+            onCreate={onCreate}
+            onCancel={onCancel}
+            title="Change course's picture"
+            label="Choose a picture"
+          />
+        </>
       )}
-      <EditPictureForm
-        visible={visible}
-        onCreate={onCreate}
-        onCancel={onCancel}
-        title="Change course's picture"
-        label="Choose a picture"
-      />
     </>
   );
 }

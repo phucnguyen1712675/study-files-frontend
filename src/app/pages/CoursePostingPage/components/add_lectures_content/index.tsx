@@ -3,6 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button, Alert, message } from 'antd';
+import { nanoid } from 'nanoid';
 
 import CustomContent from '../custom_content';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
@@ -22,7 +23,7 @@ import {
   clearNewCourseId,
 } from '../../../../../features/teacher/teacherSlice';
 import { showLoadingSwal, closeSwal } from '../../../../../utils/sweet_alert_2';
-import { Section } from '../../../../../model/section';
+import { Section } from '../../../../../types';
 import {
   addLecture,
   getLecturesTotalResults,
@@ -51,6 +52,8 @@ const schema = yup.object().shape({
       .required('Video is required when Lecture can be previewed'),
   }),
 });
+
+var videoKey = nanoid();
 
 export default function AddLecturesContent() {
   const newCourseId = useAppSelector(selectNewCourseId);
@@ -98,8 +101,6 @@ export default function AddLecturesContent() {
     closeSwal();
   };
 
-  var videoKey = Date.now();
-
   const checkIfDone = async () => {
     const sectionDetailsResults: Section[] = await getSectionsDetailsResults(
       newCourseId!,
@@ -143,7 +144,7 @@ export default function AddLecturesContent() {
 
       isDone && setIsEachSectionHadAtLeastOneLecture(true);
 
-      videoKey = Date.now();
+      videoKey = nanoid();
     }
 
     setLoading(false);

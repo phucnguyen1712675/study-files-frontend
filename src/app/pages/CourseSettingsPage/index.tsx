@@ -19,6 +19,10 @@ export function CourseSettingsPage() {
     dispatch(getCourseDetails(courseId));
   }, [courseId, dispatch]);
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <HeaderSiderLayout
       siderItems={SIDER_MENU_ITEMS}

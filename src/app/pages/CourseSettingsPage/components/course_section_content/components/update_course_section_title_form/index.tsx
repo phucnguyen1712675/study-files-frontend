@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Modal } from 'antd';
 
-import { UpdateCourseSectionTitleFormValues } from '../../models/update_course_section_title_form_values';
+import { UpdateCourseSectionTitleFormValues } from '../../types';
 import { useAppSelector } from '../../../../../../hooks';
 import FormSectionSelect from '../../../../../../components/features/teacher/form/form_section_select';
 import FormInput from '../../../../../../components/features/teacher/form/form_input';
@@ -23,11 +23,11 @@ const schema = yup.object().shape({
     .required('Title is Required'),
 });
 
-interface CollectionCreateFormProps {
+type CollectionCreateFormProps = {
   visible: boolean;
   onCreate: (values: UpdateCourseSectionTitleFormValues) => Promise<void>;
   onCancel: () => void;
-}
+};
 
 export default function UpdateCourseSectionTitleForm({
   visible,

@@ -9,6 +9,7 @@ import { convertToHTML } from 'draft-convert';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import htmlToDraft from 'html-to-draftjs';
 import { updatedDiff } from 'deep-object-diff';
+import { nanoid } from 'nanoid';
 
 import './index.css';
 
@@ -81,14 +82,6 @@ export default function GeneralInformationContent() {
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
-    defaultValues: React.useMemo(() => {
-      return {
-        name: courseDetails.data?.name,
-        shortDescription: courseDetails.data?.shortDescription,
-        detailDescription: courseDetails.data?.detailDescription,
-        subCategoryId: courseDetails.data?.subCategoryId,
-      };
-    }, [courseDetails]),
   });
 
   const { handleSubmit, setValue, watch } = methods;
@@ -177,6 +170,61 @@ export default function GeneralInformationContent() {
     }
   });
 
+  const components = [
+    {
+      id: nanoid(),
+      title: 'General information',
+      children: (
+        <FormProvider {...methods}>
+          <Form layout="vertical" onFinish={onSubmit}>
+            <FormInput name="name" label="Name" />
+            <FormTextArea
+              name="shortDescription"
+              label="Short description"
+              autoSize={false}
+            />
+            <Form.Item label="Detail description">
+              <Editor
+                editorState={editorState}
+                onEditorStateChange={handleEditorChange}
+                wrapperClassName="wrapper-class"
+                editorClassName="editor-class"
+                toolbarClassName="toolbar-class"
+              />
+            </Form.Item>
+            <FormSubCategoryOptGroupSelect
+              name="subCategoryId"
+              label="Sub category"
+              defaultValue={watchSubCategoryId}
+              categories={categoriesDetails.data}
+            />
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                disabled={
+                  !watchName ||
+                  !watchShortDescription ||
+                  !watchDetailDescription ||
+                  !watchSubCategoryId ||
+                  (watchName === courseDetails.data?.name &&
+                    watchShortDescription ===
+                      courseDetails.data?.shortDescription &&
+                    watchDetailDescription.replaceAll('<', '&lt;') ===
+                      courseDetails.data.detailDescription &&
+                    watchSubCategoryId === courseDetails.data.subCategoryId)
+                }
+              >
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </FormProvider>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageHelmet title="General information" />
@@ -185,62 +233,7 @@ export default function GeneralInformationContent() {
       !courseDetails.data ? (
         <Skeleton active avatar paragraph={{ rows: 16 }} />
       ) : (
-        <HeaderSiderContentLayout
-          components={[
-            {
-              title: 'General information',
-              children: (
-                <FormProvider {...methods}>
-                  <Form layout="vertical" onFinish={onSubmit}>
-                    <FormInput name="name" label="Name" />
-                    <FormTextArea
-                      name="shortDescription"
-                      label="Short description"
-                      autoSize={false}
-                    />
-                    <Form.Item label="Detail description">
-                      <Editor
-                        editorState={editorState}
-                        onEditorStateChange={handleEditorChange}
-                        wrapperClassName="wrapper-class"
-                        editorClassName="editor-class"
-                        toolbarClassName="toolbar-class"
-                      />
-                    </Form.Item>
-                    <FormSubCategoryOptGroupSelect
-                      name="subCategoryId"
-                      label="Sub category"
-                      defaultValue={watchSubCategoryId}
-                      categories={categoriesDetails.data}
-                    />
-                    <Form.Item>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        loading={loading}
-                        disabled={
-                          !watchName ||
-                          !watchShortDescription ||
-                          !watchDetailDescription ||
-                          !watchSubCategoryId ||
-                          (watchName === courseDetails.data?.name &&
-                            watchShortDescription ===
-                              courseDetails.data?.shortDescription &&
-                            watchDetailDescription.replaceAll('<', '&lt;') ===
-                              courseDetails.data.detailDescription &&
-                            watchSubCategoryId ===
-                              courseDetails.data.subCategoryId)
-                        }
-                      >
-                        Submit
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                </FormProvider>
-              ),
-            },
-          ]}
-        />
+        <HeaderSiderContentLayout components={components} />
       )}
     </>
   );

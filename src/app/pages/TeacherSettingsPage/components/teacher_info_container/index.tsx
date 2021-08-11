@@ -17,8 +17,11 @@ export default function TeacherInfoContainer() {
 
   const navigateToTeacherPersonalProfilePage = () => {
     const { id, name } = data!;
+
     const param = name.toLowerCase().replaceAll(' ', '-');
+
     const path = getTeacherProfilePagePath(param);
+
     const state = {
       teacherId: id,
     };

@@ -9,7 +9,7 @@ const { Text } = Typography;
 type Props = {
   name: any;
   label: string;
-  fileKey?: any;
+  fileKey?: string;
   desiredFileType: 'image' | 'video';
   isShowImage?: boolean;
 };

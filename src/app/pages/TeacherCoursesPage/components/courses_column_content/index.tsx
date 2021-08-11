@@ -1,4 +1,4 @@
-import { Button, Row, Typography, Divider } from 'antd';
+import { Button, Row, Typography, Divider, message } from 'antd';
 import { FolderOpenTwoTone, PlusOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ export default function CoursesColumnContent() {
     if (data?.isEmailVerified) {
       history.push(COURSE_POSTING_PAGE_PATH);
     } else {
-      alert('Please verify email to do this task');
+      message.warning('Please verify email to do this task');
     }
   };
 

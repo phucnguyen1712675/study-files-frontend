@@ -4,55 +4,38 @@
 
 import {
   configureStore,
-  getDefaultMiddleware,
+  StoreEnhancer,
   ThunkAction,
   Action,
 } from '@reduxjs/toolkit';
 import { createInjectorsEnhancer } from 'redux-injectors';
 import createSagaMiddleware from 'redux-saga';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import { combineReducers } from 'redux';
 
 import { createReducer } from '../store/reducers';
 import guestReducer from '../features/guest/guestSlice';
 import teacherReducer from '../features/teacher/teacherSlice';
 
-// Add any reducer here
-const reducers = combineReducers({
-  guest: guestReducer,
-  teacher: teacherReducer,
-});
-
-const persistConfig = {
-  key: 'root',
-  storage,
-};
-
-const persistedReducer = persistReducer(persistConfig, reducers);
-
 const reduxSagaMonitorOptions = {};
 const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
 const { run: runSaga } = sagaMiddleware;
-
-// Create the store with saga middleware
-const middlewares = [sagaMiddleware];
-
-const middleware = getDefaultMiddleware({
-  serializableCheck: false,
-}).concat(...middlewares);
 
 const enhancers = [
   createInjectorsEnhancer({
     createReducer,
     runSaga,
   }),
-];
+] as StoreEnhancer[];
 
 export const store = configureStore({
-  reducer: persistedReducer,
-  middleware,
-  devTools: process.env.NODE_ENV !== 'production',
+  reducer: {
+    guest: guestReducer,
+    teacher: teacherReducer,
+  },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(sagaMiddleware),
+  devTools:
+    /* istanbul ignore next line */
+    process.env.NODE_ENV !== 'production' || process.env.PUBLIC_URL.length > 0,
   enhancers,
 });
 

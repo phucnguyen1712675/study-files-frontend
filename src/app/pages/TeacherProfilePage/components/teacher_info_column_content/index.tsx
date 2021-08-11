@@ -15,8 +15,10 @@ export default function TeacherInfoColumnContent() {
   const teacherInfo = useAppSelector(selectTeacherInfo);
 
   const teacherName = teacherInfo.data?.name ?? 'Name';
+
   const teacherShortDescription =
     teacherInfo.data?.shortDescription ?? 'Short description';
+
   const teacherDetailDescription = teacherInfo.data?.detailDescription ?? '';
 
   const teacherTotalCourseAmount = teacherCourses.data?.totalResults ?? 0;
