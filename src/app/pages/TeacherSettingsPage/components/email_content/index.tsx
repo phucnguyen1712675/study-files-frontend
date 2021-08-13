@@ -37,6 +37,11 @@ export default function EmailContent() {
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
+    defaultValues: React.useMemo(() => {
+      return {
+        email: data?.email,
+      };
+    }, [data]),
   });
 
   const { handleSubmit, setValue, watch } = methods;
