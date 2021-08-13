@@ -13,7 +13,6 @@ import {
   Alert,
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import { nanoid } from 'nanoid';
 
 import {
   UpdateCourseSectionTitleFormValues,
@@ -174,7 +173,7 @@ export default function CourseSectionContent() {
 
   const components = [
     {
-      id: nanoid(),
+      id: '1',
       title: "Update section's title",
       children: (
         <>
@@ -193,7 +192,7 @@ export default function CourseSectionContent() {
       ),
     },
     {
-      id: nanoid(),
+      id: '2',
       title: "Update section's ordinal number",
       children: (
         <>
@@ -216,7 +215,7 @@ export default function CourseSectionContent() {
       ),
     },
     {
-      id: nanoid(),
+      id: '3',
       title: 'New',
       children: (
         <>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Space, Skeleton, Image } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import { nanoid } from 'nanoid';
 
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import EditPictureForm from '../../../../components/features/teacher/form/edit_picture_form';
@@ -52,7 +51,7 @@ export default function CourseImageContent() {
 
   const components = [
     {
-      id: nanoid(),
+      id: '1',
       title: 'Picture',
       children: (
         <Space

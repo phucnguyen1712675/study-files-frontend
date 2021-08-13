@@ -17,7 +17,6 @@ import {
 import { CloseOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { updatedDiff } from 'deep-object-diff';
-import { nanoid } from 'nanoid';
 
 import { UpdateCoursePromotionFormValues } from './types';
 import UpdateCoursePromotionForm from './components/update_course_promotion_form';
@@ -220,7 +219,7 @@ export default function CourseFeeAndPromotionContent() {
 
   const components = [
     {
-      id: nanoid(),
+      id: '1',
       title: 'Fee',
       children: (
         <>
@@ -266,7 +265,7 @@ export default function CourseFeeAndPromotionContent() {
       ),
     },
     {
-      id: nanoid(),
+      id: '2',
       title: 'Promotion',
       children: (
         <>

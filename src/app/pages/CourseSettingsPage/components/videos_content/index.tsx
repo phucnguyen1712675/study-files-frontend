@@ -1,7 +1,6 @@
 import React from 'react';
 import { Alert, Skeleton, Button } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { nanoid } from 'nanoid';
 
 import { UploadVideoFormValues } from './types';
 import UploadVideoForm from './components/upload_video_form';
@@ -70,7 +69,7 @@ export default function VideosContent() {
 
   const components = [
     {
-      id: nanoid(),
+      id: '1',
       title: 'Upload video',
       children: (
         <>

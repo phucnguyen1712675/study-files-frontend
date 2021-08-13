@@ -3,7 +3,6 @@ import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button, message } from 'antd';
-import { nanoid } from 'nanoid';
 
 import { FORM_ITEM_LAYOUT } from '../../constants';
 import FormPassword from '../../../../components/features/teacher/form/form_password';
@@ -72,7 +71,7 @@ export default function AccountSecurityContent() {
 
   const components = [
     {
-      id: nanoid(),
+      id: '1',
       title: 'Change password',
       children: (
         <FormProvider {...methods}>

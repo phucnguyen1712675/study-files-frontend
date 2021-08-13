@@ -1,7 +1,6 @@
 import { Card, Skeleton, Image, Typography, Button, Tooltip } from 'antd';
 import { EditTwoTone, EyeOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
-import { nanoid } from 'nanoid';
 
 import { useAppSelector } from '../../../../../../hooks';
 import { Course } from '../../../../../../../types';
@@ -49,13 +48,13 @@ export default function CourseCard({ course, isEditable }: Props) {
 
   const courseCardActionItems = [
     {
-      id: nanoid(),
+      id: '1',
       tooltipTitle: 'Edit this course',
       icon: <EditTwoTone />,
       onClick: () => navigateToCourseSettingsPage(),
     },
     {
-      id: nanoid(),
+      id: '2',
       tooltipTitle: 'View this course as a Guest',
       icon: <EyeOutlined style={{ color: 'grey' }} />,
       onClick: () => navigateToCourseDetailsPage(),
