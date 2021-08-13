@@ -33,6 +33,7 @@ export default function CategoryCoursesListPage() {
         setTotalCourses(coursesRes.data.totalResults);
         setTotalPages(coursesRes.data.totalPages);
         setCourses(coursesRes.data.results);
+        setPage(1);
         setLoading(false);
 
         const unlisten = history.listen(() => {
