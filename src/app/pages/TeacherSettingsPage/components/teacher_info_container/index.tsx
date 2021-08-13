@@ -5,6 +5,7 @@ import { useAppSelector } from '../../../../hooks';
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 import { getTeacherProfilePagePath } from '../../../../../constants/routes';
+import { checkIfTeacherExists } from '../../../../../features/guest/guestAPI';
 
 const { Title, Text } = Typography;
 
@@ -15,18 +16,24 @@ export default function TeacherInfoContainer() {
 
   const teacherName = data?.name ?? 'Name';
 
-  const navigateToTeacherPersonalProfilePage = () => {
+  const navigateToTeacherPersonalProfilePage = async () => {
     const { id, name } = data!;
 
-    const param = name.toLowerCase().replaceAll(' ', '-');
+    const isTeacherExists = await checkIfTeacherExists(id);
 
-    const path = getTeacherProfilePagePath(param);
+    if (!isTeacherExists) {
+      history.push(process.env.PUBLIC_URL + '/notfound');
+    } else {
+      const param = name.toLowerCase().replaceAll(' ', '-');
 
-    const state = {
-      teacherId: id,
-    };
+      const path = getTeacherProfilePagePath(param);
 
-    history.push(path, state);
+      const state = {
+        teacherId: id,
+      };
+
+      history.push(path, state);
+    }
   };
 
   return (
