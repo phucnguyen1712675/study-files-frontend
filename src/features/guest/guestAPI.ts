@@ -21,3 +21,12 @@ export const getSubCategoriesOfCategoryResults = async (categoryId: string) => {
     }
   }
 };
+
+export const checkIfTeacherExists = async (userId: string) => {
+  try {
+    const { data } = await axios.get(`/teachers/info/${userId}`);
+    return !!data;
+  } catch (error) {
+    return false;
+  }
+};

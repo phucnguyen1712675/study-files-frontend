@@ -41,6 +41,7 @@ import { SectionList } from './components/SectionList';
 import { CourseCard, RatingCard } from '../../components/Cards/Cards';
 import { NotFoundPage } from 'app/pages/NotFoundPage/Loadable';
 import { getTeacherProfilePagePath } from '../../../constants/routes';
+import { checkIfTeacherExists } from '../../../features/guest/guestAPI';
 
 const Accordion = withStyles({
   root: {
@@ -297,15 +298,24 @@ export default function CourseDetailPage() {
   };
 
   // function logic handle =======================================
-  const NavigateToTeacherPage = () => {
+  const NavigateToTeacherPage = async () => {
     const { id, name } = course.teacher;
-    const param = name.toLowerCase().replaceAll(' ', '-');
-    const path = getTeacherProfilePagePath(param);
-    const state = {
-      teacherId: id,
-    };
 
-    history.push(path, state);
+    const isTeacherExists = await checkIfTeacherExists(id);
+
+    if (!isTeacherExists) {
+      history.push(process.env.PUBLIC_URL + '/notfound');
+    } else {
+      const param = name.toLowerCase().replaceAll(' ', '-');
+
+      const path = getTeacherProfilePagePath(param);
+
+      const state = {
+        teacherId: id,
+      };
+
+      history.push(path, state);
+    }
   };
 
   const NavigateToCategoryCousesListPage = function () {
