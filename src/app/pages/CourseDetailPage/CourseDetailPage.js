@@ -1311,8 +1311,7 @@ export default function CourseDetailPage() {
               stlye={{ display: 'flex', justifyContent: 'center' }}
             >
               <AllInboxSharp style={{ fontSize: 16, marginRight: '10px' }} />
-              Email:
-              {course.teacher.email}
+              Email: {course.teacher.email}
             </div>
             <div style={{ marginTop: '15px', fontWeight: 'bolder' }}>
               About me
