@@ -59,7 +59,7 @@
     "mdbreact": "5.0.2",
     "moment": "2.29.1",
     "nanoid": "3.1.23",
-    "netlify-cli": "6.0.8",
+    "netlify-cli": "6.2.9",
     "node-plop": "0.26.2",
     "plop": "2.7.4",
     "prettier": "2.1.1",

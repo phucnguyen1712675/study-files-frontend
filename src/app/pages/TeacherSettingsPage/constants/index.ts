@@ -1,24 +1,22 @@
-import { nanoid } from 'nanoid';
-
 import ProfileContent from '../components/profile_content';
 import AccountSecurityContent from '../components/account_security_content';
 import EmailContent from '../components/email_content';
 
 export const SIDER_MENU_ITEMS = [
   {
-    id: nanoid(),
+    id: '1',
     path: 'profile',
     title: 'Profile',
     component: ProfileContent,
   },
   {
-    id: nanoid(),
+    id: '2',
     path: 'security',
     title: 'Account security',
     component: AccountSecurityContent,
   },
   {
-    id: nanoid(),
+    id: '3',
     path: 'email',
     title: 'Email',
     component: EmailContent,

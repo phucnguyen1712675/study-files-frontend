@@ -9,7 +9,6 @@ import { convertToHTML } from 'draft-convert';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import htmlToDraft from 'html-to-draftjs';
 import { updatedDiff } from 'deep-object-diff';
-import { nanoid } from 'nanoid';
 
 import './index.css';
 
@@ -172,7 +171,7 @@ export default function GeneralInformationContent() {
 
   const components = [
     {
-      id: nanoid(),
+      id: '1',
       title: 'General information',
       children: (
         <FormProvider {...methods}>

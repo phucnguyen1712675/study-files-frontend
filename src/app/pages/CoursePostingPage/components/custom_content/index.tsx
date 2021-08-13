@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, message } from 'antd';
 import { useHistory } from 'react-router-dom';
-import { nanoid } from 'nanoid';
 
 import { STEP_ITEMS } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../../../hooks';
@@ -49,7 +48,7 @@ export default function CustomContent({
 
   const components = [
     {
-      id: nanoid(),
+      id: '1',
       title: `Step ${step + 1}`,
       children: (
         <>

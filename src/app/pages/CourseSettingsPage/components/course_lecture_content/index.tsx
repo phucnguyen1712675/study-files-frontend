@@ -202,7 +202,7 @@ export default function CourseLectureContent() {
 
   const components = [
     {
-      id: nanoid(),
+      id: '1',
       title: "Update lecture's info",
       children: (
         <>
@@ -223,7 +223,7 @@ export default function CourseLectureContent() {
       ),
     },
     {
-      id: nanoid(),
+      id: '2',
       title: "Update lecture's ordinal number",
       children: (
         <>
@@ -248,7 +248,7 @@ export default function CourseLectureContent() {
       ),
     },
     {
-      id: nanoid(),
+      id: '3',
       title: 'New',
       children: (
         <>

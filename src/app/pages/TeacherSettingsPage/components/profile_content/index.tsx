@@ -14,7 +14,6 @@ import {
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { updatedDiff } from 'deep-object-diff';
-import { nanoid } from 'nanoid';
 
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
@@ -135,7 +134,7 @@ export default function ProfileContent() {
 
   const components = [
     {
-      id: nanoid(),
+      id: '1',
       title: 'Public profile',
       children: (
         <Row>

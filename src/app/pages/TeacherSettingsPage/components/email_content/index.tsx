@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Skeleton, Space, Button, Form, message } from 'antd';
-import { nanoid } from 'nanoid';
 
 import { FORM_ITEM_LAYOUT } from '../../constants';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
@@ -113,7 +112,7 @@ export default function EmailContent() {
 
   const components = [
     {
-      id: nanoid(),
+      id: '1',
       title: 'Email',
       children: (
         <>

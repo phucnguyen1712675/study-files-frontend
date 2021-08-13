@@ -1,6 +1,5 @@
 import React from 'react';
 import { Alert, Skeleton, Button, Space, Popconfirm, message } from 'antd';
-import { nanoid } from 'nanoid';
 
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
@@ -52,7 +51,7 @@ export default function CourseStatusContent() {
 
   const components = [
     {
-      id: nanoid(),
+      id: '1',
       title: 'Status',
       children: (
         <Space direction="vertical" size="middle">
