@@ -60,6 +60,13 @@ export default function ProfileContent() {
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
+    defaultValues: React.useMemo(() => {
+      return {
+        name: data?.name,
+        shortDescription: data?.shortDescription,
+        detailDescription: data?.detailDescription,
+      };
+    }, [data]),
   });
 
   const { handleSubmit, setValue, watch } = methods;
