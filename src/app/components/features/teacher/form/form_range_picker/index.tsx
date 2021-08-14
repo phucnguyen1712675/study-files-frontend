@@ -18,7 +18,7 @@ export default function FormRangePicker({
   label,
   disabledDate,
 }: Props) {
-  const onDateChange = (dates, _) => {
+  const onDateChange = dates => {
     if (dates && dates.length === 2) {
       setValue(stateTimeName, dates[0].format());
       setValue(endTimeName, dates[1].format());
