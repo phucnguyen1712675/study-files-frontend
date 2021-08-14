@@ -102,18 +102,25 @@ export default function CourseFeeAndPromotionContent() {
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
+    defaultValues: React.useMemo(() => {
+      return {
+        originalFee: data?.originalFee,
+      };
+    }, [data]),
   });
 
-  const { handleSubmit, setValue, getValues, watch } = methods;
+  const { handleSubmit, getValues, watch, reset } = methods;
 
   const watchOriginalFee = watch('originalFee');
 
   React.useEffect(() => {
     if (!isLoading && data) {
-      setValue('originalFee', data?.originalFee ?? 0);
+      reset({
+        originalFee: data!.originalFee,
+      });
       setHasPromotion(checkPromotion());
     }
-  }, [data, isLoading, setValue, checkPromotion]);
+  }, [data, isLoading, reset, checkPromotion]);
 
   const onSubmit = handleSubmit(async (values: FormValues) => {
     const courseData = courseDetails.data!;
