@@ -13,7 +13,6 @@ import {
   message,
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import { updatedDiff } from 'deep-object-diff';
 
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
@@ -114,32 +113,71 @@ export default function ProfileContent() {
   const onCancel = () => setVisible(false);
 
   const onSubmit = handleSubmit(async (values: FormValues) => {
-    const teacherData = data!;
+    setLoading(true);
 
-    const differenceToUpdate = updatedDiff(teacherData, values);
+    const payload = { ...values };
 
-    if (
-      !differenceToUpdate ||
-      Object.keys(differenceToUpdate).length !== 0 ||
-      differenceToUpdate.constructor !== Object
-    ) {
-      setLoading(true);
+    // Delete undefined prop
+    Object.keys(payload).forEach(key =>
+      payload[key] === undefined ? delete payload[key] : {},
+    );
 
-      const response = await updateTeacherInfo(teacherId, differenceToUpdate);
+    const response = await updateTeacherInfo(teacherId, payload);
 
-      if (!response || response.status !== 200) {
-        message.error(`Error: ${response}`);
-      } else {
-        message.success('Processing complete!');
-
-        dispatch(getTeacherInfo(data!.id));
-      }
-
-      setLoading(false);
+    if (!response || response.status !== 200) {
+      message.error(`Error: ${response}`);
     } else {
       message.success('Processing complete!');
+
+      dispatch(getTeacherInfo(data!.id));
     }
+
+    setLoading(false);
   });
+
+  const checkDisabled = () => {
+    if (!data) {
+      return false;
+    }
+
+    if (
+      typeof data.shortDescription === 'undefined' &&
+      typeof data.detailDescription === 'undefined'
+    ) {
+      return (
+        (!watchName || watchName === data?.name) &&
+        !watchDetailDescription &&
+        !watchShortDescription
+      );
+    }
+
+    if (
+      typeof data.shortDescription === 'undefined' ||
+      typeof data.detailDescription === 'undefined'
+    ) {
+      if (typeof data.shortDescription === 'undefined') {
+        return (
+          (!watchName ||
+            (watchName === data?.name &&
+              watchDetailDescription === data.detailDescription)) &&
+          !watchShortDescription
+        );
+      }
+      return (
+        (!watchName ||
+          (watchName === data?.name &&
+            watchShortDescription === data.shortDescription)) &&
+        !watchDetailDescription
+      );
+    }
+
+    return (
+      !watchName ||
+      (watchName === data?.name &&
+        watchShortDescription === data.shortDescription &&
+        watchDetailDescription === data.detailDescription)
+    );
+  };
 
   const components = [
     {
@@ -166,14 +204,7 @@ export default function ProfileContent() {
                     type="primary"
                     htmlType="submit"
                     loading={loading}
-                    disabled={
-                      !watchName ||
-                      !watchShortDescription ||
-                      !watchDetailDescription ||
-                      (watchName === data?.name &&
-                        watchShortDescription === data?.shortDescription &&
-                        watchDetailDescription === data.detailDescription)
-                    }
+                    disabled={checkDisabled()}
                   >
                     Submit
                   </Button>
