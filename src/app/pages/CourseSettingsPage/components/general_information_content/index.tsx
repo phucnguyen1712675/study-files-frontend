@@ -81,9 +81,17 @@ export default function GeneralInformationContent() {
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
+    defaultValues: React.useMemo(() => {
+      return {
+        name: courseDetails.data?.name,
+        shortDescription: courseDetails.data?.shortDescription,
+        detailDescription: courseDetails.data?.detailDescription,
+        subCategoryId: courseDetails.data?.subCategoryId,
+      };
+    }, [courseDetails]),
   });
 
-  const { handleSubmit, setValue, watch } = methods;
+  const { handleSubmit, setValue, watch, reset } = methods;
 
   const watchName = watch('name');
 
@@ -108,13 +116,10 @@ export default function GeneralInformationContent() {
 
   React.useEffect(() => {
     if (!courseDetails.isLoading && courseDetails.data) {
-      setValue('name', courseDetails.data?.name ?? '');
-      setValue('shortDescription', courseDetails.data?.shortDescription ?? '');
-      setValue('subCategoryId', courseDetails.data?.subCategoryId ?? '');
-
-      const detailValue = courseDetails.data
-        ? courseDetails.data?.detailDescription.replaceAll('&lt;', '<')
-        : '<p>Hey this <strong>editor</strong> rocks 😀</p>';
+      const detailValue = courseDetails.data!.detailDescription.replaceAll(
+        '&lt;',
+        '<',
+      );
 
       var contentBlock = htmlToDraft(detailValue);
 
@@ -127,10 +132,16 @@ export default function GeneralInformationContent() {
         editorStateInitial = EditorState.createWithContent(contentState);
       }
 
+      reset({
+        name: courseDetails.data!.name,
+        shortDescription: courseDetails.data!.shortDescription,
+        subCategoryId: courseDetails.data!.subCategoryId,
+      });
+
       setEditorState(editorStateInitial);
       convertContentToHTML(editorStateInitial);
     }
-  }, [courseDetails, setValue, convertContentToHTML]);
+  }, [courseDetails, convertContentToHTML, reset]);
 
   const onSubmit = handleSubmit(async (values: FormValues) => {
     const courseData = courseDetails.data!;

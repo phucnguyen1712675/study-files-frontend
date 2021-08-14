@@ -69,7 +69,7 @@ export default function ProfileContent() {
     }, [data]),
   });
 
-  const { handleSubmit, setValue, watch } = methods;
+  const { handleSubmit, watch, reset } = methods;
 
   const watchName = watch('name');
 
@@ -79,11 +79,13 @@ export default function ProfileContent() {
 
   React.useEffect(() => {
     if (!isLoading && data) {
-      setValue('name', data?.name ?? '');
-      setValue('shortDescription', data?.shortDescription ?? '');
-      setValue('detailDescription', data?.detailDescription ?? '');
+      reset({
+        name: data!.name,
+        shortDescription: data!.shortDescription,
+        detailDescription: data!.detailDescription,
+      });
     }
-  }, [data, isLoading, setValue]);
+  }, [data, isLoading, reset]);
 
   const onCreate = async (values: EditPictureFormValues) => {
     setVisible(false);
