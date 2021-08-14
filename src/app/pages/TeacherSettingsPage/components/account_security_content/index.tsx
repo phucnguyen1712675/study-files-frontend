@@ -26,6 +26,13 @@ const schema = yup.object().shape({
     .matches(
       /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
       'Password must contain at least one letter and one number',
+    )
+    .test(
+      'not-same-password',
+      'New Password cannot be the same as Old Password',
+      function (value) {
+        return this.parent.oldPassword !== value;
+      },
     ),
   confirmNewPassword: yup
     .string()
