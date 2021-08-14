@@ -168,10 +168,8 @@ export default function ProfileContent() {
                     loading={loading}
                     disabled={
                       !watchName ||
-                      !watchShortDescription ||
-                      !watchDetailDescription ||
                       (watchName === data?.name &&
-                        watchShortDescription === data?.shortDescription &&
+                        watchShortDescription === data.shortDescription &&
                         watchDetailDescription === data.detailDescription)
                     }
                   >

@@ -520,6 +520,7 @@ export default function CourseDetailPage() {
         alert(ratingsRes.data.message);
       }
     } catch (err) {
+      console.log(err);
       if (err.response) {
         alert(err.response.data.message);
       }

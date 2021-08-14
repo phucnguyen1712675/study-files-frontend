@@ -331,12 +331,16 @@ export function RatingCard({ rating, feedBack }) {
           >
             <Avatar
               alt="Remy Sharp"
-              src={feedBack.teacher.avatar ?? userAvatar}
+              src={
+                feedBack.teacher !== null ? feedBack.teacher.avatar : userAvatar
+              }
               style={{ width: '60px', height: '60px', marginRight: '20px' }}
             />
             <div>
               <div style={{ fontWeight: 'bolder' }}>
-                {feedBack.teacher.name ?? 'Teacher not found'}
+                {feedBack.teacher !== null
+                  ? feedBack.teacher.name
+                  : 'Teacher not found'}
               </div>
               <div
                 style={{
@@ -372,7 +376,7 @@ export function RatingCard({ rating, feedBack }) {
         />
         <div>
           <div style={{ marginRight: '30px', fontWeight: 'bolder' }}>
-            {rating.student.name ?? 'User not found'}
+            {rating.student !== null ? rating.student.name : 'User not found'}
           </div>
           <div
             style={{
