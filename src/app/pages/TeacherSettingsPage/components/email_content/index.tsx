@@ -15,6 +15,7 @@ import { showLoadingSwal, closeSwal } from '../../../../../utils/sweet_alert_2';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 import { updateTeacherInfo } from '../../../../../features/teacher/teacherAPI';
 import { getTeacherInfo } from '../../../../../features/guest/guestThunkAPI';
+import { VERIFY_EMAIL_PAGE_PATH } from '../../../../../constants/routes';
 
 type FormValues = {
   email: string;
@@ -44,15 +45,17 @@ export default function EmailContent() {
     }, [data]),
   });
 
-  const { handleSubmit, setValue, watch } = methods;
+  const { handleSubmit, watch, reset } = methods;
 
   const watchEmail = watch('email');
 
   React.useEffect(() => {
     if (!isLoading && data) {
-      setValue('email', data?.email ?? '');
+      reset({
+        email: data!.email,
+      });
     }
-  }, [data, isLoading, setValue]);
+  }, [data, isLoading, reset]);
 
   const sendOTP = async () => {
     try {
@@ -71,7 +74,7 @@ export default function EmailContent() {
       if (resSendEmail.status === 200) {
         message.info('An OTP have sent to your register mail');
 
-        history.push('/verifyEmail');
+        history.push(VERIFY_EMAIL_PAGE_PATH);
 
         window.location.reload();
       } else {

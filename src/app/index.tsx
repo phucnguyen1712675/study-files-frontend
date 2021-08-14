@@ -54,13 +54,13 @@ import AppContext from './AppContext';
 import {
   SIGN_IN_PAGE_PATH,
   SIGN_UP_PAGE_PATH,
+  VERIFY_EMAIL_PAGE_PATH,
   TEACHER_PROFILE_PAGE_PATH,
   TEACHER_COURSES_PAGE_PATH,
   TEACHER_SETTINGS_PAGE_PATH,
   COURSE_SETTINGS_PAGE_PATH,
   COURSE_POSTING_PAGE_PATH,
 } from '../constants/routes';
-// import { ROLES } from '../constants/roles';
 import { axiosGuestInstance } from '../api/guest';
 import { AccessToken } from '../api/auth';
 import // SampleDataSections,
@@ -232,7 +232,11 @@ export function App() {
 
           <Route path={SIGN_IN_PAGE_PATH} component={LoginPage} />
           <Route path={SIGN_UP_PAGE_PATH} component={RegisterPage} />
-          <Route exact path="/verifyEmail" component={EmailVerifiedPage} />
+          <Route
+            exact
+            path={VERIFY_EMAIL_PAGE_PATH}
+            component={EmailVerifiedPage}
+          />
 
           {/* admin routes */}
           <PrivateRouteAdmin exact path="/admin/users">

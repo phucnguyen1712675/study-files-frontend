@@ -10,11 +10,13 @@ import {
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import CountdownTimer from 'react-component-countdown-timer';
-
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
+import { message } from 'antd';
+
 import { axiosAuthInstance } from '../../../../api/auth';
+import { showLoadingSwal, closeSwal } from '../../../../utils/sweet_alert_2';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -52,23 +54,31 @@ export default function EmailVerifiedPage() {
         email: localStorage.studyFiles_user_email,
         id: localStorage.studyFiles_user_id,
       };
+
+      showLoadingSwal();
+
       const resSendEmail = await axiosAuthInstance.post(
         '/send-verification-email',
         data,
       );
+
+      closeSwal();
+
       if (resSendEmail.status === 200) {
-        alert('an Otp have sent to your register mail');
+        message.info('an Otp have sent to your register mail');
         setCountDown(600);
       } else {
-        alert('something wrong ?');
+        message.error('something wrong ?');
       }
     } catch (err) {
+      closeSwal();
+
       if (err.response) {
-        alert(err.response.data.message);
+        message.error(err.response.data.message);
       } else if (err.request) {
-        alert(err.request);
+        message.error(err.request);
       } else {
-        alert(err.message);
+        message.error(err.message);
       }
     }
   };
@@ -76,7 +86,12 @@ export default function EmailVerifiedPage() {
   const onSubmit = async function (data) {
     data = { ...data, id: localStorage.studyFiles_user_id };
     try {
+      showLoadingSwal();
+
       const resSendOTP = await axiosAuthInstance.post('/verify-email', data);
+
+      closeSwal();
+
       if (resSendOTP.status === 200) {
         localStorage.studyFiles_user_isVerified = true;
         history.push('/');
@@ -86,12 +101,14 @@ export default function EmailVerifiedPage() {
         }
       }
     } catch (err) {
+      closeSwal();
+
       if (err.response) {
-        alert(err.response.data.message);
+        message.error(err.response.data.message);
       } else if (err.request) {
-        alert(err.request);
+        message.error(err.request);
       } else {
-        alert(err.message);
+        message.error(err.message);
       }
     }
   };
