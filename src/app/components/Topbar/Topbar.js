@@ -3,13 +3,12 @@ import { useHistory, useLocation, Link } from 'react-router-dom';
 import {
   PersonOutlineSharp,
   ExitToAppSharp,
-  KeyboardArrowDownSharp,
   ClearSharp,
   SearchSharp,
 } from '@material-ui/icons';
-import { Grid, InputBase, MenuItem, Menu } from '@material-ui/core';
-import NestedMenuItem from 'material-ui-nested-menu-item';
-import { message } from 'antd';
+import { Grid, InputBase } from '@material-ui/core';
+import { message, Menu, Dropdown } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 
 import './Topbar.css';
 import AppContext from '../../AppContext';
@@ -17,12 +16,12 @@ import { axiosGuestInstance } from '../../../api/guest';
 import { TEACHER_COURSES_PAGE_PATH } from '../../../constants/routes';
 import { showLoadingSwal, closeSwal } from '../../../utils/sweet_alert_2';
 
+const { SubMenu } = Menu;
+
 export default function Topbar({ initQuery }) {
   const history = useHistory();
   const { store, dispatch } = useContext(AppContext);
   const [query, setQuery] = useState(initQuery);
-
-  const [menuPosition, setMenuPosition] = useState(null);
 
   const btnSignOut_Clicked = async function () {
     delete localStorage.studyFiles_user_accessToken;
@@ -118,90 +117,58 @@ export default function Topbar({ initQuery }) {
     return <></>;
   };
 
-  const handleListCategoriesClick = event => {
-    if (menuPosition) {
-      return;
-    }
-    event.preventDefault();
-    setMenuPosition({
-      top: 50,
-      left: event.pageX,
-    });
-  };
+  const handleOnClickMenuItem = ({ keyPath }) => {
+    const subCategoryId = keyPath[0];
+    const categoryId = keyPath[1];
 
-  const handleCategoryClick = function (event, categoryName, subCategory) {
-    if (subCategory) {
-      const temp = categoryName.replaceAll(' ', '-');
-      const temp2 = subCategory.name.replaceAll(' ', '-');
-      history.push(`/category/${temp}/${temp2}`, {
-        selectedSubCategory: subCategory,
+    const selectedSubCategory = store.subCategories.find(
+      subCategory => subCategory.id === subCategoryId,
+    );
+    const selectedCategory = store.categories.find(
+      category => category.id === categoryId,
+    );
+
+    if (!selectedSubCategory || !selectedCategory) {
+      message.error('Sorry! Category not found.');
+    } else {
+      const subCategoryName = selectedSubCategory.name;
+      const categoryName = selectedCategory.name;
+
+      const subCategoryParam = subCategoryName.replaceAll(' ', '-');
+      const categoryParam = categoryName.replaceAll(' ', '-');
+
+      history.push(`/category/${categoryParam}/${subCategoryParam}`, {
+        selectedSubCategory: selectedSubCategory,
       });
     }
-    setMenuPosition(null);
   };
 
-  const CategoryMenuItemWidget = function (category) {
-    return (
-      <div
-        class="request-top"
-        style={{
-          whiteSpace: 'pre-wrap',
-          overflowWrap: 'break-word',
-          width: '250px',
-          padding: '5px 0px',
-        }}
-      >
-        <span style={{ color: '#525252' }}>{category.name}</span>
-      </div>
-    );
-  };
+  const menu = (
+    <Menu onClick={handleOnClickMenuItem}>
+      {store.categories.map(category => (
+        <SubMenu key={category.id} title={category.name}>
+          {store.subCategories
+            .filter(subCategory => subCategory.categoryId === category.id)
+            .map(subCategory => (
+              <Menu.Item key={subCategory.id}>{subCategory.name}</Menu.Item>
+            ))}
+        </SubMenu>
+      ))}
+    </Menu>
+  );
 
   const CategoriesMenuWidget = function () {
     return (
-      <div>
+      <Dropdown overlay={menu}>
         <div
-          className="userText"
-          onClick={handleListCategoriesClick}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            marginRight: '30px',
-          }}
+          className="ant-dropdown-link"
+          onClick={e => e.preventDefault()}
+          href="...clickMe"
+          style={{ color: '#525252', marginRight: '15px' }}
         >
-          <div style={{ marginRight: '30px' }}>Categories</div>
-          <span>
-            <KeyboardArrowDownSharp />
-          </span>
+          Categories <DownOutlined />
         </div>
-        <Menu
-          open={!!menuPosition}
-          onClose={() => setMenuPosition(null)}
-          anchorReference="anchorPosition"
-          anchorPosition={menuPosition}
-        >
-          {store.categories.map(category => (
-            <NestedMenuItem
-              key={category.id}
-              label={CategoryMenuItemWidget(category)}
-              parentMenuOpen={!!menuPosition}
-            >
-              {store.subCategories
-                .filter(subCategory => subCategory.categoryId === category.id)
-                .map(subCategory => (
-                  <MenuItem
-                    key={subCategory.id}
-                    onClick={e =>
-                      handleCategoryClick(e, category.name, subCategory)
-                    }
-                    value={subCategory.id}
-                  >
-                    {CategoryMenuItemWidget(subCategory)}
-                  </MenuItem>
-                ))}
-            </NestedMenuItem>
-          ))}
-        </Menu>
-      </div>
+      </Dropdown>
     );
   };
 
