@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import '@brainhubeu/react-carousel/lib/style.css';
-import { Spin } from 'antd';
-
 import { Grid, Select } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
+import { Result, Button, Spin } from 'antd';
+import { FrownOutlined } from '@ant-design/icons';
 
+import PageLayoutWrapper from '../../../components/features/teacher/page_layout_wrapper';
 import { CourseCard } from '../../../components/Cards/Cards';
 import SubCategoryTabs from '../components/SubCategoryTabs';
 import TopBar from '../../../components/Topbar/Topbar';
 import Footer from '../../../components/Footer/Footer';
 import { axiosGuestInstance } from '../../../../api/guest';
+import AppContext from '../../../AppContext';
 
 export default function CategoryCoursesListPage() {
   const location = useLocation();
@@ -49,6 +51,38 @@ export default function CategoryCoursesListPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [limit, selectedSubCategory.id],
   );
+
+  const { store } = useContext(AppContext);
+
+  const hasAtLeastOneCourse = store.latestCourses.some(
+    course => course.subCategoryId === selectedSubCategory.id,
+  );
+
+  if (!hasAtLeastOneCourse) {
+    return (
+      <PageLayoutWrapper>
+        <div
+          style={{
+            width: '100%',
+            height: '80vh',
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+          }}
+        >
+          <Result
+            icon={<FrownOutlined />}
+            title="Sorry, this sub-category has no course yet!"
+            extra={
+              <Button type="primary" href={process.env.PUBLIC_URL + '/'}>
+                Return to Home Page
+              </Button>
+            }
+          />
+        </div>
+      </PageLayoutWrapper>
+    );
+  }
 
   const handlePageChange = async function (event, value) {
     setPage(value);
