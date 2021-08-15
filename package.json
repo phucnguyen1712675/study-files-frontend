@@ -2,6 +2,7 @@
   "name": "study-files-frontend",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://salty-fortress-49217.herokuapp.com/v1",
   "dependencies": {
     "@ant-design/icons": "4.6.2",
     "@brainhubeu/react-carousel": "2.0.4",
