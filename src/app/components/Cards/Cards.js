@@ -95,15 +95,12 @@ export function CourseCard({ course }) {
       if (dateNow < promotionEndDate && dateNow > promotionStartDate) {
         return (
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div
-              className={classes.cardTittle}
-              style={{ marginRight: '18px', marginTop: '0px' }}
-            >
+            <div className={classes.cardTittle} style={{ marginRight: '18px' }}>
               {course.fee} $US
             </div>
             <div
               className={classes.cardSmallText}
-              style={{ textDecoration: 'line-through', marginTop: '0px' }}
+              style={{ textDecoration: 'line-through' }}
             >
               {course.originalFee} $US
             </div>
@@ -111,11 +108,7 @@ export function CourseCard({ course }) {
         );
       }
     }
-    return (
-      <div className={classes.cardTittle} style={{ marginTop: '0px' }}>
-        {course.originalFee} $US
-      </div>
-    );
+    return <div className={classes.cardTittle}>{course.originalFee} $US</div>;
   };
 
   const RatingStarsWidget = function () {
@@ -176,7 +169,7 @@ export function CourseCard({ course }) {
     if (str !== '') {
       return (
         <div
-          style={{ marginTop: '0px', display: 'flex', alignItems: 'center' }}
+          style={{ marginTop: '-6px', display: 'flex', alignItems: 'center' }}
         >
           {FeeWidget()}
           <div
@@ -194,7 +187,7 @@ export function CourseCard({ course }) {
           </div>
         </div>
       );
-    } else return <div style={{ marginTop: '0px' }}>{FeeWidget()}</div>;
+    } else return <div style={{ marginTop: '-6px' }}>{FeeWidget()}</div>;
   };
 
   const NavigateToDetailCourses = function () {
@@ -215,11 +208,13 @@ export function CourseCard({ course }) {
         <div className={classes.cardTittle} style={{ marginTop: '8px' }}>
           {course.name}
         </div>
-        <div className={classes.cardSmallText} style={{ marginTop: '8px' }}>
+        <div className={classes.cardSmallText} style={{ marginTop: '1px' }}>
           {course.teacher.name}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div
+          style={{ display: 'flex', alignItems: 'center', marginTop: '-7px' }}
+        >
           <div className={classes.cardRatingText}>{course.rating}</div>
           <div style={{ marginRight: '10px', marginTop: '0px' }}>
             {RatingStarsWidget()}

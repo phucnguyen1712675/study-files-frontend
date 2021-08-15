@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react';
 import { Grid, Tabs, Tab, Box, Button } from '@material-ui/core';
 import { NewReleases } from '@material-ui/icons';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { Badge } from 'antd';
 import AppContext from 'app/AppContext';
 import { axiosGuestInstance } from '../../../api/guest';
 import './studentPage.css';
@@ -241,6 +242,21 @@ export function StudentPage() {
   };
 
   // widget function ===================
+  const courseCardMyCourse = function (course) {
+    if (!course.status) {
+      return (
+        <Badge.Ribbon
+          text={<div style={{ color: '#fafafa' }}>Incomplete</div>}
+          placement="start"
+          color="#ff5454"
+          style={{ marginLeft: '20px' }}
+        >
+          <CourseCard course={course} />
+        </Badge.Ribbon>
+      );
+    } else return <CourseCard course={course} />;
+  };
+
   const WatchListWidget = function () {
     return (
       <div style={{ padding: '20px' }}>
@@ -298,8 +314,13 @@ export function StudentPage() {
               const url = `/studyPage/${course.name}/`;
               return (
                 <Grid item xs={3} key={course.id}>
-                  <div style={{ margin: '0px 0px' }}>
-                    <CourseCard course={course} />
+                  <div>
+                    {/* <div style={{ display: 'flex' }}>
+                      <CourseCard course={course} />
+                      {incompleteWidget(course.status)}
+                    </div> */}
+                    {courseCardMyCourse(course)}
+
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <Button
                         style={{ margin: '0px 20px' }}
