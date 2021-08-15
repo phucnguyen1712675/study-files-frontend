@@ -215,15 +215,18 @@ export default function SubCategoryTabs({ subCategory, isNavigate }) {
           <h2
             onClick={handleClick}
             style={{
-              margin: '20px 20px 5px',
               color: '#525252',
               cursor: 'pointer',
+              margin: '20px 50px 5px',
+              fontWeight: 'bolder',
+              fontSize: 25,
             }}
           >
             {subCategory.name}
           </h2>
           <div className={classes.root}>
             <AntTabs
+              style={{ margin: '0px 50px' }}
               value={value}
               onChange={handleChange}
               aria-label="wrapped label tabs example"
@@ -238,13 +241,17 @@ export default function SubCategoryTabs({ subCategory, isNavigate }) {
               <AntTab value="three" label="Most view" {...a11yProps('three')} />
             </AntTabs>
 
-            <TabPanel value={value} index="one">
+            <TabPanel value={value} index="one" style={{ margin: '0px -20px' }}>
               {BestSellerCarousel()}
             </TabPanel>
-            <TabPanel value={value} index="two">
+            <TabPanel value={value} index="two" style={{ margin: '0px -20px' }}>
               {LatestCousesCarousel()}
             </TabPanel>
-            <TabPanel value={value} index="three">
+            <TabPanel
+              value={value}
+              index="three"
+              style={{ margin: '0px -20px' }}
+            >
               {MostViewCarousel()}
             </TabPanel>
           </div>

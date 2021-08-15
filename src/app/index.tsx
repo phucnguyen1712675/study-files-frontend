@@ -63,9 +63,9 @@ import {
 } from '../constants/routes';
 import { axiosGuestInstance } from '../api/guest';
 import { AccessToken } from '../api/auth';
-import // SampleDataSections,
+// import // SampleDataSections,
 // SampleDataImages,
-'./pages/CourseDetailPage/components/SectionList';
+// './pages/CourseDetailPage/components/SectionList';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 

@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import SubCategoryTabs from './SubCategoryTabs';
 import AppContext from '../../../AppContext';
+import background from 'images/background3.jpg';
 
 export default function CategoryTabs({ category }) {
   const { store } = useContext(AppContext);
@@ -29,9 +30,31 @@ export default function CategoryTabs({ category }) {
     if (isHaveCourse) {
       return (
         <div style={{ margin: '20px' }}>
-          <h1 style={{ margin: '20px 20px 5px', color: '#387CFF' }}>
-            {category.name}
-          </h1>
+          <div
+            style={{
+              borderRadius: '3px',
+              height: '100px',
+              margin: '60px 50px 40px',
+              justifyContent: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundImage: `url(${background})`,
+              backgroundPosition: 'center' /* Center the image */,
+              backgroundRepeat: 'no-repeat' /* Do not repeat the image */,
+              backgroundSize: 'cover',
+            }}
+          >
+            <h1
+              style={{
+                margin: '20px 20px',
+                color: '#fafafa',
+                fontWeight: 'bolder',
+                fontSize: 35,
+              }}
+            >
+              {category.name}
+            </h1>
+          </div>
           {store.subCategories
             .filter(subCategory => subCategory.categoryId === category.id)
             .map(subCategory => (

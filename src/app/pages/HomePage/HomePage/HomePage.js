@@ -1,22 +1,64 @@
 import React, { useContext } from 'react';
 import Carousel, { slidesToShowPlugin } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
-import { Spin } from 'antd';
+import { Spin, Carousel as AntdCarousel } from 'antd';
 
 import TopBar from '../../../components/Topbar/Topbar';
 import Footer from '../../../components/Footer/Footer';
 import { CourseCard, CategoryCard } from '../../../components/Cards/Cards';
 import CategoryTabs from '../components/CategoryTabs.js';
+import CarouselCard from '../components/CarouselCard';
 import AppContext from '../../../AppContext';
+import welcome1 from 'images/welcome1.jpg';
+import welcome2 from 'images/welcome2.jpg';
+import welcome3 from 'images/welcome3.jpg';
 
 export default function HomePage() {
   const { store } = useContext(AppContext);
+  const WelcomeCarousel = [
+    {
+      title: `Welcome to STUDY-FILES!`,
+      content:
+        'Participants from all over the world are embarking on new careers, advancing in their fields and enriching their lives.',
+      background: `${welcome1}`,
+    },
+    {
+      title: 'A wide selection of courses',
+      content:
+        'Choose from hundreds of online course with videos from diversification of fields. New courses are added every month !!',
+      background: `${welcome2}`,
+    },
+    {
+      title: `Let's study now `,
+      content:
+        'Many free courses to try, eazy to use and so on ! What are you waiting for ? sign up now!!',
+      background: `${welcome3}`,
+    },
+  ];
+
   return (
     <>
       <TopBar initQuery={''} />
+      <AntdCarousel autoplay>
+        {WelcomeCarousel.map(item => (
+          <CarouselCard
+            title={item.title}
+            content={item.content}
+            background={item.background}
+          />
+        ))}
+      </AntdCarousel>
+
       {/* Best seller courses */}
-      <div style={{ margin: '20px' }}>
-        <h2 style={{ margin: '20px 20px 5px', color: '#525252' }}>
+      <div style={{ margin: '40px 20px 20px' }}>
+        <h2
+          style={{
+            margin: '20px 50px 5px',
+            color: '#525252',
+            fontWeight: 'bolder',
+            fontSize: 25,
+          }}
+        >
           Best sale courses
         </h2>
         {store.loading ? (
@@ -38,7 +80,6 @@ export default function HomePage() {
         ) : (
           <Carousel
             plugins={[
-              // 'infinite',
               'arrows',
               {
                 resolve: slidesToShowPlugin,
@@ -46,12 +87,6 @@ export default function HomePage() {
                   numberOfSlides: 4,
                 },
               },
-              // {
-              //   resolve: autoplayPlugin,
-              //   options: {
-              //     interval: 2000,
-              //   },
-              // },
             ]}
             animationSpeed={1000}
           >
@@ -63,7 +98,14 @@ export default function HomePage() {
       </div>
       {/* Popular sub categories */}
       <div style={{ margin: '20px' }}>
-        <h2 style={{ margin: '20px 20px 5px', color: '#525252' }}>
+        <h2
+          style={{
+            margin: '20px 50px 5px',
+            color: '#525252',
+            fontWeight: 'bolder',
+            fontSize: 25,
+          }}
+        >
           Popular sub categories
         </h2>
         {store.loading ? (
