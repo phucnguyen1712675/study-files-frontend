@@ -1,0 +1,152 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<App /> should render and match the snapshot 1`] = `
+<BrowserRouter>
+  <Helmet
+    defaultTitle="Study-files"
+    defer={true}
+    encodeSpecialCharacters={true}
+    htmlAttributes={
+      Object {
+        "lang": undefined,
+      }
+    }
+    titleTemplate="%s - Study-files"
+  >
+    <meta
+      content="Study-files application"
+      name="description"
+    />
+  </Helmet>
+  <Context.Provider
+    value={
+      Object {
+        "dispatch": [Function],
+        "store": Object {
+          "bestSellerCourses": Array [],
+          "categories": Array [],
+          "latestCourses": Array [],
+          "loading": true,
+          "myCourses": Array [],
+          "subCategories": Array [],
+          "user": Object {},
+          "userId": "",
+          "watchList": Array [],
+        },
+      }
+    }
+  >
+    <Switch>
+      <Route
+        component={[Function]}
+        exact={true}
+        path="/"
+      />
+      <Route
+        component={[Function]}
+        exact={true}
+        path="/search"
+      />
+      <Route
+        component={[Function]}
+        exact={true}
+        path="/category/:category/:subCategory"
+      />
+      <Route
+        component={[Function]}
+        exact={true}
+        path="/course/:name"
+      />
+      <Route
+        component={[Function]}
+        exact={true}
+        path="/studyPage/:name/"
+      />
+      <Route
+        component={[Function]}
+        path="/login"
+      />
+      <Route
+        component={[Function]}
+        path="/register"
+      />
+      <Route
+        component={[Function]}
+        exact={true}
+        path="/verifyEmail"
+      />
+      <PrivateRouteAdmin
+        exact={true}
+        path="/admin/users"
+      >
+        <Unknown />
+      </PrivateRouteAdmin>
+      <PrivateRouteAdmin
+        exact={true}
+        path="/admin/courses"
+      >
+        <Unknown />
+      </PrivateRouteAdmin>
+      <PrivateRouteAdmin
+        exact={true}
+        path="/admin/mainCategories"
+      >
+        <Unknown />
+      </PrivateRouteAdmin>
+      <PrivateRouteAdmin
+        exact={true}
+        path="/admin/subCategories"
+      >
+        <Unknown />
+      </PrivateRouteAdmin>
+      <PrivateRouteAdmin
+        exact={true}
+        path="/admin/updatePassword"
+      >
+        <Unknown />
+      </PrivateRouteAdmin>
+      <PrivateRouteStudent
+        exact={true}
+        path="/student"
+      >
+        <StudentPage />
+      </PrivateRouteStudent>
+      <PrivateRouteStudent
+        exact={true}
+        path="/student/updatePassword"
+      >
+        <UpdatePasswordPage />
+      </PrivateRouteStudent>
+      <Route
+        component={[Function]}
+        path="/teacher/:name"
+      />
+      <PrivateRouteTeacher
+        exact={true}
+        path="/my-courses"
+      >
+        <Unknown />
+      </PrivateRouteTeacher>
+      <PrivateRouteTeacher
+        path="/settings"
+      >
+        <Unknown />
+      </PrivateRouteTeacher>
+      <PrivateRouteTeacher
+        path="/courses/:courseId/settings"
+      >
+        <Unknown />
+      </PrivateRouteTeacher>
+      <PrivateRouteTeacher
+        path="/new"
+      >
+        <Unknown />
+      </PrivateRouteTeacher>
+      <Route
+        component={[Function]}
+      />
+    </Switch>
+  </Context.Provider>
+  <Memo(GlobalStyleComponent) />
+</BrowserRouter>
+`;
