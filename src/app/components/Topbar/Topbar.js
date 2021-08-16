@@ -5,10 +5,11 @@ import {
   ExitToAppSharp,
   ClearSharp,
   SearchSharp,
+  KeyboardArrowDownSharp,
 } from '@material-ui/icons';
 import { Grid, InputBase } from '@material-ui/core';
 import { message, Menu, Dropdown } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+// import { DownOutlined } from '@ant-design/icons';
 
 import './Topbar.css';
 import AppContext from '../../AppContext';
@@ -146,13 +147,38 @@ export default function Topbar({ initQuery }) {
   const menu = (
     <Menu onClick={handleOnClickMenuItem}>
       {store.categories.map(category => (
-        <SubMenu key={category.id} title={category.name}>
-          {store.subCategories
-            .filter(subCategory => subCategory.categoryId === category.id)
-            .map(subCategory => (
-              <Menu.Item key={subCategory.id}>{subCategory.name}</Menu.Item>
-            ))}
-        </SubMenu>
+        <>
+          <SubMenu
+            key={category.id}
+            title={category.name}
+            style={{
+              margin: '0px',
+              minWidth: '200px',
+              color: '#525252',
+            }}
+            // icon={<NavigateNextSharp />}
+          >
+            {store.subCategories
+              .filter(subCategory => subCategory.categoryId === category.id)
+              .map(subCategory => (
+                <>
+                  <Menu.Item
+                    key={subCategory.id}
+                    style={{
+                      padding: '6px 10px',
+                      minWidth: '200px',
+                      whiteSpace: 'pre-wrap',
+                      color: '#525252',
+                    }}
+                  >
+                    {subCategory.name}
+                  </Menu.Item>
+                  <Menu.Divider />
+                </>
+              ))}
+          </SubMenu>
+          <Menu.Divider />
+        </>
       ))}
     </Menu>
   );
@@ -161,12 +187,19 @@ export default function Topbar({ initQuery }) {
     return (
       <Dropdown overlay={menu}>
         <div
-          className="ant-dropdown-link"
+          className="ant-dropdown-link userText"
           onClick={e => e.preventDefault()}
           href="...clickMe"
-          style={{ color: '#525252', marginRight: '15px' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginRight: '30px',
+          }}
         >
-          Categories <DownOutlined />
+          <div style={{ marginRight: '30px' }}>Categories</div>
+          <span>
+            <KeyboardArrowDownSharp />
+          </span>
         </div>
       </Dropdown>
     );

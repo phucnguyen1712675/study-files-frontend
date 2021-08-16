@@ -5,7 +5,7 @@ export default function CarouselCard({ title, content, background }) {
   useEffect(() => {
     WebFont.load({
       google: {
-        families: ['Vidaloka', 'Montserrat'],
+        families: ['Vidaloka'],
       },
     });
   }, []);
@@ -25,14 +25,14 @@ export default function CarouselCard({ title, content, background }) {
           width: '45%',
           height: '90%',
           marginLeft: '30px',
-          padding: '20px',
+          padding: '20px 40px',
           backgroundColor: '#fafafa',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          webkitBoxShadow: '0 7px 7px -7px black',
-          mozBoxShadow: '0 7px 7px -7px black',
-          boxShadow: '0 7px 7px -7px black',
+          webkitBoxShadow: '3px 3px 7px 3px rgba(82,82,82,0.24)',
+          mozBoxShadow: '3px 3px 7px 3px rgba(82,82,82,0.24)',
+          boxShadow: '3px 3px 7px 3px rgba(82,82,82,0.24)',
         }}
       >
         <div

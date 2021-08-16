@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { CardContent, CardMedia, makeStyles, Avatar } from '@material-ui/core';
 import ReactStars from 'react-rating-stars-component';
 import AppContext from 'app/AppContext';
 import { useHistory } from 'react-router-dom';
 import { Image } from 'cloudinary-react';
+import WebFont from 'webfontloader';
+
 import userAvatar from 'images/user.jpg';
 
 const useStyles = makeStyles(theme => ({
@@ -60,21 +62,26 @@ const useStyles = makeStyles(theme => ({
   },
   categoryCard: {
     height: '80px',
-    width: '250px',
-    paddingRight: '10px',
-    paddingLeft: '10px',
+    width: '270px',
+    padding: '10px',
     verticalAlign: 'center',
-    margin: '10px 20px',
-    fontWeight: 'bolder',
+    margin: '10px 10px',
+    // fontWeight: 'bold',
     textAlign: 'center',
-    fontSize: 16,
-    color: '#387CFF',
-    border: '1px solid #387CFF',
-    borderRadius: '5px',
+    fontSize: 22,
+    backgroundColor: '#fafafa',
+    color: '#525252',
+    webkitBoxShadow: '1px 1px 7px -1px rgba(82,82,82,0.31)',
+    mozBoxShadow: '1px 1px 7px -1px rgba(82,82,82,0.31)',
+    boxShadow: '1px 1px 7px -1px rgba(82,82,82,0.31)',
+    // color: '#387CFF',
+    // border: '1px solid #387CFF',
+    // borderRadius: '5px',
     cursor: 'pointer',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'column',
   },
 }));
 
@@ -260,6 +267,15 @@ export function CategoryCard({ category }) {
   const classes = useStyles();
   const { dispatch } = useContext(AppContext);
   const history = useHistory();
+
+  useEffect(() => {
+    WebFont.load({
+      google: {
+        families: ['Vidaloka', 'Open Sans Condensed'],
+      },
+    });
+  }, []);
+
   const NavigateToCategoryCousesListPage = function () {
     dispatch({
       type: 'update_selectedCategory',
@@ -274,12 +290,30 @@ export function CategoryCard({ category }) {
     });
   };
 
+  const subScriberNumberText = function () {
+    if (category.subscriberNumber >= 1000)
+      return `${Math.floor(category.subscriberNumber / 1000)}.${
+        category.subscriberNumber % 1000
+      } Participants`;
+    else return `${category.subscriberNumber} Participants`;
+  };
+
   return (
     <div
       className={classes.categoryCard}
       onClick={() => NavigateToCategoryCousesListPage()}
     >
-      <span>{category.name}</span>
+      <span style={{ fontFamily: 'Vidaloka' }}>{category.name}</span>
+      <span
+        style={{
+          fontSize: 13,
+          color: '#828282',
+          fontWeight: 'lighter',
+          fontFamily: 'Open Sans Condensed',
+        }}
+      >
+        {subScriberNumberText()}
+      </span>
     </div>
   );
 }

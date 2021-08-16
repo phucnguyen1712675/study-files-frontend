@@ -63,9 +63,7 @@ import {
 } from '../constants/routes';
 import { axiosGuestInstance } from '../api/guest';
 import { AccessToken } from '../api/auth';
-// import // SampleDataSections,
-// SampleDataImages,
-// './pages/CourseDetailPage/components/SectionList';
+// import { SampleDataSections } from './pages/CourseDetailPage/components/SectionList';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -85,16 +83,9 @@ export function App() {
 
   // const testAddSectionsAndLectures = async function () {
   //   const sections = [...SampleDataSections()];
-  //   // const images = [...SampleDataImages()];
-  //   let i = 0;
-  //   // const length = images.length;
   //   const coursesRes = await axiosGuestInstance.get(`/test/courses`);
   //   const courses = coursesRes.data;
   //   for (var course of courses) {
-  //     // i = i % length;
-  //     // const data = { image: images[i] };
-  //     // await axiosGuestInstance.patch(`/test/courses/${course.id}`, data);
-  //     i = i + 1;
   //     for (var section of sections) {
   //       const dataSection = {
   //         courseId: course.id,
