@@ -126,11 +126,11 @@ export function CourseCard({ course }) {
   };
 
   const subScriberNumberText = function () {
-    if (course.subscriberNumber >= 1000)
-      return `( ${Math.floor(course.subscriberNumber / 1000)}.${
-        course.subscriberNumber % 1000
-      } )`;
-    else return `( ${course.subscriberNumber} )`;
+    if (course.ratingCount >= 1000)
+      return `( ${Math.floor(course.ratingCount / 1000)}.${
+        course.ratingCount % 1000
+      } Rated)`;
+    else return `( ${course.ratingCount} Rated)`;
   };
 
   const SubCategoryWidget = function () {
