@@ -23,7 +23,7 @@
 }
 
 .userLogo {
-  font-weight: bold;
+  /* font-weight: bold; */
   font-size: 23px;
   color: #387cff;
   cursor: pointer;

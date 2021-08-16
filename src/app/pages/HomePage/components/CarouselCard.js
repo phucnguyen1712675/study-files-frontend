@@ -30,8 +30,8 @@ export default function CarouselCard({ title, content, background }) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          webkitBoxShadow: '3px 3px 7px 3px rgba(82,82,82,0.24)',
-          mozBoxShadow: '3px 3px 7px 3px rgba(82,82,82,0.24)',
+          WebkitBoxShadow: '3px 3px 7px 3px rgba(82,82,82,0.24)',
+          MozBoxShadow: '3px 3px 7px 3px rgba(82,82,82,0.24)',
           boxShadow: '3px 3px 7px 3px rgba(82,82,82,0.24)',
         }}
       >

@@ -116,7 +116,14 @@ export default function CategoryCoursesListPage() {
           />
         }
       </div>
-      <h2 style={{ margin: '20px 20px 5px', color: '#525252' }}>
+      <h2
+        style={{
+          margin: '20px 70px 5px',
+          color: '#525252',
+          fontWeight: 'bolder',
+          fontSize: 25,
+        }}
+      >
         {totalCourses} courses in {selectedSubCategory.name}
       </h2>
       {loading ? (

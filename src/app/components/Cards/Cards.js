@@ -66,17 +66,13 @@ const useStyles = makeStyles(theme => ({
     padding: '10px',
     verticalAlign: 'center',
     margin: '10px 10px',
-    // fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 22,
     backgroundColor: '#fafafa',
     color: '#525252',
-    webkitBoxShadow: '1px 1px 7px -1px rgba(82,82,82,0.31)',
-    mozBoxShadow: '1px 1px 7px -1px rgba(82,82,82,0.31)',
+    WebkitBoxShadow: '1px 1px 7px -1px rgba(82,82,82,0.31)',
+    MozBoxShadow: '1px 1px 7px -1px rgba(82,82,82,0.31)',
     boxShadow: '1px 1px 7px -1px rgba(82,82,82,0.31)',
-    // color: '#387CFF',
-    // border: '1px solid #387CFF',
-    // borderRadius: '5px',
     cursor: 'pointer',
     display: 'flex',
     justifyContent: 'center',
@@ -203,7 +199,6 @@ export function CourseCard({ course }) {
 
   return (
     <div className={classes.card} onClick={() => NavigateToDetailCourses()}>
-      {/* <CardMedia className={classes.cardMedia} image={course.image} /> */}
       <div className={classes.cardMedia}>
         <Image
           className={classes.cardMedia}

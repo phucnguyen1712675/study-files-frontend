@@ -17,18 +17,21 @@ export default function HomePage() {
   const { store } = useContext(AppContext);
   const WelcomeCarousel = [
     {
+      id: 1,
       title: `Welcome to STUDY-FILES!`,
       content:
         'Participants from all over the world are embarking on new careers, advancing in their fields and enriching their lives.',
       background: `${welcome1}`,
     },
     {
+      id: 2,
       title: 'A wide selection of courses',
       content:
         'Choose from hundreds of online course with videos from diversification of fields. New courses are added every month !!',
       background: `${welcome2}`,
     },
     {
+      id: 3,
       title: `Let's study now `,
       content:
         'Many free courses to try, eazy to use and so on ! What are you waiting for ? sign up now!!',
@@ -42,6 +45,7 @@ export default function HomePage() {
       <AntdCarousel autoplay>
         {WelcomeCarousel.map(item => (
           <CarouselCard
+            key={item.id}
             title={item.title}
             content={item.content}
             background={item.background}

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import {
   PersonOutlineSharp,
@@ -9,8 +9,7 @@ import {
 } from '@material-ui/icons';
 import { Grid, InputBase } from '@material-ui/core';
 import { message, Menu, Dropdown } from 'antd';
-// import { DownOutlined } from '@ant-design/icons';
-
+import WebFont from 'webfontloader';
 import './Topbar.css';
 import AppContext from '../../AppContext';
 import { axiosGuestInstance } from '../../../api/guest';
@@ -23,6 +22,13 @@ export default function Topbar({ initQuery }) {
   const history = useHistory();
   const { store, dispatch } = useContext(AppContext);
   const [query, setQuery] = useState(initQuery);
+  useEffect(() => {
+    WebFont.load({
+      google: {
+        families: ['Acme'],
+      },
+    });
+  }, []);
 
   const btnSignOut_Clicked = async function () {
     delete localStorage.studyFiles_user_accessToken;
@@ -147,9 +153,8 @@ export default function Topbar({ initQuery }) {
   const menu = (
     <Menu onClick={handleOnClickMenuItem}>
       {store.categories.map(category => (
-        <>
+        <div key={category.id}>
           <SubMenu
-            key={category.id}
             title={category.name}
             style={{
               margin: '0px',
@@ -161,9 +166,8 @@ export default function Topbar({ initQuery }) {
             {store.subCategories
               .filter(subCategory => subCategory.categoryId === category.id)
               .map(subCategory => (
-                <>
+                <div key={subCategory.id}>
                   <Menu.Item
-                    key={subCategory.id}
                     style={{
                       padding: '6px 10px',
                       minWidth: '200px',
@@ -174,11 +178,11 @@ export default function Topbar({ initQuery }) {
                     {subCategory.name}
                   </Menu.Item>
                   <Menu.Divider />
-                </>
+                </div>
               ))}
           </SubMenu>
           <Menu.Divider />
-        </>
+        </div>
       ))}
     </Menu>
   );
@@ -352,7 +356,9 @@ export default function Topbar({ initQuery }) {
         <div style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
           <div>
             <Link to="/" style={{ textDecoration: 'none' }}>
-              <span className="userLogo">STUDY-FILES</span>
+              <span className="userLogo" style={{ fontFamily: 'Acme' }}>
+                STUDY-FILES
+              </span>
             </Link>
           </div>
           <div style={{ flexGrow: 1 }}>{SearchAndCategories()}</div>
@@ -366,7 +372,9 @@ export default function Topbar({ initQuery }) {
         <div className="topbarWrapper">
           <div className="topLeft">
             <Link to="/" className="text" style={{ textDecoration: 'none' }}>
-              <span className="userLogo">STUDY-FILES</span>
+              <span className="userLogo" style={{ fontFamily: 'Acme' }}>
+                STUDY-FILES
+              </span>
             </Link>
           </div>
         </div>

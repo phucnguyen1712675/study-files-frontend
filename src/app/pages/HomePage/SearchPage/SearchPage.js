@@ -387,7 +387,14 @@ export default function SearchPage() {
   return (
     <>
       <TopBar initQuery={query} />
-      <h1 style={{ margin: '20px 40px 5px', color: '#525252' }}>
+      <h1
+        style={{
+          margin: '20px 50px 5px',
+          color: '#525252',
+          fontWeight: 'bolder',
+          fontSize: 25,
+        }}
+      >
         {totalCourses} courses for "{query}"
       </h1>
       {ResultAndSortAndFilterWidget()}
