@@ -63,7 +63,7 @@ export default function FormFileBase64({
         )}
       />
       {isError && <Text type="danger">{errorMessage}</Text>}
-      {(isShowImage && src !== '') ?? (
+      {isShowImage && src !== '' ? (
         <Image
           src={src}
           alt="chosen"
@@ -78,6 +78,8 @@ export default function FormFileBase64({
             />
           }
         />
+      ) : (
+        <></>
       )}
     </Form.Item>
   );
