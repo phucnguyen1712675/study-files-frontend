@@ -126,7 +126,6 @@ export function App() {
         const bestSellerCoursesRes = await axiosGuestInstance.get(
           `/courses/most-outstanding-courses?limit=4&fromDate=${d}`,
         );
-        // TODO trang fix this
         const bestSellerSubCategoriesRes = await axiosGuestInstance.get(
           `/subCategories/most-sale-sub-categories?fromDate=${d}`,
         );
