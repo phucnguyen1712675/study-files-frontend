@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import Carousel, { slidesToShowPlugin } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import { Spin, Carousel as AntdCarousel } from 'antd';
+import { Grid } from '@material-ui/core';
 
 import TopBar from '../../../components/Topbar/Topbar';
 import Footer from '../../../components/Footer/Footer';
@@ -54,16 +54,16 @@ export default function HomePage() {
       </AntdCarousel>
 
       {/* Best seller courses */}
-      <div style={{ margin: '40px 20px 20px' }}>
+      <div style={{ margin: '40px 0px 20px' }}>
         <h2
           style={{
-            margin: '20px 50px 5px',
+            margin: '20px 20px 5px',
             color: '#525252',
             fontWeight: 'bolder',
             fontSize: 25,
           }}
         >
-          Best sale courses
+          TOP 4 Best sale courses this week
         </h2>
         {store.loading ? (
           <div
@@ -82,35 +82,26 @@ export default function HomePage() {
             </div>
           </div>
         ) : (
-          <Carousel
-            plugins={[
-              'arrows',
-              {
-                resolve: slidesToShowPlugin,
-                options: {
-                  numberOfSlides: 4,
-                },
-              },
-            ]}
-            animationSpeed={1000}
-          >
+          <Grid container style={{ width: '100%' }} justifyContent="center">
             {store.bestSellerCourses.map(item => (
-              <CourseCard course={item} key={item.id} />
+              <Grid item key={item.id}>
+                <CourseCard course={item} />
+              </Grid>
             ))}
-          </Carousel>
+          </Grid>
         )}
       </div>
       {/* Popular sub categories */}
       <div style={{ margin: '20px' }}>
         <h2
           style={{
-            margin: '20px 50px 5px',
+            margin: '20px 20px 5px',
             color: '#525252',
             fontWeight: 'bolder',
             fontSize: 25,
           }}
         >
-          Popular sub categories
+          BEST SALE sub categories this week
         </h2>
         {store.loading ? (
           <div
@@ -125,25 +116,17 @@ export default function HomePage() {
           >
             <Spin />
             <div style={{ color: '#525252', fontWeight: 'lighter' }}>
-              Loading popular courses ...
+              Loading best sale sub categories ...
             </div>
           </div>
         ) : (
-          <Carousel
-            plugins={[
-              'arrows',
-              {
-                resolve: slidesToShowPlugin,
-                options: {
-                  numberOfSlides: 5,
-                },
-              },
-            ]}
-          >
-            {store.subCategories.map(item => (
-              <CategoryCard category={item} key={item.id} />
+          <Grid container style={{ width: '100%' }} justifyContent="center">
+            {store.bestSellerSubCategories.map(item => (
+              <Grid item key={item.id}>
+                <CategoryCard category={item} />
+              </Grid>
             ))}
-          </Carousel>
+          </Grid>
         )}
       </div>
       {store.loading ? (

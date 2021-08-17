@@ -153,21 +153,22 @@ export default function Topbar({ initQuery }) {
   const menu = (
     <Menu onClick={handleOnClickMenuItem}>
       {store.categories.map(category => (
-        <div key={category.id}>
+        <React.Fragment key={category.id}>
           <SubMenu
+            key={category.id}
             title={category.name}
             style={{
               margin: '0px',
               minWidth: '200px',
               color: '#525252',
             }}
-            // icon={<NavigateNextSharp />}
           >
             {store.subCategories
               .filter(subCategory => subCategory.categoryId === category.id)
               .map(subCategory => (
-                <div key={subCategory.id}>
+                <React.Fragment key={subCategory.id}>
                   <Menu.Item
+                    key={subCategory.id}
                     style={{
                       padding: '6px 10px',
                       minWidth: '200px',
@@ -178,11 +179,11 @@ export default function Topbar({ initQuery }) {
                     {subCategory.name}
                   </Menu.Item>
                   <Menu.Divider />
-                </div>
+                </React.Fragment>
               ))}
           </SubMenu>
           <Menu.Divider />
-        </div>
+        </React.Fragment>
       ))}
     </Menu>
   );

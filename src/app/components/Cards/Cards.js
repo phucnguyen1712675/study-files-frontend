@@ -62,7 +62,7 @@ const useStyles = makeStyles(theme => ({
   },
   categoryCard: {
     height: '80px',
-    width: '270px',
+    width: '235px',
     padding: '10px',
     verticalAlign: 'center',
     margin: '10px 10px',
