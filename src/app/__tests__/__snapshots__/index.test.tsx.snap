@@ -24,6 +24,7 @@ exports[`<App /> should render and match the snapshot 1`] = `
         "dispatch": [Function],
         "store": Object {
           "bestSellerCourses": Array [],
+          "bestSellerSubCategories": Array [],
           "categories": Array [],
           "latestCourses": Array [],
           "loading": true,
