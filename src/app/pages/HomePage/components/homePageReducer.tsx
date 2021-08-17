@@ -4,6 +4,7 @@ export default function reducer(state, action) {
       return {
         ...state,
         bestSellerCourses: action.payload.bestSellerCourses,
+        bestSellerSubCategories: action.payload.bestSellerSubCategories,
         categories: action.payload.categories,
         subCategories: action.payload.subCategories,
         latestCourses: action.payload.latestCourses,

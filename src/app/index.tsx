@@ -73,6 +73,7 @@ export function App() {
     user: {},
     userId: '',
     bestSellerCourses: [],
+    bestSellerSubCategories: [],
     categories: [],
     subCategories: [],
     latestCourses: [],
@@ -120,8 +121,14 @@ export function App() {
   useEffect(
     function () {
       async function loadApp() {
+        var d = new Date();
+        d.setDate(d.getDate() - 7);
         const bestSellerCoursesRes = await axiosGuestInstance.get(
-          `/courses?sortBy=subscriberNumber:desc&limit=4`,
+          `/courses/most-outstanding-courses?limit=4&fromDate=${d}`,
+        );
+        // TODO trang fix this
+        const bestSellerSubCategoriesRes = await axiosGuestInstance.get(
+          `/subCategories/most-sale-sub-categories?fromDate=${d}`,
         );
         const categoriesRes = await axiosGuestInstance.get(`/categories`);
         const subCategoriesRes = await axiosGuestInstance.get(`/subCategories`);
@@ -180,7 +187,8 @@ export function App() {
         dispatch({
           type: 'init',
           payload: {
-            bestSellerCourses: bestSellerCoursesRes.data.results,
+            bestSellerCourses: bestSellerCoursesRes.data,
+            bestSellerSubCategories: bestSellerSubCategoriesRes.data,
             categories: categoriesRes.data,
             subCategories: subCategoriesRes.data,
             latestCourses: latestCourses,
