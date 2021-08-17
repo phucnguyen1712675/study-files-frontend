@@ -55,8 +55,10 @@ export default function TeacherInfoColumnContent() {
             </Title>
             <Title style={{ margin: '0px' }}>{teacherName}</Title>
           </Col>
-          <Col className="mb-3">
-            <Text strong>{teacherShortDescription}</Text>
+          <Col style={{ margin: '3px 0 10px 0' }}>
+            <Text strong style={{ fontSize: '16px' }}>
+              {teacherShortDescription}
+            </Text>
           </Col>
         </Skeleton>
         <Col>
