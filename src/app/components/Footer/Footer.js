@@ -8,9 +8,6 @@ export default function Footer() {
         marginTop: '70px',
         padding: '10px 0px',
         backgroundColor: '#EBEBEB',
-        // WebkitBoxShadow: ' 0 -3px 7px -7px black',
-        // MozBoxShadow: ' 0 -3px 7px -7px black',
-        // boxShadow: ' 0 -3px 7px -7px black',
       }}
     >
       <Typography variant="h6" align="center" gutterBottom>

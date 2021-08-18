@@ -127,14 +127,14 @@ const useStyles = makeStyles(theme => ({
     marginRight: '8px',
   },
   shadowCard: {
-    width: '70%',
     borderRadius: '3px',
-    border: '0.3px solid #cecece',
     padding: '40px',
     marginTop: '50px',
-    WebkitBoxShadow: ' 5px -3px 7px -7px black',
-    MozBoxShadow: ' 5px -3px 7px -7px black',
-    boxShadow: ' 5px -3px 7px -7px black',
+    // width: '80%',
+    width: '70%',
+    WebkitBoxShadow: ' 0px 0px 9px -5px rgba(82,82,82,0.45)',
+    MozBoxShadow: ' 0px 0px 9px -5px rgba(82,82,82,0.45)',
+    boxShadow: ' 0px 0px 9px -5px rgba(82,82,82,0.45)',
   },
 }));
 
@@ -967,7 +967,7 @@ export default function CourseDetailPage() {
         >
           <div
             className="preview"
-            style={{ color: '#525252' }}
+            style={{ color: '#525252', fontSize: 16 }}
             dangerouslySetInnerHTML={createMarkup(`${str}`)}
           />
         </ShowMoreText>

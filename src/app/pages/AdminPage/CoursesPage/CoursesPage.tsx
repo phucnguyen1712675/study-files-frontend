@@ -59,7 +59,7 @@ export function AdminCoursesPage() {
                 justifyContent: 'flex-end',
               }}
             >
-              Tất cả khóa học
+              Course management page
             </h1>
           </Col>
           <TableCourses />

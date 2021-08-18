@@ -59,7 +59,7 @@ export function AdminUsersPage() {
                 justifyContent: 'flex-end',
               }}
             >
-              Tất cả người dùng
+              User management page
             </h1>
           </Col>
           <AddUser />

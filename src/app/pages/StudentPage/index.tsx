@@ -13,6 +13,7 @@ import { CourseCard, CourseCardNotFound } from 'app/components/Cards/Cards';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { axiosAuthInstance, AccessToken } from 'api/auth';
+import noCourse from 'images/noCourses.png';
 
 const AntTabs = withStyles({
   root: {
@@ -242,6 +243,27 @@ export function StudentPage() {
   };
 
   // widget function ===================
+  const noCourseWidget = function () {
+    return (
+      <div
+        style={{
+          width: '100%',
+          minHeight: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+        }}
+      >
+        <img src={noCourse} alt="icon" width="25%" />
+        <h1>Ops!... no courses here</h1>
+        <div style={{ color: '#525252', fontWeight: 'lighter' }}>
+          You cannot find the right course for you?? try search for it :))
+        </div>
+      </div>
+    );
+  };
+
   const courseCardMyCourse = function (course) {
     if (!course.status) {
       return (
@@ -260,47 +282,51 @@ export function StudentPage() {
   const WatchListWidget = function () {
     return (
       <div style={{ padding: '20px' }}>
-        <Grid container spacing={1}>
-          {store.watchList.map(course => {
-            if (course.id) {
-              return (
-                <Grid item xs={3} key={course.id}>
-                  <div style={{ margin: '0px 0px' }}>
-                    <CourseCard course={course} />
-                    <Button
-                      style={{ margin: '0px 20px' }}
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => {
-                        deleteCourseOfWatchList(course.watchListId);
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  </div>
-                </Grid>
-              );
-            } else {
-              return (
-                <Grid item xs={3}>
-                  <div style={{ margin: '0px 0px' }}>
-                    <CourseCardNotFound />
-                    <Button
-                      style={{ margin: '0px 20px' }}
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => {
-                        deleteCourseOfWatchList(course.watchListId);
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  </div>
-                </Grid>
-              );
-            }
-          })}
-        </Grid>
+        {store.watchList.length > 0 ? (
+          <Grid container spacing={1}>
+            {store.watchList.map(course => {
+              if (course.id) {
+                return (
+                  <Grid item xs={3} key={course.id}>
+                    <div style={{ margin: '0px 0px' }}>
+                      <CourseCard course={course} />
+                      <Button
+                        style={{ margin: '0px 20px' }}
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          deleteCourseOfWatchList(course.watchListId);
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  </Grid>
+                );
+              } else {
+                return (
+                  <Grid item xs={3}>
+                    <div style={{ margin: '0px 0px' }}>
+                      <CourseCardNotFound />
+                      <Button
+                        style={{ margin: '0px 20px' }}
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          deleteCourseOfWatchList(course.watchListId);
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  </Grid>
+                );
+              }
+            })}
+          </Grid>
+        ) : (
+          noCourseWidget()
+        )}
       </div>
     );
   };
@@ -308,20 +334,59 @@ export function StudentPage() {
   const MyCoursesWidget = function () {
     return (
       <div style={{ padding: '20px' }}>
-        <Grid container spacing={3} justifyContent="center">
-          {store.myCourses.map(course => {
-            if (course.id) {
-              const url = `/studyPage/${course.name}/`;
-              return (
-                <Grid item xs={3} key={course.id}>
-                  <div>
-                    {/* <div style={{ display: 'flex' }}>
-                      <CourseCard course={course} />
-                      {incompleteWidget(course.status)}
-                    </div> */}
-                    {courseCardMyCourse(course)}
+        {store.myCourses.length > 0 ? (
+          <Grid container spacing={3} justifyContent="center">
+            {store.myCourses.map(course => {
+              if (course.id) {
+                const url = `/studyPage/${course.name}/`;
+                return (
+                  <Grid item xs={3} key={course.id}>
+                    <div>
+                      {courseCardMyCourse(course)}
 
-                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          maxWidth: '330px',
+                        }}
+                      >
+                        <Button
+                          style={{ margin: '0px 20px' }}
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => {
+                            deleteCourseOfMyCourse(course.myCourseId);
+                          }}
+                        >
+                          Remove
+                        </Button>
+                        <Button
+                          onClick={() =>
+                            history.push(url, {
+                              courseName: course.name,
+                              courseId: course.id,
+                              myCourseId: course.myCourseId,
+                            })
+                          }
+                          variant="contained"
+                          style={{
+                            marginLeft: 'auto',
+                            backgroundColor: '#041d33',
+                            color: '#fafafa',
+                          }}
+                        >
+                          Enter class
+                        </Button>
+                      </div>
+                    </div>
+                  </Grid>
+                );
+              } else {
+                return (
+                  <Grid item xs={3}>
+                    <div style={{ margin: '0px 0px' }}>
+                      <CourseCardNotFound />
                       <Button
                         style={{ margin: '0px 20px' }}
                         variant="outlined"
@@ -332,48 +397,15 @@ export function StudentPage() {
                       >
                         Remove
                       </Button>
-                      <Button
-                        onClick={() =>
-                          history.push(url, {
-                            courseName: course.name,
-                            courseId: course.id,
-                            myCourseId: course.myCourseId,
-                          })
-                        }
-                        variant="contained"
-                        style={{
-                          marginLeft: 'auto',
-                          backgroundColor: '#041d33',
-                          color: '#fafafa',
-                        }}
-                      >
-                        Enter class
-                      </Button>
                     </div>
-                  </div>
-                </Grid>
-              );
-            } else {
-              return (
-                <Grid item xs={3}>
-                  <div style={{ margin: '0px 0px' }}>
-                    <CourseCardNotFound />
-                    <Button
-                      style={{ margin: '0px 20px' }}
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => {
-                        deleteCourseOfMyCourse(course.myCourseId);
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  </div>
-                </Grid>
-              );
-            }
-          })}
-        </Grid>
+                  </Grid>
+                );
+              }
+            })}
+          </Grid>
+        ) : (
+          noCourseWidget()
+        )}
       </div>
     );
   };
@@ -407,7 +439,10 @@ export function StudentPage() {
           style={{
             color: '#525252',
             marginTop: '20px',
+            marginLeft: '40px',
             marginRight: 'auto',
+            fontWeight: 'bolder',
+            fontSize: 25,
           }}
         >
           User info
@@ -473,7 +508,7 @@ export function StudentPage() {
             }}
             onClick={updateDetailStudent}
           >
-            Sửa thông tin
+            Update info
           </Button>
           <Button
             variant="contained"
@@ -481,7 +516,7 @@ export function StudentPage() {
             style={{ marginTop: '10px' }}
             onClick={() => NavigateToUpdatePasswordPage()}
           >
-            Đổi mật khẩu
+            Update password
           </Button>
         </div>
       </Container>

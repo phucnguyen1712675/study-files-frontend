@@ -53,7 +53,7 @@ export function AdminUpdatePasswordPage() {
             variant="h5"
             className={classes.headerText}
           >
-            Thay mật khẩu
+            Change password
           </Typography>
           <div className={classes.center}>
             <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
@@ -90,7 +90,7 @@ export function AdminUpdatePasswordPage() {
                 color="primary"
                 className={classes.submit}
               >
-                Thay đổi
+                Submit
               </Button>
             </form>
           </div>
