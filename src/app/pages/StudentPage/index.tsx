@@ -1,9 +1,10 @@
-import { Container, TextField } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import React, { useContext, useEffect } from 'react';
 import { Grid, Tabs, Tab, Box, Button } from '@material-ui/core';
 import { NewReleases } from '@material-ui/icons';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Badge } from 'antd';
+import { Badge, message } from 'antd';
+import { useForm } from 'react-hook-form';
 import AppContext from 'app/AppContext';
 import { axiosGuestInstance } from '../../../api/guest';
 import './studentPage.css';
@@ -12,6 +13,8 @@ import Footer from '../../components/Footer/Footer';
 import { CourseCard, CourseCardNotFound } from 'app/components/Cards/Cards';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 import { axiosAuthInstance, AccessToken } from 'api/auth';
 import noCourse from 'images/noCourses.png';
 
@@ -104,15 +107,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required('Name is required'),
+  email: Yup.string().required('Email is required').email('Email is invalid'),
+});
+
 export function StudentPage() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const { store, dispatch } = useContext(AppContext) as any;
-  const [nameValue, setNameValue] = useState(localStorage.studyFiles_user_name);
-  const [emailValue, setEmailValue] = useState(
-    localStorage.studyFiles_user_email,
-  );
   const [isVerified, setIsVerified] = useState(true);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      name: localStorage.studyFiles_user_name,
+      email: localStorage.studyFiles_user_email,
+    },
+  });
 
   useEffect(function () {
     function loadApp() {
@@ -171,42 +187,40 @@ export function StudentPage() {
     }
   };
 
-  const nameHandleChange = e => {
-    setNameValue(e.target.value);
-  };
-
-  const emailHandleChange = e => {
-    setEmailValue(e.target.value);
-  };
-
-  const updateDetailStudent = async function () {
+  const updateDetailStudent = async function (data) {
     await AccessToken();
     const config = {
       headers: {
         Authorization: `Bearer ${localStorage.studyFiles_user_accessToken}`,
       },
     };
-    const data = {
-      name: nameValue,
-      email: emailValue,
-    };
-    const res = await axiosGuestInstance.patch(
-      `/auth/update/${localStorage.studyFiles_user_id}`,
-      data,
-      config,
-    );
-    if (res.status === 200) {
-      localStorage.studyFiles_user_name = data.name;
-      localStorage.studyFiles_user_email = data.email;
-      localStorage.studyFiles_user_isVerified = res.data.isEmailVerified;
-      setIsVerified(`${res.data.isEmailVerified}` === 'true');
-      dispatch({
-        type: 'update_user_id',
-        payload: {
-          userId: localStorage.studyFiles_user_id,
-        },
-      });
-      alert('Update successed');
+    try {
+      const res = await axiosGuestInstance.patch(
+        `/auth/update/${localStorage.studyFiles_user_id}`,
+        data,
+        config,
+      );
+      if (res.status === 200) {
+        localStorage.studyFiles_user_name = data.name;
+        localStorage.studyFiles_user_email = data.email;
+        localStorage.studyFiles_user_isVerified = res.data.isEmailVerified;
+        setIsVerified(`${res.data.isEmailVerified}` === 'true');
+        dispatch({
+          type: 'update_user_id',
+          payload: {
+            userId: localStorage.studyFiles_user_id,
+          },
+        });
+        alert('Update successed');
+      }
+    } catch (err) {
+      if (err.response) {
+        message.error(err.response.data.message);
+      } else if (err.request) {
+        message.error(err.request);
+      } else {
+        message.error(err.message);
+      }
     }
   };
 
@@ -447,78 +461,70 @@ export function StudentPage() {
         >
           User info
         </h2>
-        <div
+        <form
           style={{
             marginLeft: 'auto',
             padding: '0px 40px',
           }}
+          onSubmit={handleSubmit(updateDetailStudent)}
         >
-          <TextField
-            id="studentName"
-            size="medium"
+          <input
             style={{
               color: '#525252',
-              borderRadius: 12,
+              padding: '10px 20px',
               display: 'inline-block',
             }}
-            fullWidth
-            label="Your name - userName"
-            defaultValue={nameValue}
-            variant="outlined"
-            value={nameValue}
-            onChange={nameHandleChange}
+            type="text"
+            placeholder={'Your name'}
+            {...register('name')}
+            className={`form-control ${errors.name ? 'is-invalid' : ''}`}
           />
-          <TextField
-            id="studentBirthday"
-            size="medium"
+          <div className="invalid-feedback">{errors.name?.message}</div>
+          <input
             style={{
               color: '#525252',
-              borderRadius: 12,
-              display: 'inline-block',
               marginTop: '20px',
+              padding: '10px 20px',
+              display: 'inline-block',
             }}
-            fullWidth
-            label="Your email - userEmail"
-            defaultValue={emailValue}
-            variant="outlined"
-            value={emailValue}
-            onChange={emailHandleChange}
+            placeholder={'Your email - userEmail'}
+            {...register('email')}
+            className={`form-control ${errors.email ? 'is-invalid' : ''}`}
           />
-        </div>
-
-        {/* button stuffs */}
-        <div
-          style={{
-            padding: '0px 40px',
-            marginTop: '10px',
-            display: 'flex',
-            flexDirection: 'row',
-            marginLeft: 'auto',
-          }}
-        >
-          {VerifiedEmailButton()}
-
-          <Button
-            variant="contained"
-            color="primary"
+          <div className="invalid-feedback">{errors.email?.message}</div>
+          {/* button stuffs */}
+          <div
             style={{
               marginTop: '10px',
-              marginRight: '10px',
+              display: 'flex',
+              flexDirection: 'row',
               marginLeft: 'auto',
             }}
-            onClick={updateDetailStudent}
           >
-            Update info
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginTop: '10px' }}
-            onClick={() => NavigateToUpdatePasswordPage()}
-          >
-            Update password
-          </Button>
-        </div>
+            {VerifiedEmailButton()}
+
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              style={{
+                marginTop: '10px',
+                marginRight: '10px',
+                marginLeft: 'auto',
+              }}
+            >
+              Update info
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginTop: '10px' }}
+              onClick={() => NavigateToUpdatePasswordPage()}
+            >
+              Update password
+            </Button>
+          </div>
+        </form>
       </Container>
 
       {/* watchList and mycourse */}

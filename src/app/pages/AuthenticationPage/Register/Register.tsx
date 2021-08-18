@@ -136,7 +136,7 @@ export default function SignUp() {
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{ marginTop: '20px' }}>
                 {/* <TextField
                   autoComplete="fname"
                   variant="outlined"
@@ -157,7 +157,7 @@ export default function SignUp() {
                 />
                 <div className="invalid-feedback">{errors.name?.message}</div>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{ marginTop: '20px' }}>
                 {/* <TextField
                   variant="outlined"
                   required
@@ -177,7 +177,7 @@ export default function SignUp() {
                 />
                 <div className="invalid-feedback">{errors.email?.message}</div>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{ marginTop: '20px' }}>
                 {/* <TextField
                   variant="outlined"
                   required
@@ -202,7 +202,7 @@ export default function SignUp() {
                   {errors.password?.message}
                 </div>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{ marginTop: '20px' }}>
                 <FormControlLabel
                   control={
                     <Checkbox value="allowExtraEmails" color="primary" />

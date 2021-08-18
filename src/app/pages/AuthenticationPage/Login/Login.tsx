@@ -137,16 +137,18 @@ export default function LoginPage() {
               {...register('email', { required: true })}
             />
             {errors.email && <span>*</span>} */}
-            <TextField
-              margin="normal"
-              type="text"
-              variant="outlined"
-              fullWidth
-              label="Email Address"
-              {...register('email')}
-              className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-            />
-            <div className="invalid-feedback">{errors.email?.message}</div>
+            <div style={{ marginTop: '20px' }}>
+              <TextField
+                type="text"
+                variant="outlined"
+                fullWidth
+                label="Email Address"
+                {...register('email')}
+                className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+              />
+              <div className="invalid-feedback">{errors.email?.message}</div>
+            </div>
+
             {/* <TextField
               variant="outlined"
               margin="normal"
@@ -159,16 +161,20 @@ export default function LoginPage() {
               {...register('password', { required: true })}
             />
             {errors.password && <span>*</span>} */}
-            <TextField
-              margin="normal"
-              type="password"
-              variant="outlined"
-              fullWidth
-              label="Password"
-              {...register('password')}
-              className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-            />
-            <div className="invalid-feedback">{errors.password?.message}</div>
+            <div style={{ marginTop: '20px' }}>
+              <TextField
+                margin="normal"
+                type="password"
+                variant="outlined"
+                fullWidth
+                label="Password"
+                {...register('password')}
+                className={`form-control ${
+                  errors.password ? 'is-invalid' : ''
+                }`}
+              />
+              <div className="invalid-feedback">{errors.password?.message}</div>
+            </div>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"

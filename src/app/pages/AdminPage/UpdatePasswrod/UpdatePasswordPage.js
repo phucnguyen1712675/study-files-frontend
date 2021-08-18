@@ -67,9 +67,19 @@ export function AdminUpdatePasswordPage() {
                 label="Old Password"
                 autoComplete="oldPassword"
                 autoFocus
-                {...register('oldPassword', { required: true })}
+                {...register('oldPassword', {
+                  required: true,
+                  minLength: {
+                    value: 8,
+                    message: 'min length is 8',
+                  },
+                })}
               />
-              {errors.oldPassword && <span>*</span>}
+              {errors.oldPassword && (
+                <span role="alert" style={{ color: 'red' }}>
+                  {errors.oldPassword.message}
+                </span>
+              )}
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -80,9 +90,19 @@ export function AdminUpdatePasswordPage() {
                 label="New Password"
                 autoComplete="newPassword"
                 autoFocus
-                {...register('newPassword', { required: true })}
+                {...register('newPassword', {
+                  required: true,
+                  minLength: {
+                    value: 8,
+                    message: 'min length is 8',
+                  },
+                })}
               />
-              {errors.newPassword && <span>*</span>}
+              {errors.newPassword && (
+                <span role="alert" style={{ color: 'red' }}>
+                  {errors.newPassword.message}
+                </span>
+              )}
               <Button
                 type="submit"
                 style={{ width: '130px' }}

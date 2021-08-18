@@ -4,6 +4,7 @@ import Topbar from 'app/components/Topbar/Topbar';
 import styles from '../components/style.module.css';
 import useStyles from 'app/pages/AdminPage/Components/style.module/UseStyles';
 import { useForm } from 'react-hook-form';
+import { message } from 'antd';
 import { axiosAuthInstance, AccessToken } from 'api/auth';
 
 export function UpdatePasswordPage() {
@@ -35,10 +36,15 @@ export function UpdatePasswordPage() {
       }
     } catch (err) {
       if (err.response) {
-        alert(err.response.data.message);
+        message.error(err.response.data.message);
+      } else if (err.request) {
+        message.error(err.request);
+      } else {
+        message.error(err.message);
       }
     }
   };
+
   return (
     <>
       <Topbar initQuery={''} />
@@ -86,9 +92,19 @@ export function UpdatePasswordPage() {
               label="Old Password"
               autoComplete="oldPassword"
               autoFocus
-              {...register('oldPassword', { required: true })}
+              {...register('oldPassword', {
+                required: true,
+                minLength: {
+                  value: 8,
+                  message: 'min length is 8',
+                },
+              })}
             />
-            {errors.oldPassword && <span>*</span>}
+            {errors.oldPassword && (
+              <span role="alert" style={{ color: 'red' }}>
+                {errors.oldPassword.message}
+              </span>
+            )}
             <TextField
               variant="outlined"
               margin="normal"
@@ -99,9 +115,19 @@ export function UpdatePasswordPage() {
               label="New Password"
               autoComplete="newPassword"
               autoFocus
-              {...register('newPassword', { required: true })}
+              {...register('newPassword', {
+                required: true,
+                minLength: {
+                  value: 8,
+                  message: 'min length is 8',
+                },
+              })}
             />
-            {errors.newPassword && <span>*</span>}
+            {errors.newPassword && (
+              <span role="alert" style={{ color: 'red' }}>
+                {errors.newPassword.message}
+              </span>
+            )}
             <Button
               type="submit"
               style={{ width: '130px', marginLeft: 'auto' }}
