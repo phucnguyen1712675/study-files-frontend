@@ -7,7 +7,7 @@ import {
   GET_CATEGORIES_DETAILS,
   GET_SECTIONS_RESULTS,
 } from './teacherActionTypes';
-import axios from '../constants/axios';
+import axios from '../config/axios';
 
 export const getCourseDetails = createAsyncThunk(
   GET_COURSE_DETAILS,

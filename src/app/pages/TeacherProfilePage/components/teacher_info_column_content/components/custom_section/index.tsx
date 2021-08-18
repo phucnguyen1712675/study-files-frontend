@@ -7,7 +7,7 @@ type Props = {
   content: React.ReactNode;
 };
 
-export default function Section({ title, content }: Props) {
+export default function CustomSection({ title, content }: Props) {
   return (
     <Col>
       <Title level={4}>{title}</Title>

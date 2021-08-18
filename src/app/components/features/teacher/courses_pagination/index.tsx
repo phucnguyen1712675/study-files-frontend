@@ -1,14 +1,14 @@
 import React from 'react';
-import { Row, Col, Pagination, Typography, List } from 'antd';
+import { Row, Col, Pagination, List, Empty } from 'antd';
 import { ListGridType } from 'antd/lib/list';
 
 import CourseCard from './components/course_card';
-import LoadingCard from './components/loading_card';
+import LoadingCard from '../loading_card';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import { getCoursesOfTeacherQueryResult } from '../../../../../features/guest/guestThunkAPI';
 import { selectTeacherCourses } from '../../../../../features/guest/guestSlice';
 
-const { Text } = Typography;
+// const { Text } = Typography;
 
 type Props = {
   limit: number;
@@ -46,7 +46,9 @@ export default function CoursesPagination({
     <Row justify="center">
       <LoadingCard />
     </Row>
-  ) : resultTeacherCourses.length > 0 ? (
+  ) : resultTeacherCourses.length === 0 ? (
+    <Empty description="No courses" />
+  ) : (
     <Col className="mt-4">
       <List
         grid={gridType}
@@ -70,9 +72,5 @@ export default function CoursesPagination({
         </Row>
       )}
     </Col>
-  ) : (
-    <Row justify="center">
-      <Text italic>No courses</Text>
-    </Row>
   );
 }
