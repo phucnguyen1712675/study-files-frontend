@@ -1,6 +1,7 @@
-import { Typography, Col, Space, Skeleton } from 'antd';
+import { Typography, Col, Space, Skeleton, Row } from 'antd';
 
-import Section from './components/section';
+import CustomSection from './components/custom_section';
+import LoadingCard from '../../../../components/features/teacher/loading_card';
 import CoursesPagination from '../../../../components/features/teacher/courses_pagination';
 import { useAppSelector } from '../../../../hooks';
 import {
@@ -12,6 +13,7 @@ const { Title, Text, Paragraph } = Typography;
 
 export default function TeacherInfoColumnContent() {
   const teacherCourses = useAppSelector(selectTeacherCourses);
+
   const teacherInfo = useAppSelector(selectTeacherInfo);
 
   const teacherName = teacherInfo.data?.name ?? 'Name';
@@ -27,20 +29,26 @@ export default function TeacherInfoColumnContent() {
     {
       title: 'About me',
       content: (
-        <Paragraph style={{ fontSize: '16px' }}>
+        <Paragraph style={{ fontSize: 16 }}>
           {teacherDetailDescription}
         </Paragraph>
       ),
     },
     {
       title: `My courses (${teacherTotalCourseAmount})`,
-      content: !teacherInfo.isLoading && teacherInfo.data && (
-        <CoursesPagination
-          teacherId={teacherInfo.data!.id}
-          limit={10}
-          isCardEditable={false}
-          gridType={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 2, xxl: 2 }}
-        />
+      content: teacherInfo.isLoading ? (
+        <Row justify="center">
+          <LoadingCard />
+        </Row>
+      ) : (
+        teacherInfo.data && (
+          <CoursesPagination
+            teacherId={teacherInfo.data!.id}
+            limit={10}
+            isCardEditable={false}
+            gridType={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 2, xxl: 2 }}
+          />
+        )
       ),
     },
   ];
@@ -56,7 +64,7 @@ export default function TeacherInfoColumnContent() {
             <Title style={{ margin: '0px' }}>{teacherName}</Title>
           </Col>
           <Col style={{ margin: '3px 0 10px 0' }}>
-            <Text strong style={{ fontSize: '16px' }}>
+            <Text strong style={{ fontSize: 16 }}>
               {teacherShortDescription}
             </Text>
           </Col>
@@ -64,7 +72,7 @@ export default function TeacherInfoColumnContent() {
         <Col>
           <Space direction="vertical" size="middle">
             {sectionArray.map((section, idx) => (
-              <Section
+              <CustomSection
                 key={idx}
                 title={section.title}
                 content={section.content}

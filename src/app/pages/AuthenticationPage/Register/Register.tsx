@@ -15,6 +15,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Row, message } from 'antd';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 
 import AppContext from '../../../AppContext';
 import TopBar from '../../../components/Topbar/Topbar';
@@ -41,6 +43,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required('Name is required'),
+  email: Yup.string().required('Email is required').email('Email is invalid'),
+  password: Yup.string()
+    .min(8, 'Password must be at least 8 characters')
+    .required('Password is required'),
+});
+
 export default function SignUp() {
   const { dispatch } = useContext(AppContext) as any;
   const classes = useStyles();
@@ -48,9 +58,10 @@ export default function SignUp() {
   const {
     register,
     handleSubmit,
-    // eslint-disable-next-line
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
 
   const ToLogin = function () {
     history.push('/login');
@@ -58,12 +69,10 @@ export default function SignUp() {
 
   const onSubmit = async data => {
     try {
+      // console.log(data);
       showLoadingSwal();
-
       const res = await axiosAuthInstance.post('/register', data);
-
       closeSwal();
-
       if (res.status === 201) {
         localStorage.studyFiles_user_accessToken = res.data.tokens.access.token;
         localStorage.studyFiles_user_accessToken_expires =
@@ -75,7 +84,6 @@ export default function SignUp() {
         localStorage.studyFiles_user_name = res.data.user.name;
         localStorage.studyFiles_user_email = res.data.user.email;
         localStorage.studyFiles_user_isVerified = res.data.user.isEmailVerified;
-
         dispatch({
           type: 'update_user_id',
           payload: {
@@ -129,7 +137,7 @@ export default function SignUp() {
           <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <TextField
+                {/* <TextField
                   autoComplete="fname"
                   variant="outlined"
                   required
@@ -138,10 +146,19 @@ export default function SignUp() {
                   label="Your Name"
                   autoFocus
                   {...register('name', { required: true })}
+                /> */}
+                <TextField
+                  type="text"
+                  variant="outlined"
+                  fullWidth
+                  label="Your Name"
+                  {...register('name')}
+                  className={`form-control ${errors.name ? 'is-invalid' : ''}`}
                 />
+                <div className="invalid-feedback">{errors.name?.message}</div>
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                {/* <TextField
                   variant="outlined"
                   required
                   fullWidth
@@ -149,10 +166,19 @@ export default function SignUp() {
                   label="Email Address"
                   autoComplete="email"
                   {...register('email', { required: true })}
+                /> */}
+                <TextField
+                  type="text"
+                  variant="outlined"
+                  fullWidth
+                  label="Email Address"
+                  {...register('email')}
+                  className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                 />
+                <div className="invalid-feedback">{errors.email?.message}</div>
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                {/* <TextField
                   variant="outlined"
                   required
                   fullWidth
@@ -161,7 +187,20 @@ export default function SignUp() {
                   id="password"
                   autoComplete="current-password"
                   {...register('password', { required: true })}
+                /> */}
+                <TextField
+                  type="password"
+                  variant="outlined"
+                  fullWidth
+                  label="Password"
+                  {...register('password')}
+                  className={`form-control ${
+                    errors.password ? 'is-invalid' : ''
+                  }`}
                 />
+                <div className="invalid-feedback">
+                  {errors.password?.message}
+                </div>
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel

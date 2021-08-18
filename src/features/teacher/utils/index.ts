@@ -1,10 +1,10 @@
-import { AxiosStatic } from 'axios';
+import { AxiosInstance } from 'axios';
 
-import axios from '../../constants/axios';
+import axios from '../../config/axios';
 import { AccessToken } from '../../../api/auth';
 
 export const teacherRequest = async (
-  callback: (axios: AxiosStatic) => Promise<any>,
+  callback: (axios: AxiosInstance) => Promise<any>,
 ) => {
   try {
     await AccessToken();

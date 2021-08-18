@@ -14,6 +14,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { Row, message } from 'antd';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 
 import AppContext from '../../../AppContext';
 import TopBar from '../../../components/Topbar/Topbar';
@@ -40,6 +42,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const validationSchema = Yup.object().shape({
+  email: Yup.string().required('Email is required').email('Email is invalid'),
+  password: Yup.string()
+    .min(8, 'Password must be at least 8 characters')
+    .required('Password is required'),
+});
+
 export default function LoginPage() {
   const { dispatch } = useContext(AppContext) as any;
   const history = useHistory();
@@ -48,7 +57,9 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
 
   const ToRegister = function () {
     history.push('/register');
@@ -114,7 +125,7 @@ export default function LoginPage() {
             Sign in
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-            <TextField
+            {/* <TextField
               variant="outlined"
               margin="normal"
               required
@@ -125,8 +136,18 @@ export default function LoginPage() {
               autoFocus
               {...register('email', { required: true })}
             />
-            {errors.email && <span>*</span>}
+            {errors.email && <span>*</span>} */}
             <TextField
+              margin="normal"
+              type="text"
+              variant="outlined"
+              fullWidth
+              label="Email Address"
+              {...register('email')}
+              className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+            />
+            <div className="invalid-feedback">{errors.email?.message}</div>
+            {/* <TextField
               variant="outlined"
               margin="normal"
               required
@@ -137,7 +158,17 @@ export default function LoginPage() {
               autoComplete="current-password"
               {...register('password', { required: true })}
             />
-            {errors.password && <span>*</span>}
+            {errors.password && <span>*</span>} */}
+            <TextField
+              margin="normal"
+              type="password"
+              variant="outlined"
+              fullWidth
+              label="Password"
+              {...register('password')}
+              className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+            />
+            <div className="invalid-feedback">{errors.password?.message}</div>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
