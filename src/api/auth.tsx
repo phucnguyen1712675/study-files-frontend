@@ -4,6 +4,10 @@ const APIUrl = API;
 export const axiosAuthInstance = axios.create({
   baseURL: `${APIUrl}/auth`,
   timeout: 5000,
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+  },
 });
 
 export function parseJwt(token) {

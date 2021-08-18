@@ -11,6 +11,8 @@ import 'react-app-polyfill/stable';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { HelmetProvider } from 'react-helmet-async';
+import reportWebVitals from 'reportWebVitals';
 
 // Use consistent styling
 import 'sanitize.css/sanitize.css';
@@ -18,16 +20,12 @@ import 'sanitize.css/sanitize.css';
 // Import root app
 import { App } from 'app';
 
-import { HelmetProvider } from 'react-helmet-async';
-
-import reportWebVitals from 'reportWebVitals';
-
 // Initialize languages
 import './locales/i18n';
 
 import './index.css';
-import { store } from './app/store';
 import * as serviceWorker from './serviceWorker';
+import { store } from './app/store';
 
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
 
