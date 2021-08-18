@@ -3,6 +3,7 @@ import { FolderOpenTwoTone, PlusOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 
 import { useAppSelector } from '../../../../hooks';
+import LoadingCard from '../../../../components/features/teacher/loading_card';
 import CoursesPagination from '../../../../components/features/teacher/courses_pagination';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 import { COURSE_POSTING_PAGE_PATH } from '../../../../../constants/routes';
@@ -11,6 +12,7 @@ const { Title } = Typography;
 
 export default function CoursesColumnContent() {
   const history = useHistory();
+
   const { data, isLoading } = useAppSelector(selectTeacherInfo);
 
   const addNewCourseOnClick = () => {
@@ -39,13 +41,19 @@ export default function CoursesColumnContent() {
           New
         </Button>
       </Row>
-      {!isLoading && data && (
-        <CoursesPagination
-          teacherId={data!.id}
-          limit={6}
-          isCardEditable={true}
-          gridType={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 }}
-        />
+      {isLoading ? (
+        <Row justify="center">
+          <LoadingCard />
+        </Row>
+      ) : (
+        data && (
+          <CoursesPagination
+            teacherId={data!.id}
+            limit={6}
+            isCardEditable={true}
+            gridType={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 }}
+          />
+        )
       )}
     </>
   );
