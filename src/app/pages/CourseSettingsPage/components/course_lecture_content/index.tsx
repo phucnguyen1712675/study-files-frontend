@@ -2,8 +2,17 @@ import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Form, Skeleton, Button, Alert, message } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import {
+  Form,
+  Skeleton,
+  Button,
+  Alert,
+  message,
+  Tree,
+  Typography,
+  Divider,
+} from 'antd';
+import { AlertTwoTone, EditOutlined, EyeTwoTone } from '@ant-design/icons';
 import { nanoid } from 'nanoid';
 
 import {
@@ -12,6 +21,7 @@ import {
 } from './types';
 import UpdateLectureInfoForm from './components/update_lecture_info_form';
 import UpdateLectureOrdinalNumberForm from './components/update_lecture_ordinal_number_form';
+import { checkIfEveryLectureHasVideo } from '../../utils';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import FormSectionSelect from '../../../../components/features/teacher/form/form_section_select';
@@ -38,6 +48,8 @@ import {
   swapLectureOrdinalNumber,
 } from '../../../../../features/teacher/teacherAPI';
 
+const { Text, Paragraph } = Typography;
+
 type FormValues = {
   sectionId: string;
   title: string;
@@ -63,6 +75,8 @@ const schema = yup.object().shape({
 
 var videoKey = nanoid();
 
+const missingVideoAlertHexCode = '#B53737';
+
 export default function CourseLectureContent() {
   const dispatch = useAppDispatch();
 
@@ -82,6 +96,16 @@ export default function CourseLectureContent() {
     setUpdateLectureOrdinalNumberFormVisible,
   ] = React.useState<boolean>(false);
 
+  const [expandedKeys, setExpandedKeys] = React.useState<React.Key[]>([]);
+
+  // const [autoExpandParent, setAutoExpandParent] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    if (!courseDetails.isLoading && courseDetails.data) {
+      setExpandedKeys(courseDetails.data.sections.map(section => section.id));
+    }
+  }, [courseDetails]);
+
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
   });
@@ -91,8 +115,6 @@ export default function CourseLectureContent() {
   const watchSectionId = watch('sectionId');
 
   const watchTitle = watch('title');
-
-  const watchVideo = watch('video');
 
   const getLectureCount = async (sectionId: string) => {
     const totalResults = await getLecturesTotalResults(sectionId);
@@ -126,15 +148,17 @@ export default function CourseLectureContent() {
     if (!response || response.status !== 201) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
-
-      dispatch(getCourseDetails(courseDetails.data!.id));
+      await dispatch(getCourseDetails(courseDetails.data!.id));
 
       reset();
 
       await getLectureCount(values.sectionId);
 
       videoKey = nanoid();
+
+      window.scrollTo(0, 0);
+
+      message.success('Processing complete!');
     }
 
     setLoading(false);
@@ -151,16 +175,20 @@ export default function CourseLectureContent() {
 
     const response = await updateLecture(lectureId, payload);
 
-    closeSwal();
-
     if (!response || response.status !== 200) {
+      closeSwal();
+
       showErrorSwal(`Error: ${response}`);
     } else {
-      showSuccessSwal();
-
       const { id } = courseDetails.data!;
 
-      dispatch(getCourseDetails(id));
+      await dispatch(getCourseDetails(id));
+
+      window.scrollTo(0, 0);
+
+      closeSwal();
+
+      showSuccessSwal();
     }
   };
 
@@ -175,16 +203,20 @@ export default function CourseLectureContent() {
 
     const response = await swapLectureOrdinalNumber(payload);
 
-    closeSwal();
-
     if (!response || response.status !== 200) {
-      message.error(`Error: ${response}`);
-    } else {
-      showSuccessSwal();
+      closeSwal();
 
+      showErrorSwal(`Error: ${response}`);
+    } else {
       const { id } = courseDetails.data!;
 
-      dispatch(getCourseDetails(id));
+      await dispatch(getCourseDetails(id));
+
+      window.scrollTo(0, 0);
+
+      closeSwal();
+
+      showSuccessSwal();
     }
   };
 
@@ -200,9 +232,119 @@ export default function CourseLectureContent() {
   const onCancelUpdateLectureOrdinalNumberVisible = () =>
     setUpdateLectureOrdinalNumberFormVisible(false);
 
+  const treeData = courseDetails.data?.sections.map(section => {
+    return {
+      title: (
+        <Paragraph>
+          <Text strong>{`Section ${section.ordinalNumber + 1}`}</Text>:{' '}
+          {`${section.title}`}
+        </Paragraph>
+      ),
+      key: section.id,
+      children: section.lectures.map(lecture => {
+        const lectureItem = {
+          title: (
+            <Paragraph>
+              <Text strong>{`Lecture ${lecture.ordinalNumber + 1}`}</Text>:{' '}
+              {`${lecture.title}`}
+            </Paragraph>
+          ),
+          key: lecture.id,
+          isLeaf: true,
+        };
+
+        if (!lecture.videoUrl) {
+          return {
+            ...lectureItem,
+            switcherIcon: (
+              <AlertTwoTone twoToneColor={missingVideoAlertHexCode} />
+            ),
+          };
+        }
+
+        if (lecture.canPreview) {
+          return {
+            ...lectureItem,
+            switcherIcon: <EyeTwoTone />,
+          };
+        }
+
+        return lectureItem;
+      }),
+    };
+  });
+
+  const hasLectureThatCanBePreviewed = courseDetails.data?.sections.some(
+    section =>
+      section.lectures.length &&
+      section.lectures.some(lecture => lecture.canPreview),
+  );
+
+  const hasEnoughVideo = checkIfEveryLectureHasVideo(
+    courseDetails.data?.sections ?? [],
+  );
+
+  const sectionIds: React.Key[] =
+    courseDetails.data?.sections.map(section => section.id) ?? [];
+
+  const onSelectTreeNode = (selectedKeysValue: React.Key[]) => {
+    const selectedKey = selectedKeysValue[0];
+
+    if (sectionIds.includes(selectedKey)) {
+      if (!expandedKeys.includes(selectedKey)) {
+        const newArray = [...expandedKeys, selectedKey];
+
+        setExpandedKeys(newArray);
+      } else {
+        let filteredArray = expandedKeys.filter(item => item !== selectedKey);
+
+        setExpandedKeys(filteredArray);
+      }
+    }
+  };
+
   const components = [
     {
       id: '1',
+      children: (
+        <>
+          <Divider orientation="left">Course content</Divider>
+          <Tree
+            treeData={treeData}
+            defaultExpandAll
+            expandedKeys={expandedKeys}
+            autoExpandParent={false}
+            onSelect={onSelectTreeNode}
+            selectedKeys={[]}
+          />
+          {(hasLectureThatCanBePreviewed || !hasEnoughVideo) && (
+            <>
+              <Text underline>Note:</Text>
+              {hasLectureThatCanBePreviewed && (
+                <Alert
+                  message="Lecture that can be previewed."
+                  type="info"
+                  showIcon
+                  icon={<EyeTwoTone />}
+                />
+              )}
+              {!hasEnoughVideo && (
+                <Alert
+                  message="Lecture without video."
+                  type="error"
+                  showIcon
+                  icon={
+                    <AlertTwoTone twoToneColor={missingVideoAlertHexCode} />
+                  }
+                />
+              )}
+            </>
+          )}
+        </>
+      ),
+    },
+    {
+      id: '2',
       title: "Update lecture's info",
       children: (
         <>
@@ -223,7 +365,7 @@ export default function CourseLectureContent() {
       ),
     },
     {
-      id: '2',
+      id: '3',
       title: "Update lecture's ordinal number",
       children: (
         <>
@@ -248,7 +390,7 @@ export default function CourseLectureContent() {
       ),
     },
     {
-      id: '3',
+      id: '4',
       title: 'New',
       children: (
         <>
@@ -291,7 +433,7 @@ export default function CourseLectureContent() {
                       type="primary"
                       htmlType="submit"
                       loading={loading}
-                      disabled={!watchSectionId || !watchTitle || !watchVideo}
+                      disabled={!watchSectionId || !watchTitle}
                     >
                       Submit
                     </Button>

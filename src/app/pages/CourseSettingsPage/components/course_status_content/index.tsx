@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, Skeleton, Button, Space, Popconfirm, message } from 'antd';
 
+import { checkIfEveryLectureHasVideo } from '../../utils';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
@@ -22,9 +23,19 @@ export default function CourseStatusContent() {
 
   const [confirmLoading, setConfirmLoading] = React.useState<boolean>(false);
 
-  const showPopconfirm = () => setEndPromotionPopconfirmVisible(true);
-
   const handleCancel = () => setEndPromotionPopconfirmVisible(false);
+
+  const onClickChangeStatusButton = () => {
+    const hasEnoughVideo = checkIfEveryLectureHasVideo(data?.sections ?? []);
+
+    if (!data?.status && !hasEnoughVideo) {
+      message.warning(
+        'Please upload enough videos before mark this Course as Completed!',
+      );
+    } else {
+      setEndPromotionPopconfirmVisible(true);
+    }
+  };
 
   const handleOk = async () => {
     setConfirmLoading(true);
@@ -40,9 +51,11 @@ export default function CourseStatusContent() {
     if (!response || response.status !== 200) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
+      await dispatch(getCourseDetails(id));
 
-      dispatch(getCourseDetails(id));
+      window.scrollTo(0, 0);
+
+      message.success('Processing complete!');
     }
     setEndPromotionPopconfirmVisible(false);
 
@@ -74,7 +87,7 @@ export default function CourseStatusContent() {
             <Button
               type={!data?.status ? 'primary' : undefined}
               danger={data?.status}
-              onClick={showPopconfirm}
+              onClick={onClickChangeStatusButton}
             >
               {`Mark as ${data?.status ? 'Incompleted' : 'Completed'}`}
             </Button>

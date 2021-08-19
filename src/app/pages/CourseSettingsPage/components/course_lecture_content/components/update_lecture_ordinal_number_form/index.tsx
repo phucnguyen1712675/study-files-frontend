@@ -58,18 +58,23 @@ export default function UpdateLectureOrdinalNumberForm({
 
       setLectures(currentLectures);
 
-      if (
-        watchFirstLectureId &&
-        !currentLectures.find(lecture => lecture.id === watchFirstLectureId)
-      ) {
-        setValue('firstLectureId', '');
-      }
+      if (currentLectures.length === 2) {
+        setValue('firstLectureId', currentLectures[0].id);
+        setValue('secondLectureId', currentLectures[1].id);
+      } else {
+        if (
+          watchFirstLectureId &&
+          !currentLectures.find(lecture => lecture.id === watchFirstLectureId)
+        ) {
+          setValue('firstLectureId', '');
+        }
 
-      if (
-        watchSecondLectureId &&
-        !currentLectures.find(lecture => lecture.id === watchSecondLectureId)
-      ) {
-        setValue('secondLectureId', '');
+        if (
+          watchSecondLectureId &&
+          !currentLectures.find(lecture => lecture.id === watchSecondLectureId)
+        ) {
+          setValue('secondLectureId', '');
+        }
       }
     }
   }, [
@@ -87,7 +92,9 @@ export default function UpdateLectureOrdinalNumberForm({
   }, [lectures, setValue, watchFirstLectureId, watchSecondLectureId]);
 
   const handleOk = async () => {
-    await onCreate(getValues());
+    const values = getValues();
+
+    await onCreate(values);
 
     reset();
   };

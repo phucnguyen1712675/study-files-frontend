@@ -169,9 +169,11 @@ export default function GeneralInformationContent() {
       if (!response || response.status !== 200) {
         message.error(`Error: ${response}`);
       } else {
-        message.success('Processing complete!');
+        await dispatch(getCourseDetails(id));
 
-        dispatch(getCourseDetails(id));
+        window.scrollTo(0, 0);
+
+        message.success('Processing complete!');
       }
 
       setLoading(false);

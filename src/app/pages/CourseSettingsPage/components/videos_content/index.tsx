@@ -4,6 +4,7 @@ import { UploadOutlined } from '@ant-design/icons';
 
 import { UploadVideoFormValues } from './types';
 import UploadVideoForm from './components/upload_video_form';
+import { checkIfEveryLectureHasVideo } from '../../utils';
 import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
@@ -32,12 +33,9 @@ export default function VideosContent() {
 
   React.useEffect(() => {
     if (!isLoading && data) {
-      const checkIfEveryLectureHasVideo = data.sections.every(
-        section =>
-          section.lectures.every(lecture => lecture.videoUrl) &&
-          section.lectures.length > 0,
-      );
-      setIsEveryLectureHasVideo(checkIfEveryLectureHasVideo);
+      const isHasEnoughVideo = checkIfEveryLectureHasVideo(data.sections);
+
+      setIsEveryLectureHasVideo(isHasEnoughVideo);
     }
   }, [data, isLoading]);
 
@@ -50,16 +48,20 @@ export default function VideosContent() {
 
     const response = await updateLecture(lectureId, payload);
 
-    closeSwal();
-
     if (!response || response.status !== 200) {
+      closeSwal();
+
       showErrorSwal(`Error: ${response}`);
     } else {
-      showSuccessSwal();
-
       const { id } = data!;
 
-      dispatch(getCourseDetails(id));
+      await dispatch(getCourseDetails(id));
+
+      window.scrollTo(0, 0);
+
+      closeSwal();
+
+      showSuccessSwal();
     }
   };
 

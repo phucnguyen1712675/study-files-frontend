@@ -11,17 +11,45 @@ import axios from '../config/axios';
 
 export const getCourseDetails = createAsyncThunk(
   GET_COURSE_DETAILS,
-  async (courseId: string) => {
-    const { data } = await axios.get(`/courses/${courseId}/details`);
-    return data;
+  async (courseId: string, thunkAPI) => {
+    try {
+      const { data } = await axios.get(`/courses/${courseId}/details`);
+
+      return data;
+    } catch (error) {
+      var err: any;
+      // Error
+      if (error.response) {
+        err = error.response.data;
+      } else if (error.request) {
+        err = error.request;
+      } else {
+        err = error.message;
+      }
+      return thunkAPI.rejectWithValue(err);
+    }
   },
 );
 
 export const getCategoriesDetails = createAsyncThunk(
   GET_CATEGORIES_DETAILS,
-  async () => {
-    const { data } = await axios.get(`/categories/details`);
-    return data;
+  async (_, thunkAPI) => {
+    try {
+      const { data } = await axios.get(`/categories/details`);
+
+      return data;
+    } catch (error) {
+      var err: any;
+      // Error
+      if (error.response) {
+        err = error.response.data;
+      } else if (error.request) {
+        err = error.request;
+      } else {
+        err = error.message;
+      }
+      return thunkAPI.rejectWithValue(err);
+    }
   },
 );
 

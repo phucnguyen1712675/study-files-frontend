@@ -42,6 +42,7 @@ export default function UploadVideoForm({
 
   const handleOk = async () => {
     const values = getValues();
+
     await onCreate({ ...values, video: watchVideo });
 
     reset();
@@ -65,7 +66,13 @@ export default function UploadVideoForm({
             sections={courseDetails.data?.sections ?? []}
             checkDisabledForLecture={true}
           />
-          <FormFileBase64 name="video" label="Video" desiredFileType="video" />
+          {watchLectureId && (
+            <FormFileBase64
+              name="video"
+              label="Video"
+              desiredFileType="video"
+            />
+          )}
         </Form>
       </FormProvider>
     </Modal>
