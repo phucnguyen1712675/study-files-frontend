@@ -1,3 +1,5 @@
+import { Section } from '../../../../types';
+
 export const checkIfCourseHasPromotion = (
   promotionStart: Date,
   promotionEnd: Date,
@@ -13,4 +15,20 @@ export const checkIfCourseHasPromotion = (
     // and originalFee !== fee
     originalFee !== fee
   );
+};
+
+export const checkIfEveryLectureHasVideo = (sections: Section[]) => {
+  if (sections.length === 0) {
+    return false;
+  }
+
+  return sections
+    .filter(section => section.lectures.length > 0)
+    .every(section => {
+      const isAllLectureHasVideo = section.lectures.every(
+        lecture => lecture.videoUrl,
+      );
+
+      return isAllLectureHasVideo;
+    });
 };

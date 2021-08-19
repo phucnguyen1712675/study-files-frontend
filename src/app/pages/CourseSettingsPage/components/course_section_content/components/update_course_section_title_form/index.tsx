@@ -65,7 +65,9 @@ export default function UpdateCourseSectionTitleForm({
   };
 
   const handleOk = async () => {
-    await onCreate(getValues());
+    const values = getValues();
+
+    await onCreate(values);
 
     reset();
 

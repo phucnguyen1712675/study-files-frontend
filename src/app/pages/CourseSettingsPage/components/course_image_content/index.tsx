@@ -34,14 +34,18 @@ export default function CourseImageContent() {
 
     const response = await updateCourse(id, values);
 
-    closeSwal();
-
     if (!response || response.status !== 200) {
+      closeSwal();
+
       showErrorSwal(`Error: ${response}`);
     } else {
-      showSuccessSwal();
+      await dispatch(getCourseDetails(id));
 
-      dispatch(getCourseDetails(id));
+      window.scrollTo(0, 0);
+
+      closeSwal();
+
+      showSuccessSwal();
     }
   };
 

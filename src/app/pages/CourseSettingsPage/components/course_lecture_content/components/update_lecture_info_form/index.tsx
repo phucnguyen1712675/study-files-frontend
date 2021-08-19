@@ -9,6 +9,7 @@ import FormLectureOptGroupSelect from '../../../form_lecture_opt_group_select';
 import { useAppSelector } from '../../../../../../hooks';
 import FormInput from '../../../../../../components/features/teacher/form/form_input';
 import FormCheckbox from '../../../../../../components/features/teacher/form/form_checkbox';
+import FormFileBase64 from '../../../../../../components/features/teacher/form/form_file_base_64';
 import {
   LECTURE_TITLE_MIN_LENGTH,
   LECTURE_TITLE_MAX_LENGTH,
@@ -23,6 +24,7 @@ const schema = yup.object().shape({
     .max(LECTURE_TITLE_MAX_LENGTH)
     .required('Title is Required'),
   canPreview: yup.boolean(),
+  video: yup.string(),
 });
 
 type CollectionCreateFormProps = {
@@ -70,6 +72,8 @@ export default function UpdateLectureInfoForm({
 
   const watchCanPreview = watch('canPreview');
 
+  const watchVideo = watch('video');
+
   React.useEffect(() => {
     if (watchLectureId) {
       const sectionToLookup =
@@ -116,7 +120,9 @@ export default function UpdateLectureInfoForm({
   ]);
 
   const handleOk = async () => {
-    await onCreate(getValues());
+    const values = getValues();
+
+    await onCreate(values);
 
     reset();
 
@@ -139,7 +145,9 @@ export default function UpdateLectureInfoForm({
         disabled:
           !watchLectureId ||
           !watchTitle ||
-          (currentLectureTitle === watchTitle &&
+          (!!currentLectureVideoUrl &&
+            !watchVideo &&
+            currentLectureTitle === watchTitle &&
             currentLectureCanPreviewValue === watchCanPreview),
       }}
     >
@@ -156,9 +164,15 @@ export default function UpdateLectureInfoForm({
               <FormInput name="title" label="Title" />
               <FormCheckbox
                 name="canPreview"
-                label="This course is can be previewed"
+                label="This course can be previewed"
               />
-              {!currentLectureVideoUrl && (
+              {currentLectureVideoUrl ? (
+                <FormFileBase64
+                  name="video"
+                  label="Video to change"
+                  desiredFileType="video"
+                />
+              ) : (
                 <Alert
                   message="This lecture has no video to be previewed!"
                   type="info"

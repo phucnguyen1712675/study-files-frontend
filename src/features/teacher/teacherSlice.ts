@@ -65,8 +65,8 @@ export const teacherSlice = createSlice({
       .addCase(getCourseDetails.pending, state => {
         state.courseDetails.isLoading = true;
       })
-      .addCase(getCourseDetails.fulfilled, (state, action) => {
-        state.courseDetails.data = action.payload;
+      .addCase(getCourseDetails.fulfilled, (state, { payload }) => {
+        state.courseDetails.data = payload;
         state.courseDetails.isLoading = false;
       })
       .addCase(getCourseDetails.rejected, (state, action) => {

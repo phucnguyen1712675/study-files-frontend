@@ -146,9 +146,11 @@ export default function CourseFeeAndPromotionContent() {
       if (!response || response.status !== 200) {
         message.error(`Error: ${response}`);
       } else {
-        message.success('Processing complete!');
+        await dispatch(getCourseDetails(id));
 
-        dispatch(getCourseDetails(id));
+        window.scrollTo(0, 0);
+
+        message.success('Processing complete!');
       }
 
       setBtnSubmitLoading(false);
@@ -171,16 +173,20 @@ export default function CourseFeeAndPromotionContent() {
 
       const response = await updateCourse(id, values);
 
-      closeSwal();
-
       if (!response || response.status !== 200) {
+        closeSwal();
+
         showErrorSwal(`Error: ${response}`);
       } else {
-        showSuccessSwal();
-
         await dispatch(getCourseDetails(id));
 
         !hasPromotion && setHasPromotion(true);
+
+        window.scrollTo(0, 0);
+
+        closeSwal();
+
+        showSuccessSwal();
       }
     }
   };
@@ -203,11 +209,13 @@ export default function CourseFeeAndPromotionContent() {
     if (!response || response.status !== 200) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
-
-      dispatch(getCourseDetails(id));
+      await dispatch(getCourseDetails(id));
 
       setHasPromotion(false);
+
+      window.scrollTo(0, 0);
+
+      message.success('Processing complete!');
     }
 
     setEndPromotionPopconfirmVisible(false);

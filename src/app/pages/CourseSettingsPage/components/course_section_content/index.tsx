@@ -96,11 +96,13 @@ export default function CourseSectionContent() {
     if (!response || response.status !== 201) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
-
-      dispatch(getCourseDetails(id));
+      await dispatch(getCourseDetails(id));
 
       reset();
+
+      window.scrollTo(0, 0);
+
+      message.success('Processing complete!');
     }
 
     setLoading(false);
@@ -117,16 +119,20 @@ export default function CourseSectionContent() {
 
     const response = await updateSection(sectionId, payload);
 
-    closeSwal();
-
     if (!response || response.status !== 200) {
+      closeSwal();
+
       showErrorSwal(`Error: ${response}`);
     } else {
-      showSuccessSwal();
-
       const { id } = courseDetails.data!;
 
-      dispatch(getCourseDetails(id));
+      await dispatch(getCourseDetails(id));
+
+      window.scrollTo(0, 0);
+
+      closeSwal();
+
+      showSuccessSwal();
     }
   };
 
@@ -139,16 +145,20 @@ export default function CourseSectionContent() {
 
     const response = await swapSectionOrdinalNumber(values);
 
-    closeSwal();
-
     if (!response || response.status !== 200) {
+      closeSwal();
+
       message.error(`Error: ${response}`);
     } else {
-      showSuccessSwal();
-
       const { id } = courseDetails.data!;
 
-      dispatch(getCourseDetails(id));
+      await dispatch(getCourseDetails(id));
+
+      window.scrollTo(0, 0);
+
+      closeSwal();
+
+      showSuccessSwal();
     }
   };
 
@@ -174,6 +184,26 @@ export default function CourseSectionContent() {
   const components = [
     {
       id: '1',
+      children: (
+        <>
+          {courseDetails.data?.sections &&
+            courseDetails.data?.sections.length > 0 && (
+              <>
+                <Divider orientation="left">Course content</Divider>
+                <Text>{courseDetails.data?.sections.length} sections</Text>
+                <List
+                  size="small"
+                  bordered
+                  dataSource={getSectionsToShow()}
+                  renderItem={item => <List.Item>{item}</List.Item>}
+                />
+              </>
+            )}
+        </>
+      ),
+    },
+    {
+      id: '2',
       title: "Update section's title",
       children: (
         <>
@@ -192,7 +222,7 @@ export default function CourseSectionContent() {
       ),
     },
     {
-      id: '2',
+      id: '3',
       title: "Update section's ordinal number",
       children: (
         <>
@@ -215,7 +245,7 @@ export default function CourseSectionContent() {
       ),
     },
     {
-      id: '3',
+      id: '4',
       title: 'New',
       children: (
         <>
@@ -242,19 +272,6 @@ export default function CourseSectionContent() {
               </Form.Item>
             </Form>
           </FormProvider>
-          {courseDetails.data?.sections &&
-            courseDetails.data?.sections.length > 0 && (
-              <>
-                <Divider orientation="left">Course content</Divider>
-                <Text>{courseDetails.data?.sections.length} sections</Text>
-                <List
-                  size="small"
-                  bordered
-                  dataSource={getSectionsToShow()}
-                  renderItem={item => <List.Item>{item}</List.Item>}
-                />
-              </>
-            )}
         </>
       ),
     },

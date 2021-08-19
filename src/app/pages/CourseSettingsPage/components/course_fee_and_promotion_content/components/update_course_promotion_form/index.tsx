@@ -82,7 +82,9 @@ export default function UpdateCoursePromotionForm({
   };
 
   const handleOk = async () => {
-    await onCreate(getValues());
+    const values = getValues();
+
+    await onCreate(values);
 
     reset();
   };

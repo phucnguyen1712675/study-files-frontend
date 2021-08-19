@@ -4,7 +4,7 @@ const { Title } = Typography;
 
 type Component = {
   id: string;
-  title: string;
+  title?: string;
   children: React.ReactNode;
 };
 
@@ -22,11 +22,15 @@ export default function HeaderSiderContentLayout({ components }: Props) {
           direction="vertical"
           style={{ width: '100%' }}
         >
-          <Title level={3} style={{ fontWeight: 'lighter' }}>
-            {component.title}
-          </Title>
+          {component.title && (
+            <>
+              <Title level={3} style={{ fontWeight: 'lighter' }}>
+                {component.title}
+              </Title>
 
-          <Divider style={{ margin: '0px' }} />
+              <Divider style={{ margin: '0px' }} />
+            </>
+          )}
 
           {component.children}
         </Space>

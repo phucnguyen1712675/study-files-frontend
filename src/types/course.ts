@@ -10,8 +10,10 @@ export type Course = {
   subscriberNumber: number;
   view: number;
   raring: number;
+  ratingCount: number;
   originalFee: number;
   fee: number;
   promotionStart?: Date;
   promotionEnd?: Date;
+  updated_at: Date;
 };
