@@ -70,8 +70,8 @@ export default function TableCourses() {
     delete course.teacherName;
     delete course.delete;
     delete course.detail;
-    history.push(`/course/${course.name}`, { course: course });
-    // history.push('/');
+    const courseName = course.name.replaceAll(' ', '-');
+    history.push(`/course/${courseName}`, { course: course });
   };
 
   const DataTableUI = function () {
@@ -163,7 +163,7 @@ export default function TableCourses() {
           marginTop: '30px',
           borderRadius: '5px',
           backgroundColor: 'white',
-          width: '85%',
+          width: '90%',
           marginBottom: '30px',
           border: '1px solid #e3e3e3',
           boxShadow: '1px 1px 1px #dbdbdb',
@@ -178,13 +178,13 @@ export default function TableCourses() {
         >
           <Row
             style={{
-              width: '80%',
+              width: '95%',
               marginTop: '50px',
             }}
           >
             <Col>
               <Typography component="h1" variant="h5" style={{ color: 'gray' }}>
-                Tất cả khóa học
+                All courses
               </Typography>
             </Col>
           </Row>
@@ -207,12 +207,10 @@ export default function TableCourses() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {'Xóa khóa học này này ?'}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{'Delete course ?'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Bạn có chắc muốn xóa khóa học này không ?
+            Are you sure to delete this course ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -220,7 +218,7 @@ export default function TableCourses() {
             onClick={() => handleCloseDeleteDialog(false)}
             color="primary"
           >
-            Hủy
+            Cancel
           </Button>
           <Button
             onClick={() => handleCloseDeleteDialog(true)}

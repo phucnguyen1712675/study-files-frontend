@@ -70,7 +70,7 @@ export default function AddSubCategory() {
   return (
     <Container component="main" className={classes.paper}>
       <Typography component="h1" variant="h5" className={classes.headerText}>
-        Thêm mới
+        Add new
       </Typography>
       <div className={classes.center}>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
@@ -119,7 +119,7 @@ export default function AddSubCategory() {
             color="primary"
             className={classes.submit}
           >
-            Thêm mới
+            Submit
           </Button>
         </form>
       </div>

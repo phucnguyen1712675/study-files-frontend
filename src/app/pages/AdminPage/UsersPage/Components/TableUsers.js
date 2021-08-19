@@ -154,7 +154,7 @@ export default function TableUsers() {
           >
             <Col>
               <Typography component="h1" variant="h5" style={{ color: 'gray' }}>
-                Tất cả học viên
+                All users
               </Typography>
             </Col>
           </Row>
@@ -178,16 +178,16 @@ export default function TableUsers() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {'Xóa người dùng này ?'}
+          {'Delete this user ?'}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Bạn có chắc muốn xóa người dùng này không ?
+            Are you sure to delete this user ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleClose(false)} color="primary">
-            Hủy
+            Cancel
           </Button>
           <Button onClick={() => handleClose(true)} color="primary" autoFocus>
             Ok

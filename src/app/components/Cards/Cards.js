@@ -194,7 +194,8 @@ export function CourseCard({ course }) {
   };
 
   const NavigateToDetailCourses = function () {
-    history.push(`/course/${course.name}`, { course: course });
+    const courseName = course.name.replaceAll(' ', '-');
+    history.push(`/course/${courseName}`, { course: course });
   };
 
   return (
@@ -286,11 +287,11 @@ export function CategoryCard({ category }) {
   };
 
   const subScriberNumberText = function () {
-    if (category.subscriberNumber >= 1000)
-      return `${Math.floor(category.subscriberNumber / 1000)}.${
-        category.subscriberNumber % 1000
-      } Participants`;
-    else return `${category.subscriberNumber} Participants`;
+    if (category.count >= 1000)
+      return `${Math.floor(category.count / 1000)}.${
+        category.count % 1000
+      } Participants this week`;
+    else return `${category.count} Participants this week`;
   };
 
   return (

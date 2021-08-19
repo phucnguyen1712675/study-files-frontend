@@ -2,9 +2,9 @@ import { Button, Container, TextField, Typography } from '@material-ui/core';
 import Footer from 'app/components/Footer/Footer';
 import Topbar from 'app/components/Topbar/Topbar';
 import styles from '../components/style.module.css';
-import Sidebar from 'app/pages/AdminPage/Components/SideBar/Sidebar';
 import useStyles from 'app/pages/AdminPage/Components/style.module/UseStyles';
 import { useForm } from 'react-hook-form';
+import { message } from 'antd';
 import { axiosAuthInstance, AccessToken } from 'api/auth';
 
 export function UpdatePasswordPage() {
@@ -36,65 +36,113 @@ export function UpdatePasswordPage() {
       }
     } catch (err) {
       if (err.response) {
-        alert(err.response.data.message);
+        message.error(err.response.data.message);
+      } else if (err.request) {
+        message.error(err.request);
+      } else {
+        message.error(err.message);
       }
     }
   };
+
   return (
     <>
       <Topbar initQuery={''} />
-      <Sidebar />
+
       <div className={styles.wrapper}>
-        <Container component="main" className={classes.paper}>
+        <Container
+          component="main"
+          className={classes.paper}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '50%',
+            alignItems: 'center',
+            marginTop: '50px',
+          }}
+        >
           <Typography
-            component="h1"
-            variant="h5"
-            className={classes.headerText}
+            style={{
+              marginTop: '20px',
+              marginBottom: '10px',
+              marginRight: 'auto',
+              color: '#525252',
+              fontWeight: 'bolder',
+              fontSize: 25,
+            }}
           >
-            Thay mật khẩu
+            Update password
           </Typography>
-          <div className={classes.center}>
-            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                type="password"
-                id="oldPassword"
-                label="Old Password"
-                autoComplete="oldPassword"
-                autoFocus
-                {...register('oldPassword', { required: true })}
-              />
-              {errors.oldPassword && <span>*</span>}
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                type="password"
-                id="newPassword"
-                label="New Password"
-                autoComplete="newPassword"
-                autoFocus
-                {...register('newPassword', { required: true })}
-              />
-              {errors.newPassword && <span>*</span>}
-              <Button
-                type="submit"
-                style={{ width: '130px' }}
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Thay đổi
-              </Button>
-            </form>
-          </div>
+          <form
+            className={classes.form}
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              type="password"
+              id="oldPassword"
+              label="Old Password"
+              autoComplete="oldPassword"
+              autoFocus
+              {...register('oldPassword', {
+                required: true,
+                minLength: {
+                  value: 8,
+                  message: 'min length is 8',
+                },
+              })}
+            />
+            {errors.oldPassword && (
+              <span role="alert" style={{ color: 'red' }}>
+                {errors.oldPassword.message}
+              </span>
+            )}
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              type="password"
+              id="newPassword"
+              label="New Password"
+              autoComplete="newPassword"
+              autoFocus
+              {...register('newPassword', {
+                required: true,
+                minLength: {
+                  value: 8,
+                  message: 'min length is 8',
+                },
+              })}
+            />
+            {errors.newPassword && (
+              <span role="alert" style={{ color: 'red' }}>
+                {errors.newPassword.message}
+              </span>
+            )}
+            <Button
+              type="submit"
+              style={{ width: '130px', marginLeft: 'auto' }}
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Submit
+            </Button>
+          </form>
         </Container>
       </div>
-      <Footer />
+      <div style={{ position: 'absolute', left: 0, bottom: 0, right: 0 }}>
+        <Footer />
+      </div>
     </>
   );
 }

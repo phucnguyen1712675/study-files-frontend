@@ -122,7 +122,7 @@ export default function HomePage() {
         ) : (
           <Grid container style={{ width: '100%' }} justifyContent="center">
             {store.bestSellerSubCategories.map(item => (
-              <Grid item key={item.id}>
+              <Grid item key={item._id}>
                 <CategoryCard category={item} />
               </Grid>
             ))}

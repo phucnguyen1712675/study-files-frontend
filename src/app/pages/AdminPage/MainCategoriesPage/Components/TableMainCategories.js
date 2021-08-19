@@ -196,7 +196,7 @@ export default function TableMainCategories() {
           >
             <Col>
               <Typography component="h1" variant="h5" style={{ color: 'gray' }}>
-                Tất cả danh mục chính
+                All categories
               </Typography>
             </Col>
           </Row>
@@ -219,12 +219,10 @@ export default function TableMainCategories() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {'Xóa danh mục này này ?'}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{'Delete category ?'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Bạn có chắc muốn xóa danh mục này không ?
+            Are you sure to delete this category ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -232,7 +230,7 @@ export default function TableMainCategories() {
             onClick={() => handleCloseDeleteDialog(false)}
             color="primary"
           >
-            Hủy
+            Cancel
           </Button>
           <Button
             onClick={() => handleCloseDeleteDialog(true)}
@@ -250,10 +248,10 @@ export default function TableMainCategories() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{'Xem chi tiết'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{'Detail view'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            đổi tên danh mục này ?
+            Rename ?
           </DialogContentText>
           <TextField
             required
@@ -269,7 +267,7 @@ export default function TableMainCategories() {
             onClick={() => handleCloseDetailDialog(false)}
             color="primary"
           >
-            Hủy
+            Cancel
           </Button>
           <Button
             onClick={() => handleCloseDetailDialog(true)}

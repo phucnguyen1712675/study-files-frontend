@@ -60,7 +60,7 @@ export function AdminMainCategoriesPage() {
                 justifyContent: 'flex-end',
               }}
             >
-              Tất cả danh mục chính
+              Categories management page
             </h1>
           </Col>
           <AddMainCategories />

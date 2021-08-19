@@ -60,7 +60,7 @@ export function AdminSubCategoriesPage() {
                 justifyContent: 'flex-end',
               }}
             >
-              Tất cả danh mục phụ
+              Sub categories management page
             </h1>
           </Col>
           <AddSubCategory />
