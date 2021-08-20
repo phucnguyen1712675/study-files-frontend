@@ -21,6 +21,14 @@ export const updatePassword = async (teacherId: string, data: any) => {
   return teacherRequest(request);
 };
 
+export const sendVerificationEmail = async (data: any) => {
+  const request = async (axios: AxiosInstance) => {
+    const response = await axios.post('/auth/send-verification-email', data);
+    return response;
+  };
+  return teacherRequest(request);
+};
+
 export const addCourse = async (data: any) => {
   const request = async (axios: AxiosInstance) => {
     const response = await axios.post('/teachers/courses', data);
