@@ -68,9 +68,9 @@ export default function AccountSecurityContent() {
     if (!response || response.status !== 200) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
-
       reset();
+
+      message.success('Processing complete!');
     }
 
     setLoading(false);

@@ -155,8 +155,6 @@ export default function AddCourseInformationContent() {
     if (!response || response.status !== 201) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
-
       const { id } = response?.data;
 
       dispatch(setNewCourseId(id));
@@ -164,6 +162,8 @@ export default function AddCourseInformationContent() {
       setShouldShowNextButton(true);
 
       imageKey = nanoid();
+
+      message.success('Processing complete!');
     }
 
     setLoading(false);

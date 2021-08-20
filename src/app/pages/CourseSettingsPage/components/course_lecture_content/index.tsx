@@ -311,7 +311,6 @@ export default function CourseLectureContent() {
           <Divider orientation="left">Course content</Divider>
           <Tree
             treeData={treeData}
-            defaultExpandAll
             expandedKeys={expandedKeys}
             autoExpandParent={false}
             onSelect={onSelectTreeNode}

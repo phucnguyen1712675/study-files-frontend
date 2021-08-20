@@ -10,10 +10,16 @@ import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import FormInput from '../../../../components/features/teacher/form/form_input';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
-import { axiosAuthInstance } from '../../../../../api/auth';
-import { showLoadingSwal, closeSwal } from '../../../../../utils/sweet_alert_2';
+import {
+  showLoadingSwal,
+  closeSwal,
+  showErrorSwal,
+} from '../../../../../utils/sweet_alert_2';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
-import { updateTeacherInfo } from '../../../../../features/teacher/teacherAPI';
+import {
+  updateTeacherInfo,
+  sendVerificationEmail,
+} from '../../../../../features/teacher/teacherAPI';
 import { getTeacherInfo } from '../../../../../features/guest/guestThunkAPI';
 import { VERIFY_EMAIL_PAGE_PATH } from '../../../../../constants/routes';
 
@@ -58,38 +64,23 @@ export default function EmailContent() {
   }, [data, isLoading, reset]);
 
   const sendOTP = async () => {
-    try {
-      showLoadingSwal();
+    showLoadingSwal();
 
-      const resSendEmail = await axiosAuthInstance.post(
-        '/send-verification-email',
-        {
-          email: data?.email,
-          id: teacherId,
-        },
-      );
+    const payload = {
+      email: data!.email,
+      id: teacherId,
+    };
 
-      closeSwal();
+    const response = await sendVerificationEmail(payload);
 
-      if (resSendEmail.status === 200) {
-        message.info('An OTP have sent to your register mail');
+    closeSwal();
 
-        history.push(VERIFY_EMAIL_PAGE_PATH);
+    if (!response || response.status !== 200) {
+      showErrorSwal(`Error: ${response}`);
+    } else {
+      message.info('An OTP have sent to your register mail');
 
-        window.location.reload();
-      } else {
-        message.error('Something wrong?');
-      }
-    } catch (err) {
-      closeSwal();
-
-      if (err.response) {
-        message.error(err.response.data.message);
-      } else if (err.request) {
-        message.error(err.request);
-      } else {
-        message.error(err.message);
-      }
+      history.push(VERIFY_EMAIL_PAGE_PATH);
     }
   };
 

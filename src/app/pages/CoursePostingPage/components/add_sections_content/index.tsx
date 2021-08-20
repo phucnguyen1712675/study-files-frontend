@@ -63,13 +63,13 @@ export default function AddSectionsContent() {
     if (!response || response.status !== 201) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
-
       setAddedSectionTitles(arr => [...arr, values.title]);
 
       setOrdinalNumber(ordinalNumber + 1);
 
       reset();
+
+      message.success('Processing complete!');
     }
 
     setLoading(false);

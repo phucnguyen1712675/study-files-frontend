@@ -131,8 +131,6 @@ export default function AddLecturesContent() {
     if (!response || response.status !== 201) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
-
       reset({
         sectionId: watchSectionId,
         canPreview: false,
@@ -145,6 +143,10 @@ export default function AddLecturesContent() {
       isDone && setIsEachSectionHadAtLeastOneLecture(true);
 
       videoKey = nanoid();
+
+      window.scrollTo(0, 0);
+
+      message.success('Processing complete!');
     }
 
     setLoading(false);
