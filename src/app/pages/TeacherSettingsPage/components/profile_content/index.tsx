@@ -131,6 +131,8 @@ export default function ProfileContent() {
     if (!response || response.status !== 200) {
       message.error(`Error: ${response}`);
     } else {
+      localStorage.studyFiles_user_name = payload.name;
+
       await dispatch(getTeacherInfo(data!.id));
 
       window.scrollTo(0, 0);
