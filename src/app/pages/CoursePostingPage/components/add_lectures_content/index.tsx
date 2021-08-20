@@ -6,7 +6,7 @@ import { Form, Button, Alert, message } from 'antd';
 import { nanoid } from 'nanoid';
 
 import CustomContent from '../custom_content';
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import FormSectionSelect from '../../../../components/features/teacher/form/form_section_select';
 import FormInput from '../../../../components/features/teacher/form/form_input';

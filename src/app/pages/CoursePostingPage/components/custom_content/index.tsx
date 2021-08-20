@@ -3,7 +3,7 @@ import { Button, message } from 'antd';
 import { useHistory } from 'react-router-dom';
 
 import { STEP_ITEMS } from '../../constants';
-import { useAppDispatch, useAppSelector } from '../../../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
 import { COURSE_POSTING_PAGE_PATH } from '../../../../../constants/routes';
 import {

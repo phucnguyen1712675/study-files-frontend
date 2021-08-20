@@ -21,7 +21,7 @@ import { updatedDiff } from 'deep-object-diff';
 import { UpdateCoursePromotionFormValues } from './types';
 import UpdateCoursePromotionForm from './components/update_course_promotion_form';
 import { checkIfCourseHasPromotion } from '../../utils';
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import FormNumberInput from '../../../../components/features/teacher/form/form_number_input';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';

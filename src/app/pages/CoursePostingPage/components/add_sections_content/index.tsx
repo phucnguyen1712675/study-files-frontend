@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Button, message, Alert, Divider, List, Typography } from 'antd';
 
 import CustomContent from '../custom_content';
-import { useAppSelector } from '../../../../hooks';
+import { useAppSelector } from '../../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import FormInput from '../../../../components/features/teacher/form/form_input';
 import {

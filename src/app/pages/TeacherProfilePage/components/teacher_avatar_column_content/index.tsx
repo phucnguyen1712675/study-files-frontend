@@ -1,7 +1,7 @@
 import { Row, Col } from 'antd';
 
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
-import { useAppSelector } from '../../../../hooks';
+import { useAppSelector } from '../../../../../hooks';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 
 export default function TeacherAvatarColumnContent() {

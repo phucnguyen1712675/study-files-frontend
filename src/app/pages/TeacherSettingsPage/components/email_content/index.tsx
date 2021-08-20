@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Skeleton, Space, Button, Form, message } from 'antd';
 
 import { FORM_ITEM_LAYOUT } from '../../constants';
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import FormInput from '../../../../components/features/teacher/form/form_input';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
@@ -106,13 +106,15 @@ export default function EmailContent() {
     if (!response || response.status !== 200) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
-
       localStorage.studyFiles_user_email = values.email;
 
       localStorage.studyFiles_user_isVerified = response.data.isEmailVerified;
 
-      dispatch(getTeacherInfo(data!.id));
+      await dispatch(getTeacherInfo(data!.id));
+
+      window.scrollTo(0, 0);
+
+      message.success('Processing complete!');
     }
 
     setLoading(false);

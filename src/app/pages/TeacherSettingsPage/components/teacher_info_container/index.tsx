@@ -1,7 +1,7 @@
 import { Row, Col, Typography, Space, Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 
-import { useAppSelector } from '../../../../hooks';
+import { useAppSelector } from '../../../../../hooks';
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 import { getTeacherProfilePagePath } from '../../../../../constants/routes';

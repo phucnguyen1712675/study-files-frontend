@@ -22,7 +22,7 @@ import {
 import UpdateLectureInfoForm from './components/update_lecture_info_form';
 import UpdateLectureOrdinalNumberForm from './components/update_lecture_ordinal_number_form';
 import { checkIfEveryLectureHasVideo } from '../../utils';
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import FormSectionSelect from '../../../../components/features/teacher/form/form_section_select';
 import FormInput from '../../../../components/features/teacher/form/form_input';

@@ -10,7 +10,7 @@ import {
 import './index.css';
 
 import { STEP_ITEMS } from './constants';
-import { useAppSelector } from '../../hooks';
+import { useAppSelector } from '../../../hooks';
 import TeacherPageLayout from '../../components/features/teacher/teacher_page_layout';
 import { selectCoursePostingStep } from '../../../features/teacher/teacherSlice';
 

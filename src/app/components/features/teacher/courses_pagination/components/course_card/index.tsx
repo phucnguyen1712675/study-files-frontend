@@ -2,7 +2,7 @@ import { Card, Skeleton, Image, Typography, Button, Tooltip } from 'antd';
 import { EditTwoTone, EyeOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 
-import { useAppSelector } from '../../../../../../hooks';
+import { useAppSelector } from '../../../../../../../hooks';
 import { Course } from '../../../../../../../types';
 import {
   getCourseDetailsPagePath,

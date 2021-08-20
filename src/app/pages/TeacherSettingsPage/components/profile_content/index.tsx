@@ -14,7 +14,7 @@ import {
 } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
 import EditPictureForm from '../../../../components/features/teacher/form/edit_picture_form';
 import FormInput from '../../../../components/features/teacher/form/form_input';
@@ -97,14 +97,18 @@ export default function ProfileContent() {
 
     const response = await updateTeacherInfo(teacherId, dataToSend);
 
-    closeSwal();
-
     if (!response || response.status !== 200) {
+      closeSwal();
+
       showErrorSwal(`Error: ${response}`);
     } else {
-      showSuccessSwal();
+      await dispatch(getTeacherInfo(data!.id));
 
-      dispatch(getTeacherInfo(data!.id));
+      window.scrollTo(0, 0);
+
+      closeSwal();
+
+      showSuccessSwal();
     }
   };
 
@@ -127,9 +131,11 @@ export default function ProfileContent() {
     if (!response || response.status !== 200) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
+      await dispatch(getTeacherInfo(data!.id));
 
-      dispatch(getTeacherInfo(data!.id));
+      window.scrollTo(0, 0);
+
+      message.success('Processing complete!');
     }
 
     setLoading(false);

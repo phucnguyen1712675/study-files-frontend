@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Form, Modal } from 'antd';
 
 import { UpdateCourseSectionTitleFormValues } from '../../types';
-import { useAppSelector } from '../../../../../../hooks';
+import { useAppSelector } from '../../../../../../../hooks';
 import FormSectionSelect from '../../../../../../components/features/teacher/form/form_section_select';
 import FormInput from '../../../../../../components/features/teacher/form/form_input';
 import {

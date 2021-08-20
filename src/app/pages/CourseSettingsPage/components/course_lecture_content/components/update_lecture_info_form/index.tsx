@@ -6,7 +6,7 @@ import { Form, Modal, Alert, message } from 'antd';
 
 import { UpdateLectureInfoFormValues } from '../../types';
 import FormLectureOptGroupSelect from '../../../form_lecture_opt_group_select';
-import { useAppSelector } from '../../../../../../hooks';
+import { useAppSelector } from '../../../../../../../hooks';
 import FormInput from '../../../../../../components/features/teacher/form/form_input';
 import FormCheckbox from '../../../../../../components/features/teacher/form/form_checkbox';
 import FormFileBase64 from '../../../../../../components/features/teacher/form/form_file_base_64';

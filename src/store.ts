@@ -11,9 +11,9 @@ import {
 import { createInjectorsEnhancer } from 'redux-injectors';
 import createSagaMiddleware from 'redux-saga';
 
-import { createReducer } from '../store/reducers';
-import guestReducer from '../features/guest/guestSlice';
-import teacherReducer from '../features/teacher/teacherSlice';
+import { createReducer } from './store/reducers';
+import guestReducer from './features/guest/guestSlice';
+import teacherReducer from './features/teacher/teacherSlice';
 
 const reduxSagaMonitorOptions = {};
 const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);

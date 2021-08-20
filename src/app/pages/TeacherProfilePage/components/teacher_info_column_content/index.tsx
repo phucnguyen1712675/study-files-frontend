@@ -3,7 +3,7 @@ import { Typography, Col, Space, Skeleton, Row } from 'antd';
 import CustomSection from './components/custom_section';
 import LoadingCard from '../../../../components/features/teacher/loading_card';
 import CoursesPagination from '../../../../components/features/teacher/courses_pagination';
-import { useAppSelector } from '../../../../hooks';
+import { useAppSelector } from '../../../../../hooks';
 import {
   selectTeacherCourses,
   selectTeacherInfo,

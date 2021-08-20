@@ -2,7 +2,7 @@ import React from 'react';
 import { Alert, Skeleton, Button, Space, Popconfirm, message } from 'antd';
 
 import { checkIfEveryLectureHasVideo } from '../../utils';
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
 import { selectCourseDetails } from '../../../../../features/teacher/teacherSlice';

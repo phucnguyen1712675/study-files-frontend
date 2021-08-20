@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Space, Skeleton, Image } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import EditPictureForm from '../../../../components/features/teacher/form/edit_picture_form';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';

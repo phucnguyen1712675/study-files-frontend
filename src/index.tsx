@@ -25,7 +25,7 @@ import './locales/i18n';
 
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import { store } from './app/store';
+import { store } from './store';
 
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
 

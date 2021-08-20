@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 
 import TeacherAvatarColumnContent from './components/teacher_avatar_column_content';
 import TeacherInfoColumnContent from './components/teacher_info_column_content';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch } from '../../../hooks';
 import PageLayoutWrapper from '../../components/features/teacher/page_layout_wrapper';
 import PageHelmet from '../../components/features/teacher/page_helmet';
 import { getTeacherInfo } from '../../../features/guest/guestThunkAPI';
