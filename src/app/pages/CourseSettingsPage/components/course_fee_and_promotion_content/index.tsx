@@ -16,15 +16,14 @@ import {
 } from 'antd';
 import { CloseOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import { updatedDiff } from 'deep-object-diff';
 
 import { UpdateCoursePromotionFormValues } from './types';
 import UpdateCoursePromotionForm from './components/update_course_promotion_form';
 import { checkIfCourseHasPromotion } from '../../utils';
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
 import FormNumberInput from '../../../../components/features/teacher/form/form_number_input';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import {
   COURSE_ORIGINAL_FEE_MIN_VALUE,
   COURSE_ORIGINAL_FEE_MAX_VALUE,
@@ -47,7 +46,6 @@ const dateFormat = 'YYYY-MM-DD';
 
 type FormValues = {
   originalFee: number;
-  hasPromotion: boolean;
 };
 
 const schema = yup.object().shape({
@@ -123,40 +121,28 @@ export default function CourseFeeAndPromotionContent() {
   }, [data, isLoading, reset, checkPromotion]);
 
   const onSubmit = handleSubmit(async (values: FormValues) => {
-    const courseData = courseDetails.data!;
+    setBtnSubmitLoading(true);
 
-    const difference = updatedDiff(courseData, values);
+    const { id } = data!;
 
-    if (
-      !difference ||
-      Object.keys(difference).length !== 0 ||
-      difference.constructor !== Object
-    ) {
-      setBtnSubmitLoading(true);
+    const payload = {
+      ...values,
+      fee: getValues('originalFee'),
+    };
 
-      const { id } = data!;
+    const response = await updateCourse(id, payload);
 
-      const payload = {
-        ...values,
-        fee: getValues('originalFee'),
-      };
-
-      const response = await updateCourse(id, payload);
-
-      if (!response || response.status !== 200) {
-        message.error(`Error: ${response}`);
-      } else {
-        await dispatch(getCourseDetails(id));
-
-        window.scrollTo(0, 0);
-
-        message.success('Processing complete!');
-      }
-
-      setBtnSubmitLoading(false);
+    if (!response || response.status !== 200) {
+      message.error(`Error: ${response}`);
     } else {
+      await dispatch(getCourseDetails(id));
+
+      window.scrollTo(0, 0);
+
       message.success('Processing complete!');
     }
+
+    setBtnSubmitLoading(false);
   });
 
   const onCreatePromotion = async (values: UpdateCoursePromotionFormValues) => {

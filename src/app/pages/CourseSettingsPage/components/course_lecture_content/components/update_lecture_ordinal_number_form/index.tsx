@@ -6,7 +6,7 @@ import { Form, Modal } from 'antd';
 
 import FormLectureSelect from './components/form_lecture_select';
 import { UpdateLectureOrdinalNumberFormValues } from '../../types';
-import { useAppSelector } from '../../../../../../hooks';
+import { useAppSelector } from '../../../../../../../hooks';
 import FormSectionSelect from '../../../../../../components/features/teacher/form/form_section_select';
 import { Lecture } from '../../../../../../../types';
 import { selectCourseDetails } from '../../../../../../../features/teacher/teacherSlice';

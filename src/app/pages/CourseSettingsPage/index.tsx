@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Result, Button } from 'antd';
 
 import { SIDER_MENU_ITEMS } from './constants';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import HeaderSiderLayout from '../../components/features/teacher/header_sider_layout';
 import { getCourseDetails } from '../../../features/teacher/teacherThunkAPI';
 import { selectCourseDetails } from '../../../features/teacher/teacherSlice';

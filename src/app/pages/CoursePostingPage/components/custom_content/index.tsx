@@ -1,11 +1,14 @@
 import React from 'react';
-import { Button, message } from 'antd';
+import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 
 import { STEP_ITEMS } from '../../constants';
-import { useAppDispatch, useAppSelector } from '../../../../hooks';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';
-import { COURSE_POSTING_PAGE_PATH } from '../../../../../constants/routes';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks';
+import {
+  COURSE_POSTING_PAGE_PATH,
+  TEACHER_COURSES_PAGE_PATH,
+} from '../../../../../constants/routes';
 import {
   coursePostingNextStep,
   setCoursePostingStep,
@@ -35,9 +38,9 @@ export default function CustomContent({
 
   const next = () => {
     if (coursePostingStep === STEP_ITEMS.length - 1) {
-      message.success('Processing complete!');
-
       dispatch(setCoursePostingStep(0));
+
+      history.push(TEACHER_COURSES_PAGE_PATH);
     } else {
       // Next step
       dispatch(coursePostingNextStep());

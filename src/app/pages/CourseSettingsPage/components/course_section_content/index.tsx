@@ -20,7 +20,7 @@ import {
 } from './types';
 import UpdateCourseSectionTitleForm from './components/update_course_section_title_form';
 import UpdateSectionOrdinalNumberForm from './components/update_section_ordinal_number_form';
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import FormInput from '../../../../components/features/teacher/form/form_input';
 import HeaderSiderContentLayout from '../../../../components/features/teacher/header_sider_content_layout';

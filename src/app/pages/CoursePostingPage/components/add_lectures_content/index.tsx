@@ -6,7 +6,7 @@ import { Form, Button, Alert, message } from 'antd';
 import { nanoid } from 'nanoid';
 
 import CustomContent from '../custom_content';
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import FormSectionSelect from '../../../../components/features/teacher/form/form_section_select';
 import FormInput from '../../../../components/features/teacher/form/form_input';
@@ -131,8 +131,6 @@ export default function AddLecturesContent() {
     if (!response || response.status !== 201) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
-
       reset({
         sectionId: watchSectionId,
         canPreview: false,
@@ -145,6 +143,10 @@ export default function AddLecturesContent() {
       isDone && setIsEachSectionHadAtLeastOneLecture(true);
 
       videoKey = nanoid();
+
+      window.scrollTo(0, 0);
+
+      message.success('Processing complete!');
     }
 
     setLoading(false);

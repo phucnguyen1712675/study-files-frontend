@@ -2,7 +2,7 @@ import { Button, Typography, Row, Col } from 'antd';
 import { useHistory } from 'react-router-dom';
 
 import TeacherAvatar from '../../../../components/features/teacher/teacher_avatar';
-import { useAppSelector } from '../../../../hooks';
+import { useAppSelector } from '../../../../../hooks';
 import { TEACHER_SETTINGS_PAGE_PATH } from '../../../../../constants/routes';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';
 

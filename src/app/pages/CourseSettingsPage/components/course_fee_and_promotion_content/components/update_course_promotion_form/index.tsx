@@ -13,7 +13,7 @@ import {
   COURSE_FEE_MIN_VALUE,
   COURSE_ORIGINAL_FEE_MAX_VALUE,
 } from '../../../../../../../constants/course';
-import { useAppSelector } from '../../../../../../hooks';
+import { useAppSelector } from '../../../../../../../hooks';
 import { selectCourseDetails } from '../../../../../../../features/teacher/teacherSlice';
 
 const { Text } = Typography;

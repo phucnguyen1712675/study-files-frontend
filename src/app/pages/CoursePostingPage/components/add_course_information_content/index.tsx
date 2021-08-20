@@ -7,7 +7,7 @@ import moment from 'moment';
 import { nanoid } from 'nanoid';
 
 import CustomContent from '../custom_content';
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import PageHelmet from '../../../../components/features/teacher/page_helmet';
 import FormInput from '../../../../components/features/teacher/form/form_input';
 import FormTextArea from '../../../../components/features/teacher/form/form_text_area';
@@ -155,8 +155,6 @@ export default function AddCourseInformationContent() {
     if (!response || response.status !== 201) {
       message.error(`Error: ${response}`);
     } else {
-      message.success('Processing complete!');
-
       const { id } = response?.data;
 
       dispatch(setNewCourseId(id));
@@ -164,6 +162,8 @@ export default function AddCourseInformationContent() {
       setShouldShowNextButton(true);
 
       imageKey = nanoid();
+
+      message.success('Processing complete!');
     }
 
     setLoading(false);

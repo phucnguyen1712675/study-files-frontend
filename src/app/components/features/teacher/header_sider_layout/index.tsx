@@ -1,13 +1,13 @@
 import React from 'react';
 import { Layout, Typography, Menu } from 'antd';
 import {
-  BrowserRouter as Router,
   Route,
   Link,
   useRouteMatch,
   Redirect,
   useLocation,
   useHistory,
+  Switch,
 } from 'react-router-dom';
 
 import './index.css';
@@ -57,31 +57,29 @@ export default function HeaderSiderLayout({
     <TeacherPageLayout>
       <>
         {headerContainer}
-        <Router>
-          <Layout
-            className="site-layout-background"
-            style={{ padding: '24px 0' }}
-          >
-            <Sider className="site-layout-background" width="20%">
-              <Menu
-                mode="inline"
-                selectedKeys={[selectedKey ?? siderItems[0].id]}
-                onClick={onClickMenu}
-              >
-                <Menu.Item key="header" disabled>
-                  <Text strong>{siderHeaderText}</Text>
-                </Menu.Item>
-
-                {siderItems.map(item => (
-                  <Menu.Item key={item.id}>
-                    <Link to={`${url}/${item.path}`}>{item.title}</Link>
-                  </Menu.Item>
-                ))}
-              </Menu>
-            </Sider>
-            <Content
-              style={{ padding: '0 24px', minHeight: 280, minWidth: 600 }}
+        <Layout
+          className="site-layout-background"
+          style={{ padding: '24px 0' }}
+        >
+          <Sider className="site-layout-background" width="20%">
+            <Menu
+              mode="inline"
+              selectedKeys={[selectedKey ?? siderItems[0].id]}
+              onClick={onClickMenu}
             >
+              <Menu.Item key="header" disabled>
+                <Text strong>{siderHeaderText}</Text>
+              </Menu.Item>
+
+              {siderItems.map(item => (
+                <Menu.Item key={item.id}>
+                  <Link to={`${url}/${item.path}`}>{item.title}</Link>
+                </Menu.Item>
+              ))}
+            </Menu>
+          </Sider>
+          <Content style={{ padding: '0 24px', minHeight: 280, minWidth: 600 }}>
+            <Switch>
               <Route exact path={url}>
                 <Redirect to={`${url}/${siderItems[0].path}`} />
               </Route>
@@ -93,9 +91,9 @@ export default function HeaderSiderLayout({
                   component={item.component}
                 />
               ))}
-            </Content>
-          </Layout>
-        </Router>
+            </Switch>
+          </Content>
+        </Layout>
       </>
     </TeacherPageLayout>
   );

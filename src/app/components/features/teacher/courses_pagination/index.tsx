@@ -4,7 +4,7 @@ import { ListGridType } from 'antd/lib/list';
 
 import CourseCard from './components/course_card';
 import LoadingCard from '../loading_card';
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import { getCoursesOfTeacherQueryResult } from '../../../../../features/guest/guestThunkAPI';
 import { selectTeacherCourses } from '../../../../../features/guest/guestSlice';
 

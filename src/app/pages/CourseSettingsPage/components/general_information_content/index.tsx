@@ -12,7 +12,7 @@ import { updatedDiff } from 'deep-object-diff';
 
 import './index.css';
 
-import { useAppSelector, useAppDispatch } from '../../../../hooks';
+import { useAppSelector, useAppDispatch } from '../../../../../hooks';
 import FormInput from '../../../../components/features/teacher/form/form_input';
 import FormTextArea from '../../../../components/features/teacher/form/form_text_area';
 import FormSubCategoryOptGroupSelect from '../../../../components/features/teacher/form/form_sub_category_opt_group_select';

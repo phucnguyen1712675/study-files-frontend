@@ -3,7 +3,7 @@ import { Layout, Row, Col, Divider } from 'antd';
 
 import CoursesColumnContent from './components/courses_column_content';
 import TeacherInfoColumnContent from './components/teacher_info_column_content';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch } from '../../../hooks';
 import PageLayoutWrapper from '../../components/features/teacher/page_layout_wrapper';
 import PageHelmet from '../../components/features/teacher/page_helmet';
 import { getTeacherInfo } from '../../../features/guest/guestThunkAPI';

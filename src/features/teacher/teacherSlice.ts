@@ -5,7 +5,7 @@ import {
   getCategoriesDetails,
   getSectionsResults,
 } from './teacherThunkAPI';
-import { RootState } from '../../app/store';
+import { RootState } from '../../store';
 import { CourseDetails, Section, CategoryDetails } from '../../types';
 
 type TeacherState = {

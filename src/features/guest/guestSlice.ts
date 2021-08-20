@@ -4,7 +4,7 @@ import {
   getTeacherInfo,
   getCoursesOfTeacherQueryResult,
 } from './guestThunkAPI';
-import { RootState } from '../../app/store';
+import { RootState } from '../../store';
 import { Course, Teacher } from '../../types';
 
 type CourseQueryResult = {

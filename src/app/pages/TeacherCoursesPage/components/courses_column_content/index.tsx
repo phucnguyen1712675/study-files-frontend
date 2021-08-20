@@ -2,7 +2,7 @@ import { Button, Row, Typography, Divider, message } from 'antd';
 import { FolderOpenTwoTone, PlusOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 
-import { useAppSelector } from '../../../../hooks';
+import { useAppSelector } from '../../../../../hooks';
 import LoadingCard from '../../../../components/features/teacher/loading_card';
 import CoursesPagination from '../../../../components/features/teacher/courses_pagination';
 import { selectTeacherInfo } from '../../../../../features/guest/guestSlice';

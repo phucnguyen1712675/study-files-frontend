@@ -273,16 +273,18 @@ export function CategoryCard({ category }) {
   }, []);
 
   const NavigateToCategoryCousesListPage = function () {
+    let subCategory = { ...category, id: category._id };
+    delete subCategory._id;
     dispatch({
       type: 'update_selectedCategory',
       payload: {
-        selectedSubCategory: category,
+        selectedSubCategory: subCategory,
       },
     });
     const temp = category.category.name.replaceAll(' ', '-');
     const temp2 = category.name.replaceAll(' ', '-');
     history.push(`/category/${temp}/${temp2}`, {
-      selectedSubCategory: category,
+      selectedSubCategory: subCategory,
     });
   };
 
