@@ -32,6 +32,10 @@ export default function VideosContent() {
   const [visible, setVisible] = React.useState<boolean>(false);
 
   React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  React.useEffect(() => {
     if (!isLoading && data) {
       const isHasEnoughVideo = checkIfEveryLectureHasVideo(data.sections);
 

@@ -79,6 +79,10 @@ export default function GeneralInformationContent() {
 
   const [loading, setLoading] = React.useState<boolean>(false);
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
     defaultValues: React.useMemo(() => {

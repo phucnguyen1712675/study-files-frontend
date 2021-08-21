@@ -73,6 +73,10 @@ export default function CourseSectionContent() {
     setUpdateSectionOrdinalNumberFormVisible,
   ] = React.useState<boolean>(false);
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const methods = useForm<FormValues>({
     resolver: yupResolver(schema),
   });
