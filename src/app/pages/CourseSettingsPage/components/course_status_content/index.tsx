@@ -23,6 +23,10 @@ export default function CourseStatusContent() {
 
   const [confirmLoading, setConfirmLoading] = React.useState<boolean>(false);
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleCancel = () => setEndPromotionPopconfirmVisible(false);
 
   const onClickChangeStatusButton = () => {

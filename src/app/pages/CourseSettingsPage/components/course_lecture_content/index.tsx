@@ -98,7 +98,9 @@ export default function CourseLectureContent() {
 
   const [expandedKeys, setExpandedKeys] = React.useState<React.Key[]>([]);
 
-  // const [autoExpandParent, setAutoExpandParent] = React.useState<boolean>(true);
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   React.useEffect(() => {
     if (!courseDetails.isLoading && courseDetails.data) {
