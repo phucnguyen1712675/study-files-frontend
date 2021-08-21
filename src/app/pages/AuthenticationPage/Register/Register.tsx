@@ -48,7 +48,11 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().required('Email is required').email('Email is invalid'),
   password: Yup.string()
     .min(8, 'Password must be at least 8 characters')
-    .required('Password is required'),
+    .required('Password is required')
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+      'Password must contain at least one letter and one number',
+    ),
 });
 
 export default function SignUp() {
@@ -69,7 +73,6 @@ export default function SignUp() {
 
   const onSubmit = async data => {
     try {
-      // console.log(data);
       showLoadingSwal();
       const res = await axiosAuthInstance.post('/register', data);
       closeSwal();
