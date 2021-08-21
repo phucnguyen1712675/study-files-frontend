@@ -4,9 +4,9 @@ import { useLocation } from 'react-router-dom';
 
 import TeacherAvatarColumnContent from './components/teacher_avatar_column_content';
 import TeacherInfoColumnContent from './components/teacher_info_column_content';
-import { useAppDispatch } from '../../../hooks';
 import PageLayoutWrapper from '../../components/features/teacher/page_layout_wrapper';
 import PageHelmet from '../../components/features/teacher/page_helmet';
+import { useAppDispatch } from '../../../hooks';
 import { getTeacherInfo } from '../../../features/guest/guestThunkAPI';
 
 const { Content } = Layout;
@@ -23,12 +23,12 @@ export function TeacherProfilePage() {
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
-    dispatch(getTeacherInfo(teacherId));
-  }, [dispatch, teacherId]);
-
-  React.useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  React.useEffect(() => {
+    dispatch(getTeacherInfo(teacherId));
+  }, [dispatch, teacherId]);
 
   return (
     <>

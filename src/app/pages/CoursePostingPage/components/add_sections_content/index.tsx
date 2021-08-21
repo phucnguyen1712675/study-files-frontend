@@ -69,6 +69,8 @@ export default function AddSectionsContent() {
 
       reset();
 
+      window.scrollTo(0, 0);
+
       message.success('Processing complete!');
     }
 

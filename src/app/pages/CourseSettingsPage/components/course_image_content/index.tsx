@@ -25,6 +25,10 @@ export default function CourseImageContent() {
 
   const [visible, setVisible] = React.useState<boolean>(false);
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const onCreate = async (values: EditPictureFormValues) => {
     setVisible(false);
 

@@ -16,6 +16,10 @@ export function TeacherCoursesPage() {
   const teacherId = localStorage.studyFiles_user_id;
 
   React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  React.useEffect(() => {
     dispatch(getTeacherInfo(teacherId));
   }, [dispatch, teacherId]);
 
