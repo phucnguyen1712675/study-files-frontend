@@ -163,6 +163,8 @@ export default function AddCourseInformationContent() {
 
       imageKey = nanoid();
 
+      window.scrollTo(0, 0);
+
       message.success('Processing complete!');
     }
 
