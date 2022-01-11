@@ -29,6 +29,7 @@
 ## Features
 - Student attends courses
 - Teacher creates courses
+- Searching, sorting courses
 - Admin panel
 - Authentication
 - ...
