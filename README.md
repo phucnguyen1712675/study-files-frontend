@@ -31,6 +31,7 @@
 - Teacher creates courses
 - Admin panel
 - Authentication
+- ...
 
 
 ## Setup
